@@ -10,6 +10,3 @@ IndentWidth:     4
 TabWidth:        4
 UseTab:          Never
 
-
-AccessModifierOffset (2)
-AlignAfterOpenBracket (BAS_Align)

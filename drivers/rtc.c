@@ -1,6 +1,6 @@
 /**
  * @file rtc.c
- * @author your name
+ * @author bifei.tang
  * @brief
  * @version 0.1
  * @date 2020-05-12
@@ -85,12 +85,12 @@ void RTC_DeInit(void)
 /**
  * @brief set date
  *
- * @param year 锛歟xp:19 (2019)
- * @param month 锛歴et month
- * @param day 锛歴et day
- * @param week 锛歴et week
+ * @param year 年 如:19 (2019)
+ * @param month 月
+ * @param day 天
+ * @param week 星期
  *
- * @return BOOL 锛欵RROR  , SUCCESS
+ * @return BOOL ERROR  , SUCCESS
  */
 void RTC_SetDate(int year,int month,int day,int week)
 {
@@ -231,7 +231,7 @@ int RTC_GetSecond(void)
 /**
  * @brief :set alarm
  *
- * @param week 锛歴urport '|' combin
+ * @param week surport '|' combin
  *  RTC_ALM_EN_WEEK1 |
     RTC_ALM_EN_WEEK2 |
     RTC_ALM_EN_WEEK3 |
@@ -297,7 +297,7 @@ void RTC_AlarmCofig(int en,int irqEn)
  * @param irqEn :ENABLE , DISABLE
  * @param prd_sel: RTC_PRD_SEL_TIME_DATE , RTC_PRD_SEL_N_0P5S
  * @param interval:ePRD_TDType,PRD_xx;
- *                  PRD_N_0P5S(x):set 0.5*xs interval. exp:PRD_N_0P5S(2),1s interval note:1<=x<=64
+ * @note  PRD_N_0P5S(x):set 0.5*xs interval. exp:PRD_N_0P5S(2),1s interval note:1<=x<=64
  */
 void RTC_PeriodCofig(int en,int irqEn,int prd_sel,int interval)
 {

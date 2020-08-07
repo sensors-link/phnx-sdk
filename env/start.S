@@ -37,7 +37,7 @@ _start:
 	bltu a0, a1, 1b
 2:
 
-	call _init
+	call SystemInit
 
 #ifdef __riscv_flen
 	/* Enable FPU */

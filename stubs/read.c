@@ -7,7 +7,4 @@
 
 #include "stub.h"
 
-ssize_t _read(int fd, void* ptr, size_t len)
-{
-  return _stub(EBADF);
-}
+ssize_t _read(int fd, void *ptr, size_t len) { return _stub(EBADF); }
