@@ -93,8 +93,8 @@ void UART_Init(UART_Type *psUart, int port, int mode, int iBaud) {
         }
 
     } else if (psUart == LPUART) {
-        IOM->AF0 &= ~(IOM_AF1_P18_SEL | IOM_AF1_P19_SEL);
-        IOM->AF0 |= IOM_AF1_P18_SEL_LPUART_RX | IOM_AF1_P19_SEL_LPUART_TX;
+        IOM->AF1 &= ~(IOM_AF1_P18_SEL | IOM_AF1_P19_SEL);
+        IOM->AF1 |= IOM_AF1_P18_SEL_LPUART_RX | IOM_AF1_P19_SEL_LPUART_TX;
         SYSC->CLKENCFG |= SYSC_CLKENCFG_LPUART | SYSC_CLKENCFG_LPUART_MRCK;
         psUart->SCON = 0;
         if (mode == UART_MODE_8B_SYNC) {
