@@ -217,7 +217,7 @@ typedef struct {
     __O unsigned int WPROT;       // 58
     __IO unsigned int THR1_DATA;  // 5c
     __IO unsigned int THR2_DATA;  // 60
-    __I unsigned int rsv0[8];
+    __I unsigned int rsv0[7];
     __IO unsigned int ADC_VAL[8]; // 80
     __IO unsigned int AVG_VAL;    // A0
 } ANAC_Type;

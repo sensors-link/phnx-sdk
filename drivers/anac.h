@@ -378,8 +378,8 @@
 
 #define ADC_VREF_VOLT_1P2 0
 #define ADC_VREF_VOLT_1P5 1
-#define ADC_VREF_VOLT_2P5 2
-#define ADC_VREF_VOLT_4P3 3
+#define ADC_VREF_VOLT_2P0 2
+#define ADC_VREF_VOLT_2P5 3
 
 #define ADC_SMP_TIMS_1 0
 #define ADC_SMP_TIMS_2 1
