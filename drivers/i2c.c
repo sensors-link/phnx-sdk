@@ -22,15 +22,10 @@
  * @param dstAddr :7bit access addr
  */
 void I2C_Init(int pin, int masterEn, int freq, int selfAddr, int dstAddr) {
-    PARAM_CHECK((pin != I2C_PIN_06_07) && (pin != I2C_PIN_12_13));
+    PARAM_CHECK((pin != I2C_PIN_12_13));
     SYSC->CLKENCFG |= SYSC_CLKENCFG_IOM;
-    if (pin == I2C_PIN_06_07) {
-        IOM->AF0 &= ~(IOM_AF0_P06_SEL | IOM_AF0_P07_SEL);
-        IOM->AF0 |= (IOM_AF0_P06_SEL_I2C_SDA | IOM_AF0_P07_SEL_I2C_SCL);
-    } else {
-        IOM->AF0 &= ~(IOM_AF0_P12_SEL | IOM_AF0_P13_SEL);
-        IOM->AF0 |= (IOM_AF0_P12_SEL_I2C_SDA | IOM_AF0_P13_SEL_I2C_SCL);
-    }
+    IOM->AF0 &= ~(IOM_AF0_P12_SEL | IOM_AF0_P13_SEL);
+    IOM->AF0 |= (IOM_AF0_P12_SEL_I2C_SDA | IOM_AF0_P13_SEL_I2C_SCL);
     PARAM_CHECK((selfAddr > 0x7f) || (dstAddr > 0x7f));
     SYSC->CLKENCFG |= SYSC_CLKENCFG_I2C;
     I2C->CON &= ~I2C_CON_ENABLE;
