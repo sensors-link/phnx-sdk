@@ -134,6 +134,7 @@ eReturnType EFC_PageProgram(u32 u32Addr) {
         return EFC_PAGE_PRG_FAIL;
     }
     EFC_STS_REG = EFC_STS_CD;
+    EFC_OPR_OPEN(EFC_OPR_OPRMODE_ROW_PRG);
     REG32(u32Addr + 256) = 0xffffffff;
     while (!EFC_STS_REG)
         ;

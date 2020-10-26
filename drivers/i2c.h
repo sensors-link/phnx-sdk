@@ -99,7 +99,7 @@ typedef enum _I2C_IRQ_T {
 #define I2C_CMD_STOP (1 << 9)
 #define I2C_CMD_READ (1 << 8)
 
-#define I2C_PIN_06_07 0
+// #define I2C_PIN_06_07 0
 #define I2C_PIN_12_13 1
 
 // extern function declare

@@ -113,6 +113,7 @@ void UART_Init(UART_Type *psUart, int port, int mode, int iBaud) {
             psUart->SCON =
                 ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
         }
+        psUart->SCON |= (1 << 10);
     }
 }
 
