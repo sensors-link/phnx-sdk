@@ -1,0 +1,42 @@
+{
+    // 使用 IntelliSense 了解相关属性。
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) 启动",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "@CMAKE_BINARY_DIR@/@PROJECT_EXECUTABLE@",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "@CMAKE_DEBUGGER@",
+            "setupCommands": [
+                {
+                    "description": "set mem inaccessible-by-default off",
+                    "text": "set mem inaccessible-by-default off"
+                },
+                {
+                    "description": "set arch riscv:rv32",
+                    "text": "set arch riscv:rv32"
+                },
+
+                {
+                    "description": "Connect to target",
+                    "text": "target remote localhost:3333"
+                },
+                {
+                    "description": "reset",
+                    "text": "monitor reset halt"
+                },
+            ],
+            "preLaunchTask": "gdbserver"
+        }
+    ],
+    "env":{
+        "PHNX_SDF":"@PHNX_SDF@"
+    },
+}
