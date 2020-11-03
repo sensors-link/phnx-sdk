@@ -16,6 +16,11 @@
             "miDebuggerPath": "@CMAKE_DEBUGGER@",
             "setupCommands": [
                 {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
                     "description": "set mem inaccessible-by-default off",
                     "text": "set mem inaccessible-by-default off"
                 },
@@ -23,15 +28,14 @@
                     "description": "set arch riscv:rv32",
                     "text": "set arch riscv:rv32"
                 },
-
                 {
                     "description": "Connect to target",
                     "text": "target remote localhost:3333"
                 },
                 {
                     "description": "reset",
-                    "text": "monitor reset halt"
-                },
+                    "text": "monitor softreset"
+                }
             ],
             "preLaunchTask": "gdbserver"
         }

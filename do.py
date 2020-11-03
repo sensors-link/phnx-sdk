@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import division, print_function
-import sys,os
+import sys,os,time
 import subprocess
 
 command = sys.argv[1] if len(sys.argv) > 1 else "UNKNOWN"
@@ -30,8 +30,8 @@ if command == "flash" :
 elif command == "gdbserver" :
     cfgFile = cfgFile.replace("\\","/") # 简单的Window路径到POSIX路径转换
     os.system("TASKKILL /F /IM openocd.exe 2>NUL")
-    run_args = ["openocd", "-f", cfgFile]
-    ret = subprocess.call(run_args, env=os.environ)
+    os.system('start openocd -f "' + cfgFile + '"')
+    time.sleep(1)
 
 elif command == "monitor" :
     serialPort = sys.argv[2]
