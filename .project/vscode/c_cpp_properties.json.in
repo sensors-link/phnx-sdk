@@ -4,8 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "@PHNX_SDF@/components/@TARGET@/**",
-                "@PHNX_SDF@/components/freertos/**"
+                "@PHNX_SDF@/components/@TARGET@/**"
             ],
             "defines": [
                 "_DEBUG",
@@ -16,7 +15,6 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
                     "@PHNX_SDF@/components/@TARGET@/**",
-                    "@PHNX_SDF@/components/freertos/**",
                     ""
                 ]
             },
