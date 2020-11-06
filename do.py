@@ -24,7 +24,7 @@ if command == "flash" :
     cfgFile = cfgFile.replace("\\","/") # 简单的Window路径到POSIX路径转换
     run_args = ["openocd", "-f", cfgFile,
             "-c", "init; halt;",
-            "-c", "program " + binFile + " 0x10100000; softreset; exit 0"]
+            "-c", "program " + binFile + " 0x10100000; resume 0x10100000; exit 0"]
     ret = subprocess.call(run_args, env=os.environ)
 
 elif command == "softreset" :
