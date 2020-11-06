@@ -51,6 +51,17 @@
             "problemMatcher": ["$gcc"]
         },
         {
+            "label": "softreset",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "@PHNX_SDF@/tools/sdf.py",
+                "softreset"
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
             "label": "monitor",
             "type": "shell",
             "command": "python",
