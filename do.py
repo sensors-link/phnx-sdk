@@ -24,16 +24,14 @@ if command == "flash" :
     cfgFile = cfgFile.replace("\\","/") # 简单的Window路径到POSIX路径转换
     run_args = ["openocd", "-f", cfgFile,
             "-c", "init; halt;",
-            "-c", "program " + binFile + " 0x10100000 exit"]
+            "-c", "program " + binFile + " 0x10100000; softreset; exit 0"]
     ret = subprocess.call(run_args, env=os.environ)
 
 elif command == "softreset" :
     os.system("TASKKILL /F /IM openocd.exe 2>NUL")
     cfgFile = cfgFile.replace("\\","/") # 简单的Window路径到POSIX路径转换
     run_args = ["openocd", "-f", cfgFile,
-            "-c", "init",
-            "-c", "puts \"softreset chip, ignore the following ERROR:\"",
-            "-c", "mww 0x40012C18 0xC3; mww 0x40012C18 0x3C; mww 0x40012C08 0x01; exit 0"]
+            "-c", "init; softreset; exit 0"]
     ret = subprocess.call(run_args, env=os.environ)
 
 elif command == "gdbserver" :
@@ -53,6 +51,6 @@ Usage:
     do.py flash binfile
     do.py softreset binfile
     do.py gdbserver
-    do.py monitor
+    do.py monitor [port] [baudrate]
 ''')
 
