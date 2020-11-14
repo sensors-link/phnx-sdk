@@ -30,12 +30,15 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del) {
         SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM1_CNT;
         if (mode == TIM_TM_AUTO_RUN) {
             TIMERS->CON &= ~TIM_CON_TM_TIM1;
+            int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
+            int cnt = (long long)del * pclk / 1000000;
+            TIM1->CTCG1 = cnt & 0xffff;
+            TIM1->CTCG2 = cnt >> 16;
+
         } else {
             TIMERS->CON |= TIM_CON_TM_TIM1;
-        }
-        {
             int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-            int cnt = del * (pclk / 1000000);
+            int cnt = (long long)del * pclk / 1000000;
             PARAM_CHECK(cnt > 0xffff); // div handler can affect tim1/2
             TIM1->CTCG1 = cnt;
         }
@@ -44,12 +47,15 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del) {
         SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM2_CNT;
         if (mode == TIM_TM_AUTO_RUN) {
             TIMERS->CON &= ~TIM_CON_TM_TIM2;
+            int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
+            int cnt = (long long)del * pclk / 1000000;
+            TIM2->CTCG1 = cnt & 0xffff;
+            TIM2->CTCG2 = cnt >> 16;
+
         } else {
             TIMERS->CON |= TIM_CON_TM_TIM2;
-        }
-        {
             int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-            int cnt = del * (pclk / 1000000);
+            int cnt = (long long)del * pclk / 1000000;
             PARAM_CHECK(cnt > 0xffff); // div handler can affect tim1/2
             TIM2->CTCG1 = cnt;
         }
@@ -59,12 +65,15 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del) {
         PARAM_CHECK((mode != TIM_TM_AUTO_RUN) && (mode != TIM_TM_AUTO_LOAD));
         if (mode == TIM_TM_AUTO_RUN) {
             TIMERS->CON &= ~TIM_CON_TM_TIM3;
+            int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
+            int cnt = (long long)del * pclk / 1000000;
+            TIM3->CTCG1 = cnt & 0xffff;
+            TIM3->CTCG2 = cnt >> 16;
+
         } else {
             TIMERS->CON |= TIM_CON_TM_TIM3;
-        }
-        {
             int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-            int cnt = del * (pclk / 1000000);
+            int cnt = (long long)del * pclk / 1000000;
             PARAM_CHECK(cnt > 0xffff); // div handler can affect tim1/2
             TIM3->CTCG1 = cnt;
         }
@@ -74,13 +83,15 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del) {
         PARAM_CHECK((mode != TIM_TM_AUTO_RUN) && (mode != TIM_TM_AUTO_LOAD));
         if (mode == TIM_TM_AUTO_RUN) {
             TIMERS->CON &= ~TIM_CON_TM_TIM4;
+            int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
+            int cnt = (long long)del * pclk / 1000000;
+            TIM4->CTCG1 = cnt & 0xffff;
+            TIM4->CTCG2 = cnt >> 16;
         } else {
             TIMERS->CON |= TIM_CON_TM_TIM4;
-        }
-        {
-            int pclk = SYSC_GetAHBCLK() / (SYSC->BZTIMCLKDIV + 1);
-            int cnt = del * (pclk / 1000000);
-            PARAM_CHECK(cnt > 0xffff); // div handler
+            int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
+            int cnt = (long long)del * pclk / 1000000;
+            PARAM_CHECK(cnt > 0xffff); // div handler can affect tim1/2
             TIM4->CTCG1 = cnt;
         }
         TIMERS->CON |= TIM_CON_TE_TIM4;
@@ -289,7 +300,7 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty,
         PARAM_CHECK(tcnt < 2);
         TIM3->CTCG2 = tcnt * (duty) / 100; //
         TIM3->CTCG1 = tcnt - (TIM3->CTCG2);
-        TIM2->PWCON &= ~TIM_PWCON_PWMCPOL;
+        TIM3->PWCON &= ~TIM_PWCON_PWMCPOL;
         PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) &&
                     (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
                     (pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) &&

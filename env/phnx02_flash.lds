@@ -5,7 +5,7 @@ ENTRY( _start )
 MEMORY
 {
   flash (rxai!w) : ORIGIN = 0x10100000, LENGTH = 128K
-  ram (wxa!ri) : ORIGIN = 0x20000000, LENGTH = 8K
+  ram (wxa!ri) : ORIGIN = 0x20000000, LENGTH = 10K
 }
 
 
