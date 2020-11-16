@@ -1,0 +1,14 @@
+{
+	// See http://go.microsoft.com/fwlink/?LinkId=827846
+	// for the documentation about the extensions.json format
+	"recommendations": [
+		"MS-CEINTL.vscode-language-pack-zh-hans",
+		"ms-vscode.cpptools",
+		"austin.code-gnu-global",
+		"EditorConfig.EditorConfig",
+		"VisualStudioExptTeam.vscodeintellicode",
+		"zhwu95.riscv",
+		"twxs.cmake",
+        "sanaajani.taskrunnercode"
+	]
+}

@@ -1,0 +1,93 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "@PHNX_SDF@/tools/sdf.py",
+                "build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "@PHNX_SDF@/tools/sdf.py",
+                "clean"
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "fullclean",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "@PHNX_SDF@/tools/sdf.py",
+                "fullclean"
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "flash",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "@PHNX_SDF@/tools/sdf.py",
+                "flash"
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "softreset",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "@PHNX_SDF@/tools/sdf.py",
+                "softreset"
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "monitor",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "@PHNX_SDF@/tools/sdf.py",
+                "monitor"
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "gdbserver",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "@PHNX_SDF@/tools/sdf.py",
+                "debug"
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        }
+    ],
+    "options":{
+        "cwd": "${workspaceFolder}",
+        "env":{
+            "PHNX_SDF":"@PHNX_SDF@"
+        }
+    }
+}
