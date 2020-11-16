@@ -11,7 +11,17 @@ file(GLOB_RECURSE PROJECT_SRCS "*.c") # 通配文件，递归
 # set(PROJECT_SRCS ${PROJECT_SRCS} "1.S") # 混合使用
 
 # 编译宏 -D XXX列表
-set(PROJECT_DEFINITIONS "_DEBUG" "PHNX_DEMO")
+set(PROJECT_DEFINITIONS "_DEBUG")
+
+# 其他高级用法
+# PROJECT_REQUIRES: 本工程依赖的通用组件
+# set(PROJECT_REQUIRES "freertos")
+# PROJECT_INCLUDEDIRS: 本工程依赖的通用组件
+# set(PROJECT_INCLUDEDIRS "porting")
+# PROJECT_LDSCRIPT: 自定义LDSCRIPT
+# set(PROJECT_LDSCRIPT "flash.lds")
+# CMAKE_C_FLAGS: 特别的编译参数CFLAGS
+# set(CMAKE_C_FLAGS "-fPIE -pie")
 
 # 最后调用project
 project(app)
