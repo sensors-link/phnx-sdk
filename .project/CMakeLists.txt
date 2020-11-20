@@ -1,6 +1,6 @@
 # 不要修改此部分
 cmake_minimum_required(VERSION 3.5)
-set(TARGET fdm32vs10x)
+set(TARGET fdv32s30x)
 include("$ENV{PHNX_SDF}/tools/cmake/project.cmake")
 
 # 为工程添加文件，
