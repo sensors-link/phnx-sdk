@@ -34,7 +34,9 @@ extern "C" {
 #define F_LRC 8
 
 // user configure
+#ifndef SYSC_CLK_SRC_SEL
 #define SYSC_CLK_SRC_SEL F_HRC8M
+#endif
 
 enum _DIV {
     DIV1 = 0,
