@@ -44,18 +44,18 @@ void UART_Init(UART_Type *psUart, int port, int mode, int iBaud) {
         SYSC->CLKENCFG |= SYSC_CLKENCFG_UART1;
         psUart->SCON = 0;
         if (mode == UART_MODE_8B_SYNC) {
-            PARAM_CHECK(pclk / (2 * iBaud) < 2);
-            psUart->BDIV = (pclk + iBaud) / (2 * iBaud);
+            PARAM_CHECK(pclk / (2 * iBaud) < 1);
+            psUart->BDIV = (pclk + iBaud) / (2 * iBaud) - 1;
             psUart->SCON =
                 ((UART_MODE_8B_SYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
         } else if (mode == UART_MODE_10B_ASYNC) {
             PARAM_CHECK(pclk / (16 * iBaud) < 1);
-            psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud);
+            psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
             psUart->SCON =
                 ((UART_MODE_10B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
         } else {
             PARAM_CHECK(pclk / (16 * iBaud) < 1);
-            psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud);
+            psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
             psUart->SCON =
                 ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
         }
@@ -76,18 +76,18 @@ void UART_Init(UART_Type *psUart, int port, int mode, int iBaud) {
         SYSC->CLKENCFG |= SYSC_CLKENCFG_UART2;
         psUart->SCON = 0;
         if (mode == UART_MODE_8B_SYNC) {
-            PARAM_CHECK(pclk / (2 * iBaud) < 2);
+            PARAM_CHECK(pclk / (2 * iBaud) < 1);
             psUart->BDIV = (pclk + iBaud) / (2 * iBaud);
             psUart->SCON =
                 ((UART_MODE_8B_SYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
         } else if (mode == UART_MODE_10B_ASYNC) {
             PARAM_CHECK(pclk / (16 * iBaud) < 1);
-            psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud);
+            psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
             psUart->SCON =
                 ((UART_MODE_10B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
         } else {
             PARAM_CHECK(pclk / (16 * iBaud) < 1);
-            psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud);
+            psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
             psUart->SCON =
                 ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
         }
@@ -98,18 +98,18 @@ void UART_Init(UART_Type *psUart, int port, int mode, int iBaud) {
         SYSC->CLKENCFG |= SYSC_CLKENCFG_LPUART | SYSC_CLKENCFG_LPUART_MRCK;
         psUart->SCON = 0;
         if (mode == UART_MODE_8B_SYNC) {
-            PARAM_CHECK(600000 / (2 * iBaud) < 2);
-            psUart->BDIV = (600000 + iBaud) / (2 * iBaud);
+            PARAM_CHECK(600000 / (2 * iBaud) < 1);
+            psUart->BDIV = (600000 + iBaud) / (2 * iBaud) - 1;
             psUart->SCON =
                 ((UART_MODE_8B_SYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
         } else if (mode == UART_MODE_10B_ASYNC) {
             PARAM_CHECK(600000 / (16 * iBaud) < 1);
-            psUart->BDIV = (600000 + iBaud) / (16 * iBaud);
+            psUart->BDIV = (600000 + iBaud) / (16 * iBaud) - 1;
             psUart->SCON =
                 ((UART_MODE_10B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
         } else {
             PARAM_CHECK(pclk / (16 * iBaud) < 1);
-            psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud);
+            psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
             psUart->SCON =
                 ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
         }
@@ -126,12 +126,12 @@ void UART_DeInit(UART_Type *psUart) {
     int i;
     PARAM_CHECK((psUart != UART1) && (psUart != UART2) && (psUart != LPUART));
     if (psUart == UART1) {
-        if (IOM->AF0 &
-            (IOM_AF0_P00_SEL | IOM_AF0_P01_SEL) ==
+        if ((IOM->AF0 &
+            (IOM_AF0_P00_SEL | IOM_AF0_P01_SEL)) ==
                 (IOM_AF0_P00_SEL_UART1_RX | IOM_AF0_P01_SEL_UART1_TX)) {
             IOM->AF0 &= ~(IOM_AF0_P00_SEL | IOM_AF0_P01_SEL);
-        } else if (IOM->AF1 &
-                   (IOM_AF1_P16_SEL | IOM_AF1_P17_SEL) ==
+        } else if ((IOM->AF1 &
+                   (IOM_AF1_P16_SEL | IOM_AF1_P17_SEL)) ==
                        (IOM_AF1_P16_SEL_UART1_RX | IOM_AF1_P17_SEL_UART1_TX)) {
             IOM->AF0 &= ~(IOM_AF1_P16_SEL | IOM_AF1_P17_SEL);
         }
@@ -145,12 +145,12 @@ void UART_DeInit(UART_Type *psUart) {
         if ((IOM->AF0 & (IOM_AF0_P02_SEL | IOM_AF0_P03_SEL)) ==
             (IOM_AF0_P02_SEL_UART2_RX | IOM_AF0_P03_SEL_UART2_TX)) {
             IOM->AF0 &= ~(IOM_AF0_P02_SEL | IOM_AF0_P03_SEL);
-        } else if (IOM->AF0 &
-                   (IOM_AF0_P04_SEL | IOM_AF0_P05_SEL) ==
+        } else if ((IOM->AF0 &
+                   (IOM_AF0_P04_SEL | IOM_AF0_P05_SEL)) ==
                        (IOM_AF0_P04_SEL_UART2_RX | IOM_AF0_P05_SEL_UART2_TX)) {
             IOM->AF0 &= ~(IOM_AF0_P04_SEL | IOM_AF0_P05_SEL);
-        } else if (IOM->AF0 &
-                   (IOM_AF0_P14_SEL | IOM_AF0_P15_SEL) ==
+        } else if ((IOM->AF0 &
+                   (IOM_AF0_P14_SEL | IOM_AF0_P15_SEL)) ==
                        (IOM_AF0_P14_SEL_UART2_RX | IOM_AF0_P15_SEL_UART2_TX)) {
             IOM->AF0 &= ~(IOM_AF0_P14_SEL | IOM_AF0_P15_SEL);
         }
@@ -161,8 +161,8 @@ void UART_DeInit(UART_Type *psUart) {
             ;
         SYSC->CLKENCFG &= ~SYSC_CLKENCFG_UART2;
     } else {
-        if (IOM->AF1 &
-            (IOM_AF1_P18_SEL | IOM_AF1_P19_SEL) ==
+        if ((IOM->AF1 &
+            (IOM_AF1_P18_SEL | IOM_AF1_P19_SEL)) ==
                 (IOM_AF1_P18_SEL_LPUART_RX | IOM_AF1_P19_SEL_LPUART_TX)) {
             IOM->AF1 &= ~(IOM_AF1_P18_SEL | IOM_AF1_P19_SEL);
         }
