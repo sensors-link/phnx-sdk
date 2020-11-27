@@ -30,7 +30,7 @@
 #define SYSC_CLKCTRCFG_APB_CLK_DIV BITS(16, 22)
 #define SYSC_CLKCTRCFG_EFC_BUSY_CLOSE BIT(15)
 #define SYSC_CLKCTRCFG_AHB_CLK_DIV BITS(8, 14)
-#define SYSC_CLKCTRCFG_SYS_CLK_SEL BITS(5, 4)
+#define SYSC_CLKCTRCFG_SYS_CLK_SEL BITS(4, 5)
 
 #define SYSC_CLKCTRCFG_DSW_WKUP_DLY_pos (23) // T=(x+3)/src_clk  def:0x152(10us)
 #define SYSC_CLKCTRCFG_APB_CLK_DIV_pos (16)  // 0-0x7f:div1-128
@@ -42,7 +42,7 @@
 #define SYSC_CLKCTRCFG_SYS_CLK_SEL_XTL (3 << 4)
 
 // SYSC_WRPROCFG
-#define SYSC_WRPROCFG BITS(15, 0)
+#define SYSC_WRPROCFG BITS(0, 15)
 #define SYSC_WRPROCFG_V0 0x5a5a
 #define SYSC_WRPROCFG_V1 0xa5a5
 #define SYSC_WPT_UNLOCK()                                                      \

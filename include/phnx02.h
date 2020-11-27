@@ -373,11 +373,11 @@ extern int __wrap_printf(const char *fmt, ...);
     {                                                                          \
         if (x) {                                                               \
             __wrap_printf("Wrong parameters value: file:%s,on line:%d\r\n",    \
-                          __FILE__, __LINE__);
-while (1)
-    ;
-}
-}
+                          __FILE__, __LINE__);                                 \
+            while (1)                                                          \
+                ;                                                              \
+        }                                                                      \
+    }
 #else
 #define PARAM_CHECK(x)
 #endif
