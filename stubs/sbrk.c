@@ -7,7 +7,7 @@ void *_sbrk(ptrdiff_t incr) {
     extern char _heap_end[];
     static char *curbrk = _end;
 
-    if ((curbrk + incr < _end) || (curbrk + incr > _heap_end))
+    if ((curbrk + incr < _end) || (curbrk + incr > _heap_end)) // cppcheck-suppress comparePointers
         return NULL - 1;
 
     curbrk += incr;
