@@ -37,6 +37,7 @@ void GPIO_PinSelect(int pin, int fun)
             IOM->AF1 &= ~(0x03 << (i << 1));
             IOM->AF1 |= (fun << (i << 1));
         }
+        pin >>= 1;
     }
 }
 
