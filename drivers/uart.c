@@ -18,12 +18,11 @@
  *
  * @param iUartNo :UART1,UART2,LPUART
  * @param
- * port:UART1_PORT_P00_P01,UART1_PORT_P16_P17,UART2_PORT_P02_P03,UART2_PORT_P04_P05,UART2_PORT_P14_P15,LPUART_PORT_P18_P19
  * @param mode : UART_MODE_8B_SYNC , UART_MODE_10B_ASYNC , UART_MODE_11B_ASYNC
  * @param iBaud :baud:
  * @return: TURE , FALSE
  */
-void UART_Init(UART_Type *psUart, int port, int mode, int iBaud) {
+void UART_Init(UART_Type *psUart, int mode, int iBaud) {
     u32 pclk;
     PARAM_CHECK((psUart != UART1) && (psUart != UART2) && (psUart != LPUART));
     PARAM_CHECK((mode != UART_MODE_10B_ASYNC) && (mode != UART_MODE_8B_SYNC) &&
@@ -32,15 +31,6 @@ void UART_Init(UART_Type *psUart, int port, int mode, int iBaud) {
     pclk = SYSC_GetAPBCLK();
     SYSC->CLKENCFG |= SYSC_CLKENCFG_IOM;
     if (psUart == UART1) {
-        PARAM_CHECK((port != UART1_PORT_P00_P01) &&
-                    (port != UART1_PORT_P16_P17));
-        if (port == UART1_PORT_P00_P01) {
-            IOM->AF0 &= ~(IOM_AF0_P00_SEL | IOM_AF0_P01_SEL);
-            IOM->AF0 |= IOM_AF0_P00_SEL_UART1_RX | IOM_AF0_P01_SEL_UART1_TX;
-        } else {
-            IOM->AF1 &= ~(IOM_AF1_P16_SEL | IOM_AF1_P17_SEL);
-            IOM->AF1 |= IOM_AF1_P16_SEL_UART1_RX | IOM_AF1_P17_SEL_UART1_TX;
-        }
         SYSC->CLKENCFG |= SYSC_CLKENCFG_UART1;
         psUart->SCON = 0;
         if (mode == UART_MODE_8B_SYNC) {
@@ -60,19 +50,6 @@ void UART_Init(UART_Type *psUart, int port, int mode, int iBaud) {
                 ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
         }
     } else if (psUart == UART2) {
-        PARAM_CHECK((port != UART2_PORT_P02_P03) &&
-                    (port != UART2_PORT_P04_P05) &&
-                    (port != UART2_PORT_P14_P15));
-        if (port == UART2_PORT_P02_P03) {
-            IOM->AF0 &= ~(IOM_AF0_P02_SEL | IOM_AF0_P03_SEL);
-            IOM->AF0 |= IOM_AF0_P02_SEL_UART2_RX | IOM_AF0_P03_SEL_UART2_TX;
-        } else if (port == UART2_PORT_P04_P05) {
-            IOM->AF0 &= ~(IOM_AF0_P04_SEL | IOM_AF0_P05_SEL);
-            IOM->AF0 |= IOM_AF0_P04_SEL_UART2_RX | IOM_AF0_P05_SEL_UART2_TX;
-        } else {
-            IOM->AF0 &= ~(IOM_AF0_P14_SEL | IOM_AF0_P15_SEL);
-            IOM->AF0 |= IOM_AF0_P14_SEL_UART2_RX | IOM_AF0_P15_SEL_UART2_TX;
-        }
         SYSC->CLKENCFG |= SYSC_CLKENCFG_UART2;
         psUart->SCON = 0;
         if (mode == UART_MODE_8B_SYNC) {
@@ -93,8 +70,6 @@ void UART_Init(UART_Type *psUart, int port, int mode, int iBaud) {
         }
 
     } else if (psUart == LPUART) {
-        IOM->AF1 &= ~(IOM_AF1_P18_SEL | IOM_AF1_P19_SEL);
-        IOM->AF1 |= IOM_AF1_P18_SEL_LPUART_RX | IOM_AF1_P19_SEL_LPUART_TX;
         SYSC->CLKENCFG |= SYSC_CLKENCFG_LPUART | SYSC_CLKENCFG_LPUART_MRCK;
         psUart->SCON = 0;
         if (mode == UART_MODE_8B_SYNC) {
@@ -126,15 +101,6 @@ void UART_DeInit(UART_Type *psUart) {
     int i;
     PARAM_CHECK((psUart != UART1) && (psUart != UART2) && (psUart != LPUART));
     if (psUart == UART1) {
-        if ((IOM->AF0 &
-            (IOM_AF0_P00_SEL | IOM_AF0_P01_SEL)) ==
-                (IOM_AF0_P00_SEL_UART1_RX | IOM_AF0_P01_SEL_UART1_TX)) {
-            IOM->AF0 &= ~(IOM_AF0_P00_SEL | IOM_AF0_P01_SEL);
-        } else if ((IOM->AF1 &
-                   (IOM_AF1_P16_SEL | IOM_AF1_P17_SEL)) ==
-                       (IOM_AF1_P16_SEL_UART1_RX | IOM_AF1_P17_SEL_UART1_TX)) {
-            IOM->AF0 &= ~(IOM_AF1_P16_SEL | IOM_AF1_P17_SEL);
-        }
         SYSC->WRPROCFG = SYSC_WRPROCFG_V0;
         SYSC->WRPROCFG = SYSC_WRPROCFG_V1;
         SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_UART1;
@@ -142,18 +108,6 @@ void UART_DeInit(UART_Type *psUart) {
             ;
         SYSC->CLKENCFG &= ~SYSC_CLKENCFG_UART1;
     } else if (psUart == UART2) {
-        if ((IOM->AF0 & (IOM_AF0_P02_SEL | IOM_AF0_P03_SEL)) ==
-            (IOM_AF0_P02_SEL_UART2_RX | IOM_AF0_P03_SEL_UART2_TX)) {
-            IOM->AF0 &= ~(IOM_AF0_P02_SEL | IOM_AF0_P03_SEL);
-        } else if ((IOM->AF0 &
-                   (IOM_AF0_P04_SEL | IOM_AF0_P05_SEL)) ==
-                       (IOM_AF0_P04_SEL_UART2_RX | IOM_AF0_P05_SEL_UART2_TX)) {
-            IOM->AF0 &= ~(IOM_AF0_P04_SEL | IOM_AF0_P05_SEL);
-        } else if ((IOM->AF0 &
-                   (IOM_AF0_P14_SEL | IOM_AF0_P15_SEL)) ==
-                       (IOM_AF0_P14_SEL_UART2_RX | IOM_AF0_P15_SEL_UART2_TX)) {
-            IOM->AF0 &= ~(IOM_AF0_P14_SEL | IOM_AF0_P15_SEL);
-        }
         SYSC->WRPROCFG = SYSC_WRPROCFG_V0;
         SYSC->WRPROCFG = SYSC_WRPROCFG_V1;
         SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_UART2;
@@ -161,11 +115,6 @@ void UART_DeInit(UART_Type *psUart) {
             ;
         SYSC->CLKENCFG &= ~SYSC_CLKENCFG_UART2;
     } else {
-        if ((IOM->AF1 &
-            (IOM_AF1_P18_SEL | IOM_AF1_P19_SEL)) ==
-                (IOM_AF1_P18_SEL_LPUART_RX | IOM_AF1_P19_SEL_LPUART_TX)) {
-            IOM->AF1 &= ~(IOM_AF1_P18_SEL | IOM_AF1_P19_SEL);
-        }
         SYSC_WPT_UNLOCK();
         SYSC->MSFTRSTCFG = SYSC_MSFTRSTCFG_LPUART;
         for (i = 10; i > 0; --i)
@@ -305,6 +254,37 @@ u16 UART_Receive9BitData(UART_Type *psUart) {
         return psUart->SBUF;
 }
 /**
+ * @brief 写数据到发送寄存器包括bit8
+ *
+ * @param psUart:UART1,UART2
+ * @param dat send data
+ * @note 不查询发送完成标�? */
+void UART_WriteData(UART_Type *psUart, u16 dat)
+{
+    if (dat & (1 << 8))
+    {
+        psUart->SCON |= UART_SCON_TB8;
+    }
+    else
+    {
+        psUart->SCON &= ~UART_SCON_TB8;
+    }
+    psUart->SBUF = dat;
+}
+/**
+ * @brief 读接收寄存器数据包括bit8
+ *
+ * @param psUart UART1,UART2
+ * @return u16 rcv data
+ */
+u16 UART_ReadData(UART_Type *psUart)
+{
+    if (psUart->SCON & UART_SCON_RB8)
+        return psUart->SBUF | (1ul << 8);
+    else
+        return psUart->SBUF;
+}
+/**
  * @brief set address and address valid bits
  *
  * @param psUart:UART1,UART2,LPUART
@@ -323,7 +303,8 @@ void UART_SetAddrAndMask(UART_Type *psUart, u8 addr, u8 addrCMPBits) {
  * @param psUart:UART1,UART2,LPUART
  * @return u32
  */
-u32 UART_ReadStatusRegester(UART_Type *psUart) {
+u32 UART_GetIntFlag(UART_Type *psUart)
+{
     PARAM_CHECK((psUart != UART1) && (psUart != UART2) && (psUart != LPUART));
     return psUart->ISR;
 }
@@ -333,7 +314,8 @@ u32 UART_ReadStatusRegester(UART_Type *psUart) {
  * @param psUart:UART1,UART2,LPUART
  * @param val
  */
-void UART_WriteStatusRegester(UART_Type *psUart, u32 val) {
+void UART_ClrIntFlag(UART_Type *psUart, u32 val)
+{
     PARAM_CHECK((psUart != UART1) && (psUart != UART2) && (psUart != LPUART));
     psUart->ISR = val;
 }

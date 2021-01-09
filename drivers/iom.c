@@ -13,6 +13,34 @@
 #include "iom.h"
 
 /**
+ * @brief GPIO 选择功能
+ * @param pin :GPIO_PINxx
+ * @param fun PIN_FUNC_X
+ */
+void GPIO_PinSelect(int pin, int fun)
+{
+    SYSC->CLKENCFG |= SYSC_CLKENCFG_IOM;
+    PARAM_CHECK((pin == 0) || (pin >= (1 << 20)));
+    for (int i = 0; i < 16;++i)
+    {
+        if( pin & 0x0001)
+        {
+            IOM->AF0 &= ~(0x03 << (i << 1));
+            IOM->AF0 |= (fun << (i << 1));
+        }
+        pin >>= 1;
+    }
+    for (int i = 0; i < 4; ++i)
+    {
+        if (pin & 0x0001)
+        {
+            IOM->AF1 &= ~(0x03 << (i << 1));
+            IOM->AF1 |= (fun << (i << 1));
+        }
+    }
+}
+
+/**
  * @brief port pin configure
  *
  * @param pin :GPIO_PINxx     surport '|' combine
@@ -71,7 +99,7 @@ void GPIO_PinConfigure(int pin, int analogEn, int outputEn, int puEn, int pdEn,
  * @param pin :GPIO_PINxx    surport '|' combine
  * @param ctl :ENABLE , DISABLE
  */
-void GPIO_PinConfigStrongDrive(int pin, ControlStatus ctl) {
+void GPIO_PinConfigDrive(int pin, ControlStatus ctl) {
     if (ctl == ENABLE) {
         IOM->DRS |= pin;
     } else {

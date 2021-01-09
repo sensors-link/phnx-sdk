@@ -83,18 +83,6 @@
 #define TIM_CNT_POLARITY_HIGH 0
 #define TIM_CNT_POLARITY_LOW 1
 
-#define TIM1_CNT_PORT_P8_P9 0
-#define TIM2_CNT_PORT_P10_P11 1
-#define TIM3_CNT_PORT_P0_P1 2
-#define TIM4_CNT_PORT_P6_P7 3
-
-#define TIM1_PWM_PORT_P8_P9 0
-#define TIM2_PWM_PORT_P10_P11 1
-#define TIM2_PWM_PORT_P4_P5 2
-#define TIM3_PWM_PORT_P14_P15 3
-#define TIM3_PWM_PORT_P16_P13 4
-#define TIM4_PWM_PORT_P6_P7 5
-
 #define TIM_PWM_POL_PWM0_PWM1 0
 #define TIM_PWM_POL_NPWM0_PWM1 1
 #define TIM_PWM_POL_PWM0_NPWM1 2
@@ -102,10 +90,9 @@
 
 // extern function declare
 
-void TIM_TimerInit(TIM_Type *pTim, int mode, int del);
-void TIM_CounterInit(TIM_Type *pTim, int cntPolarity, int portSel);
-void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty,
-                 int portSel, int dtGap);
+void TIM_TimerInit(TIM_Type *pTim,int del);
+void TIM_CounterInit(TIM_Type *pTim, int cntPolarity);
+void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty,int dtGap);
 void TIM_DeInit(TIM_Type *pTim);
 void TIM_EnableControl(TIM_Type *pTim, int iCtrl);
 void TIM_EnableIRQ(TIM_Type *pTim);

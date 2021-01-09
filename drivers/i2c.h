@@ -99,11 +99,9 @@ typedef enum _I2C_IRQ_T {
 #define I2C_CMD_STOP (1 << 9)
 #define I2C_CMD_READ (1 << 8)
 
-// #define I2C_PIN_06_07 0
-#define I2C_PIN_12_13 1
 
 // extern function declare
-void I2C_Init(int pin, int masterEn, int freq, int selfAddr, int dstAddr);
+void I2C_Init(int masterEn, int freq, int selfAddr, int dstAddr);
 void I2C_DeInit(void);
 void I2C_SetAccessAddr(int addr);
 void I2C_EnableIRQ(eI2CIRQ_Type IrqType);

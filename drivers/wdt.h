@@ -31,6 +31,9 @@ typedef enum _OV_MODE {
     WDT_OV_RST,
 } eOVModeType;
 
+#define LP_CLKSEL_LRC  0
+#define LP_CLKSEL_XTL  1
+
 #define WDT_StartCount()                                                       \
     {                                                                          \
         WDT_RST_REG = WDT_START_RST_V0;                                        \

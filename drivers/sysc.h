@@ -172,5 +172,5 @@ void SYSC_PCLKDisable(ePCLKEN_Type perp);
 void SYSC_SetANAC_CLKDiv(int div, int m500kDiv);
 void SYSC_SetTimer1_3ClkDiv(int div);
 void SYSC_SetBZTimer4(int div);
-
+void SYSC_TestClkOutControl(int div, ControlStatus clt);
 #endif

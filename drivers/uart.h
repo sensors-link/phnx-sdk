@@ -69,13 +69,6 @@
 #define UART_BDIV_pos (0) // 0-0xffff
 
 // ext def
-#define UART1_PORT_P00_P01 0
-#define UART1_PORT_P16_P17 1
-#define UART2_PORT_P02_P03 2
-#define UART2_PORT_P04_P05 3
-#define UART2_PORT_P14_P15 4
-#define LPUART_PORT_P18_P19 5
-
 #define UART_MODE_8B_SYNC 0
 #define UART_MODE_10B_ASYNC 1
 #define UART_MODE_11B_ASYNC 2
@@ -93,7 +86,7 @@
 #define UART_IRQ_TYPE_RX (1 << 2)
 
 /* function declarations */
-void UART_Init(UART_Type *psUart, int port, int mode, int iBaud);
+void UART_Init(UART_Type *psUart, int mode, int iBaud);
 void UART_DeInit(UART_Type *psUart);
 void UART_RcvVerifyCfg(UART_Type *psUart, int chk);
 void UART_EnableControl(UART_Type *psUart, int enType);
@@ -103,8 +96,10 @@ void UART_Send(UART_Type *psUart, u8 u8Dat);
 u8 UART_Receive(UART_Type *psUart);
 void UART_Send9BitData(UART_Type *psUart, u16 dat);
 u16 UART_Receive9BitData(UART_Type *psUart);
+void UART_WriteData(UART_Type *psUart, u16 dat);
+u16 UART_ReadData(UART_Type *psUart);
 void UART_SetAddrAndMask(UART_Type *psUart, u8 addr, u8 addrCMPBits);
-u32 UART_ReadStatusRegester(UART_Type *psUart);
-void UART_WriteStatusRegester(UART_Type *psUart, u32 val);
+u32 UART_GetIntFlag(UART_Type *psUart);
+void UART_ClrIntFlag(UART_Type *psUart, u32 val);
 
 #endif

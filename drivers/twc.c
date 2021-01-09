@@ -99,7 +99,8 @@ void TWC_SEBUSConfig(int mode, int txLelCfg, int rxDecCfg,
         TWC->CR &= ~TWC_CR_RXDECCFG;
     }
     TWC->CR &= ~TWC_CR_RXGLITCHFILTCFG;
-    TWC->CR |= rxGlitchFiltCfg | TWC_CR_SEBUSEN | TWC_CR_RXRECEN;
+    // TWC->CR |= rxGlitchFiltCfg | TWC_CR_SEBUSEN | TWC_CR_RXRECEN;
+    TWC->CR |= rxGlitchFiltCfg | TWC_CR_SEBUSEN;
 }
 /**
  * @brief set gap and gap comp time
@@ -164,7 +165,24 @@ void TWC_SWANBusConfig(int txBaud, int rxBaud, sSwanBusCfgParam *pParam) {
     }
     TWC->SWCR &= ~TWC_SWCR_TXBITCFG;
     TWC->SWCR |= pParam->txBitCfg;
-    TWC->CR |= TWC_CR_RXRECEN;
+    // TWC->CR |= TWC_CR_RXRECEN;
+}
+
+/**
+ * @brief Ӳ�����ս���ʹ�ܿ���
+ *
+ * @param ctl:ENABLE or DISABLE
+ */
+void TWC_RecieveEncodeControl(ControlStatus ctl)
+{
+    if( ctl == ENABLE)
+    {
+        TWC->CR |= TWC_CR_RXRECEN;
+    }
+    else
+    {
+        TWC->CR &= ~TWC_CR_RXRECEN;
+    }
 }
 
 /**
@@ -205,29 +223,13 @@ u32 TWC_ReadData(void) { return TWC->RXD; }
  */
 void TWC_WriteData(u32 dat) { TWC->TXD = dat; }
 
-// /**
-//  * @brief send control
-//  *
-//  * @param ctl:ENABLE or DISABLE
-//  */
-// void TWC_SendControl(ControlStatus ctl)
-// {
-//     if( ctl == ENABLE)
-//     {
-//         TWC->TXS |= TWC_TXS_DATATXEN;
-//     }
-//     else
-//     {
-//         TWC->TXS &= ~TWC_TXS_DATATXEN;
-//     }
-// }
 /**
  * @brief send data enalbe
  *
  */
 void TWC_SendEnable(void) // gcc inline
 {
-    TWC->TXS = TWC_TXS_DATATXEN; // Important speed
+    TWC->TXS |= TWC_TXS_DATATXEN; // Important speed
 }
 
 /**
@@ -236,7 +238,18 @@ void TWC_SendEnable(void) // gcc inline
  */
 void TWC_SendDisable(void) // gcc inline
 {
-    TWC->TXS = 0; // Important speed
+    TWC->TXS &= ~TWC_TXS_DATATXEN; // Important speed
+}
+/**
+ * @brief :swan bus send start
+ *@param clt : ENABLE, DISABLE
+ */
+void TWC_SwanBusSendStartConfig(ControlStatus clt) // gcc inline
+{
+    if( clt == ENABLE)
+        TWC->TXS |= TWC_TXS_TXSTART; // Important speed
+    else
+        TWC->TXS &= ~TWC_TXS_TXSTART;
 }
 
 /**
@@ -253,11 +266,35 @@ void TWC_SwanBusSendStart(void) // gcc inline
  *
  * @param :val TWC_RX_FRAME_END | TWC_TX_FRAME_END surpor '|' combine
  */
-void TWC_EnableIRQ(eTansferEnd_Type val) { TWC->INTEN = val; }
+void TWC_EnableIRQ(eTansferEnd_Type val) { TWC->INTEN |= val; }
+
+
+/**
+ * @brief:disable interrupt
+ *
+ * @param :val TWC_RX_FRAME_END | TWC_TX_FRAME_END surpor '|' combine
+ */
+void TWC_DisableIRQ(eTansferEnd_Type val)
+{
+    TWC->INTEN &= ~val;
+}
 
 /**
  * @brief:Clear interrupt flag
  *
  * @param :val TWC_RX_FRAME_END | TWC_TX_FRAME_END surpor '|' combine
  */
-void TWC_ClrIRQFlag(eTansferEnd_Type val) { TWC->STS |= val; }
+void TWC_ClrIntFlag(eTansferEnd_Type val)
+{
+    TWC->STS |= val;
+}
+
+/**
+ * @brief ���״̬�Ĵ�������
+ *
+ * @return u32
+ */
+u32 TWC_GetStatusRegData(void)
+{
+    return TWC->STS;
+}

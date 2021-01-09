@@ -199,9 +199,9 @@
 #define PIN_INT_POL_HIGH 1
 
 // extern function declare
-void GPIO_PinConfigure(int pin, int analogEn, int outputEn, int puEn, int pdEn,
-                       int outOpenDrainEn);
-void GPIO_PinConfigStrongDrive(int pin, ControlStatus ctl);
+void GPIO_PinSelect(int pin, int fun);
+void GPIO_PinConfigure(int pin, int analogEn, int outputEn, int puEn, int pdEn, int outOpenDrainEn);
+void GPIO_PinConfigDrive(int pin, ControlStatus ctl);
 int GPIO_GetData(void);
 void GPIO_SetPin(int pin);
 void GPIO_ClrPin(int pin);

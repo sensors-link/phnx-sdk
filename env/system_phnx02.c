@@ -102,10 +102,12 @@ void SystemInit(void) {
 #ifdef _DEBUG
 #if defined(_UART2)
     UART_DeInit(UART2);
-    UART_Init(UART2, UART2_PORT_P02_P03, UART_MODE_10B_ASYNC, _BAUD_FREQ);
+    GPIO_PinSelect(GPIO_PIN2 | GPIO_PIN3,PIN_FUNC_1);
+    UART_Init(UART2,UART_MODE_10B_ASYNC, _BAUD_FREQ);
 #else
     UART_DeInit(UART1);
-    UART_Init(UART1, UART1_PORT_P00_P01, UART_MODE_10B_ASYNC, _BAUD_FREQ);
+    GPIO_PinSelect(GPIO_PIN0 | GPIO_PIN1,PIN_FUNC_1);
+    UART_Init(UART1, UART_MODE_10B_ASYNC, _BAUD_FREQ);
 #endif
 #endif
     WRITE_CSR(mtvec, &trap_entry);

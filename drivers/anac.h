@@ -109,7 +109,7 @@
 #define ANAC_CMP_CFG_INV    BIT(1)
 #define ANAC_CMP_CFG_EN     BIT(0)
 
-#define ANAC_CMP_CFG_FLT_pos (10)
+// #define ANAC_CMP_CFG_FLT_pos (10)
 
 #define ANAC_CMP_CFG_HYSSEL_50MV (3 << 8)
 #define ANAC_CMP_CFG_HYSSEL_25MV (2 << 8)
@@ -135,14 +135,14 @@
 #define ANAC_CMP_CFG_VIPSEL_VC1P0  (0 << 2)
 
 // adc_cfg
-#define ANAC_ADC_CFG_ADC_IBSEL     BITS(11, 12)
+// #define ANAC_ADC_CFG_ADC_IBSEL     BITS(11, 12)
 #define ANAC_ADC_CFG_ADC_CHSEL     BITS(7, 10)
 #define ANAC_ADC_CFG_ADC_BUFEN     BIT(6)
 #define ANAC_ADC_CFG_ADC_VRSEL     BITS(4, 5)
 #define ANAC_ADC_CFG_VOLTREF_VRSEL BITS(1, 3)
 #define ANAC_ADC_CFG_VOLTREF_EN    BIT(0)
 
-#define ANAC_ADC_CFG_ADC_IBSEL_pos (11)
+// #define ANAC_ADC_CFG_ADC_IBSEL_pos (11)
 
 #define ANAC_ADC_CFG_ADC_CHSEL_TSENS     (0x0e << 7)
 #define ANAC_ADC_CFG_ADC_CHSEL_BVS_VO    (0x0d << 7)
@@ -218,7 +218,7 @@
 // #define ANAC_ANAC_CFG_SLDO_VRSEL_0P8 (3 << 8)
 
 // lvd_cfg
-#define ANAC_LVD_CFG_IBTRIM BITS(16, 17)
+// #define ANAC_LVD_CFG_IBTRIM BITS(16, 17)
 #define ANAC_LVD_CFG_FLT    BITS(8, 15)
 #define ANAC_LVD_CFG_IE     BIT(7)
 #define ANAC_LVD_CFG_VTSEL  BITS(3, 6)
@@ -408,7 +408,9 @@ typedef enum _ADC_VAL_NO
 // extern function declare
 void ANAC_Init(int freq);
 void ANAC_DeInit(void);
-void ADC_Init(int chn, int buffEn, int verfSel, int verfVol, int smpTimes, int smpCycle);
+void ANAC_AnalogPowerEn(void);
+void ADC_Init(int chn, int buffEn, int verfSel, int verfVol, int smpTimes,
+              int smpCycle);
 void ADC_Enable(void);
 void ADC_Disable(void);
 void ADC_EnableIRQ(void);

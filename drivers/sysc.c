@@ -112,3 +112,15 @@ void SYSC_SetBZTimer4(int div) {
     PARAM_CHECK((div < DIV1) || (div > DIV128));
     SYSC->BZTIMCLKDIV = div;
 }
+/**
+ * @brief 测试时钟输出控制
+ *
+ * @param div 分频（div（0-127）+1）*2
+ * @param clt
+ */
+void SYSC_TestClkOutControl(int div,ControlStatus clt)
+{
+    PARAM_CHECK((div < 0) || (div > 127));
+    SYSC->TESTCKSEL = (clt << 7) | div;
+}
+

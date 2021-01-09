@@ -24,6 +24,7 @@ void ANAC_Init(int freq) {
     PARAM_CHECK(tmp < 2);
     int tmp1 = SystemCoreClock / 1000 / (((tmp / 2 - 1) + 1) * 2) / 500000;
     PARAM_CHECK(tmp1 < 2);
+    ANAC->ME_CTL = ANAC_ME_CTL_ANAC_EN;
     SYSC_SetANAC_CLKDiv(tmp / 2 - 1, tmp1 - 1);
 }
 
@@ -41,6 +42,28 @@ void ANAC_DeInit(void) {
 }
 
 /**
+ * @brief 模拟电源使能
+ *
+ */
+void ANAC_AnalogPowerEn(void) {
+    ANAC_WPT_UNLOCK();
+    ANAC->ANAC_CFG |= ANAC_ANAC_CFG_BGR_EN;
+    {
+        volatile int iTmp = (long long)SystemCoreClock * 100 / 7000000;
+        while (--iTmp)
+            asm("nop");
+    }
+    ANAC_WPT_UNLOCK();
+    ANAC->ANAC_CFG |= ANAC_ANAC_CFG_ALDO4A_EN;
+    {
+        volatile int iTmp = (long long)SystemCoreClock * 70 / 7000000;
+        while (--iTmp)
+            asm("nop");
+    }
+}
+
+
+/**
  * @brief adc init
  *
  * @param chn ADC_CHN_xxx
@@ -49,6 +72,7 @@ void ANAC_DeInit(void) {
  * @param verfVol ADC_VREF_VOLT_xxx
  * @param smpTimes ADC_SMP_TIMS_x
  * @param smpCycle ADC_SMP_CYCLE_xx
+ * @note ：调用此函数后要进行AD通道的IO口设置为模拟口与选择模拟功能为AD输入
  */
 void ADC_Init(int chn, int buffEn, int verfSel, int verfVol, int smpTimes,
               int smpCycle) {
@@ -128,3 +152,5 @@ BOOL ADC_GetIntFlag(void) { return (ANAC->ANAC_FLAG & 0x01) ? TRUE : FALSE; }
  *
  */
 void ADC_ClrIntFlag(void) { ANAC->ANAC_FLAG |= 0x01; }
+
+
