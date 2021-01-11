@@ -11,10 +11,13 @@
 
 // firmware include file
 #include "anac.h"
+#include "crc.h"
 #include "efc.h"
+#include "i2c.h"
 #include "iom.h"
 #include "lptimer.h"
 #include "pmu.h"
+#include "rtc.h"
 #include "spi.h"
 #include "sysc.h"
 #include "timer.h"
