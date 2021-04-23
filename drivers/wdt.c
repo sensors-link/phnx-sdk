@@ -38,7 +38,7 @@ void WDT_Init(int iDel, int iClkSrc, eOVModeType iOVMode) {
     } else {
         PMU->WPT = PMU_WPT_V0;
         PMU->WPT = PMU_WPT_V1;
-        PMU->CR |= PMU_CR_LPTCLKSEL_LRC;
+        PMU->CR |= PMU_CR_LPTCLKSEL_XTL;
     }
     while (iDel > 2) {
         ++iTmp;
