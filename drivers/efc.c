@@ -11,12 +11,12 @@
 
 #include "efc.h"
 
-#define EFC_OPR_OPEN(mode)                                                     \
-    {                                                                          \
-        EFC_OPR_REG = EFC_OPR_PPRF_V0 | (mode);                                \
-        EFC_OPR_REG = EFC_OPR_PPRF_V1 | (mode);                                \
-        EFC_OPR_REG = EFC_OPR_PPRF_V2 | (mode);                                \
-        EFC_OPR_REG = EFC_OPR_PPRF_V3 | (mode);                                \
+#define EFC_OPR_OPEN(mode)                               \
+    {                                                    \
+        EFC_OPR_REG = EFC_OPR_PPRF_V0 | (mode);          \
+        EFC_OPR_REG = EFC_OPR_PPRF_V1 | (mode);          \
+        EFC_OPR_REG = EFC_OPR_PPRF_V2 | (mode);          \
+        EFC_OPR_REG = EFC_OPR_PPRF_V3 | (mode);          \
     }
 
 /**
@@ -315,11 +315,11 @@ eReturnType EFC_FlashPageWrite(u32 u32Addr, u32 *pu32Dat, u32 u32Len,
  * @brief :eeprom write one data
  *
  * @param addr:addr
- * @param data :data
  * @param iPrgType :EFC_PRG_BYTE , EFC_PRG_HWORD , EFC_PRG_WORD
+ * @param data :data
  * @return BOOL:TRUE , FALSE
  */
-BOOL EFC_EEPROMWrite(u32 addr, u32 data, int iPrgType) {
+BOOL EFC_EEPROMWrite(u32 addr, int iPrgType, u32 data) {
     PARAM_CHECK((addr < 0x10180000) || (addr > 0x101803ff));
     if (EFC_PageErase(addr) != EFC_SUCCESS) {
         return FALSE;
