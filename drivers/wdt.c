@@ -1,11 +1,11 @@
 /**
  * @file wdt.c
- * @author bifei.tang
+ * @author 
  * @brief
- * @version 0.1
- * @date 2020-05-12
+ * @version 1.0
+ * @date 2021-06-27
  *
- * @copyright Fanhai Data Tech. (c) 2020
+ * @copyright Fanhai Data Tech. (c) 2021
  *
  */
 
@@ -21,7 +21,8 @@
  * @param iOVMode :WDT_OV_INT , WDT_OV_RST
  * note:clk source = lrc  at least 4ms err
  */
-void WDT_Init(int iDel, int iClkSrc, eOVModeType iOVMode) {
+void WDT_Init(int iDel, int iClkSrc, eOVModeType iOVMode) 
+{
     int iTmp = 1;
     PARAM_CHECK((iClkSrc != LP_CLKSEL_LRC) &&
                 (iClkSrc != LP_CLKSEL_XTL));
@@ -54,14 +55,16 @@ void WDT_Init(int iDel, int iClkSrc, eOVModeType iOVMode) {
     PMU->WPT = PMU_WPT_V0;
     PMU->WPT = PMU_WPT_V1;
     PMU->CR |= PMU_CR_WDTCLKEN;
-//    WDT_StartCount();
+    /*user start the wdt where they need*/
+    //WDT_StartCount();
 }
 
 /**
  * @brief wdt deinit
  *
  */
-void WDT_DeInit(void) {
+void WDT_DeInit(void) 
+{
     PMU->WPT = PMU_WPT_V0;
     PMU->WPT = PMU_WPT_V1;
     PMU->CR &= ~PMU_CR_WDTCLKEN;
