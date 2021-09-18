@@ -335,6 +335,8 @@ void RTC_PeriodCofig(int en,int irqEn,int prd_sel,int interval)
         RTC_WPT_UNLOCK();
         RTC->CON &= ~RTC_CON_PRDX;
         RTC_WPT_UNLOCK();
+        RTC->CON |= RTC_CON_PRDSEL_PRDX;
+        RTC_WPT_UNLOCK();
         RTC->CON |= interval<<RTC_CON_PRDX_pos;
     }
 }
