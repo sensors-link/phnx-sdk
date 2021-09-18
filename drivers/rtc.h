@@ -77,7 +77,7 @@
 #define RTC_TR_SECL_pos (0)
 
 #define RTC_DR_YEARH BITS(28, 31)
-#define RTC_DR_YEARL BITS(24, 17)
+#define RTC_DR_YEARL BITS(24, 27)
 #define RTC_DR_MONH BIT(20)
 #define RTC_DR_MONL BITS(16, 19)
 #define RTC_DR_WEEK BITS(8, 10)
