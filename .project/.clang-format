@@ -1,8 +1,0 @@
-#
-# http://clang.llvm.org/docs/ClangFormatStyleOptions.html
-#
-Language: Cpp
-BasedOnStyle: LLVM
-
-# 允许排序#include
-SortIncludes: false

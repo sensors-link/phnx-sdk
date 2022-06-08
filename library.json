@@ -1,0 +1,38 @@
+{
+    "name": "phnx-sdk",
+    "version": "1.1.0",
+    "description": "SDK for S-Link Phoenix SoCs",
+    "keywords": "Phoenix, Sensor, SDK, s-link, sensors-link, risc-v",
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/sensors-link/phnx-sdk.git"
+    },
+    "authors":
+    [
+        {
+            "name": "S-Link",
+            "email": "support@sensors.link",
+            "url": "https://www.sensors.link"
+        }
+    ],
+    "licence": "MIT",
+    "homepage": "https://github.com/sensors-link/phnx-sdk/",
+    "frameworks": "*",
+    "platforms": "fdv32",
+    "build": {
+        "srcFilter": [
+            "+<drivers/*.c>",
+            "+<env/*.c>", "+<env/*.S>",
+            "+<stubs/*.c>"
+        ],
+        "flags": [
+            "-I drivers",
+            "-I env",
+            "-I include",
+            "-I stubs"
+        ]
+    },
+    "libArchive": false
+}
+
