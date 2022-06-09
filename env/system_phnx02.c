@@ -13,6 +13,7 @@
 #include "anac.h"
 #include "efc.h"
 #include "uart.h"
+#include "iom.h"
 
 unsigned int SystemCoreClock = 8000000;
 
