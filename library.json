@@ -1,6 +1,6 @@
 {
     "name": "phnx-sdk",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "SDK for S-Link Phoenix SoCs",
     "keywords": "Phoenix, Sensor, SDK, s-link, sensors-link, risc-v",
     "repository":
