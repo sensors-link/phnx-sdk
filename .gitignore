@@ -1,5 +1,5 @@
 .vscode/
-.github/
+.svn
 *.gz
 *.bak
 *.tmp

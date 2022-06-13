@@ -21,18 +21,8 @@
     "frameworks": "*",
     "platforms": "fdv32",
     "build": {
-        "srcFilter": [
-            "+<drivers/*.c>",
-            "+<env/*.c>", "+<env/*.S>",
-            "+<stubs/*.c>"
-        ],
-        "flags": [
-            "-I drivers",
-            "-I env",
-            "-I include",
-            "-I stubs"
-        ]
-    },
-    "libArchive": false
+        "extraScript": "generate_headers.py",
+        "libArchive": false
+    }
 }
 
