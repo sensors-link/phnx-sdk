@@ -143,19 +143,14 @@
 
 #define PLIC_GetPending() *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x100))
 
-#define PLIC_EnableIRQ(src)                                                    \
-    *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x200)) |= (1 << src)
+#define PLIC_EnableIRQ(src) *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x200)) |= (1 << src)
 
-#define PLIC_DisableIRQ(src)                                                   \
-    *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x200)) &= ~(1 << src)
+#define PLIC_DisableIRQ(src) *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x200)) &= ~(1 << src)
 
-#define PLIC_SetThreshold(val)                                                 \
-    *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x300)) = val // val:0-8
+#define PLIC_SetThreshold(val) *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x300)) = val // val:0-8
 
-#define PLIC_GetCLAIM()                                                        \
-    *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x304)) // int ack
-#define PLIC_SetCLAIM(src)                                                     \
-    *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x304)) = src // int completion
+#define PLIC_GetCLAIM() *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x304))		  // int ack
+#define PLIC_SetCLAIM(src) *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x304)) = src // int completion
 
 //#endif
 // soft interrupt

@@ -12,7 +12,8 @@
 #ifndef __SYSTEM_PHNX02_H
 #define __SYSTEM_PHNX02_H
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 // user verify xth

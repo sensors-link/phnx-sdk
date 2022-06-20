@@ -64,7 +64,8 @@ void SYSC_ResetPeripher(eRSTP_Type module)
 	int i;
 	SYSC_WPT_UNLOCK();
 	SYSC->MSFTRSTCFG |= module;
-	for (i = 5; i > 0; --i);
+	for (i = 5; i > 0; --i)
+		;
 }
 
 /**

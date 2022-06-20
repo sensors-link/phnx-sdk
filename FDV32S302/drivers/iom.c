@@ -51,8 +51,7 @@ void GPIO_PinSelect(int pin, int fun)
  * @param pdEn :ENABLE , DISABLE
  * @param outOpenDrainEn :ENABLE , DISABLE
  */
-void GPIO_PinConfigure(int pin, int analogEn, int outputEn, int puEn, int pdEn,
-                       int outOpenDrainEn)
+void GPIO_PinConfigure(int pin, int analogEn, int outputEn, int puEn, int pdEn, int outOpenDrainEn)
 {
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_IOM;
 	PARAM_CHECK((pin == 0) || (pin >= (1 << 20)));
@@ -154,8 +153,7 @@ void GPIO_ClrPin(int pin)
 void GPIO_PinIntConfig(int pin, int type, int polarity)
 {
 	PARAM_CHECK((type != PIN_INT_TYPE_EDGE) && (type != PIN_INT_TYPE_LEVEL));
-	PARAM_CHECK((polarity != PIN_INT_POL_HIGH) &&
-	            (polarity != PIN_INT_POL_LOW));
+	PARAM_CHECK((polarity != PIN_INT_POL_HIGH) && (polarity != PIN_INT_POL_LOW));
 	if (type == PIN_INT_TYPE_LEVEL)
 		IOM->INT_TYPE |= pin;
 	else

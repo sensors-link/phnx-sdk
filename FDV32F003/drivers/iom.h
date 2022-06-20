@@ -176,8 +176,7 @@
 
 // extern function declare
 void GPIO_PinSelect(int pin, int fun);
-void GPIO_PinConfigure(int pin, int analogEn, int outputEn, int puEn, int pdEn,
-                       int outOpenDrainEn);
+void GPIO_PinConfigure(int pin, int analogEn, int outputEn, int puEn, int pdEn, int outOpenDrainEn);
 int  GPIO_GetData(void);
 void GPIO_SetPin(int pin);
 void GPIO_ClrPin(int pin);

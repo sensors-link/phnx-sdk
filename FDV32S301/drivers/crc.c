@@ -47,14 +47,12 @@ void CRC_DeInit(void)
 u16 CRC_Calculate(void *pDat, eDataType u8DataType, u32 u32Len)
 {
 	int i;
-	PARAM_CHECK((u8DataType != DATA_8BIT) && (u8DataType != DATA_16BIT) &&
-	            (u8DataType != DATA_32BIT));
+	PARAM_CHECK((u8DataType != DATA_8BIT) && (u8DataType != DATA_16BIT) && (u8DataType != DATA_32BIT));
 	PARAM_CHECK(u32Len < 1);
 	CRC_RSL_REG = 0xffff;
 	switch (u8DataType)
 	{
-	case DATA_8BIT:
-	{
+	case DATA_8BIT: {
 		u8 *pDst = (u8 *)(&CRC_DAT_REG);
 		u8 *pSrc = (u8 *)(pDat);
 		for (i = 0; i < u32Len; ++i)
@@ -63,8 +61,7 @@ u16 CRC_Calculate(void *pDat, eDataType u8DataType, u32 u32Len)
 		}
 		break;
 	}
-	case DATA_16BIT:
-	{
+	case DATA_16BIT: {
 		u16 *pDst = (u16 *)(&CRC_DAT_REG);
 		u16 *pSrc = (u16 *)(pDat);
 		for (i = 0; i < u32Len; ++i)
@@ -73,8 +70,7 @@ u16 CRC_Calculate(void *pDat, eDataType u8DataType, u32 u32Len)
 		}
 		break;
 	}
-	case DATA_32BIT:
-	{
+	case DATA_32BIT: {
 		u32 *pSrc = (u32 *)(pDat);
 		for (i = 0; i < u32Len; ++i)
 		{
@@ -99,14 +95,12 @@ u16 CRC_Calculate(void *pDat, eDataType u8DataType, u32 u32Len)
 BOOL CRC_Check(void *pDat, eDataType u8DataType, u32 u32Len, u16 crc)
 {
 	int i;
-	PARAM_CHECK((u8DataType != DATA_8BIT) && (u8DataType != DATA_16BIT) &&
-	            (u8DataType != DATA_32BIT));
+	PARAM_CHECK((u8DataType != DATA_8BIT) && (u8DataType != DATA_16BIT) && (u8DataType != DATA_32BIT));
 	PARAM_CHECK(u32Len < 1);
 	CRC_RSL_REG = 0xffff;
 	switch (u8DataType)
 	{
-	case DATA_8BIT:
-	{
+	case DATA_8BIT: {
 		u8 *pDst = (u8 *)(&CRC_DAT_REG);
 		u8 *pSrc = (u8 *)(pDat);
 		for (i = 0; i < u32Len; ++i)
@@ -115,8 +109,7 @@ BOOL CRC_Check(void *pDat, eDataType u8DataType, u32 u32Len, u16 crc)
 		}
 		break;
 	}
-	case DATA_16BIT:
-	{
+	case DATA_16BIT: {
 		u16 *pDst = (u16 *)(&CRC_DAT_REG);
 		u16 *pSrc = (u16 *)(pDat);
 		for (i = 0; i < u32Len; ++i)
@@ -125,8 +118,7 @@ BOOL CRC_Check(void *pDat, eDataType u8DataType, u32 u32Len, u16 crc)
 		}
 		break;
 	}
-	case DATA_32BIT:
-	{
+	case DATA_32BIT: {
 		u32 *pSrc = (u32 *)(pDat);
 		for (i = 0; i < u32Len; ++i)
 		{

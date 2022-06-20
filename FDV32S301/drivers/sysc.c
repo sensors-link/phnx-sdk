@@ -19,8 +19,8 @@
  */
 void SYSC_SelectClockSource(int clkSrc)
 {
-	PARAM_CHECK((clkSrc != SYSC_CLK_SRC_HRC) && (clkSrc != SYSC_CLK_SRC_LRC) &&
-	            (clkSrc != SYSC_CLK_SRC_XTH) && (clkSrc != SYSC_CLK_SRC_XTL));
+	PARAM_CHECK((clkSrc != SYSC_CLK_SRC_HRC) && (clkSrc != SYSC_CLK_SRC_LRC) && (clkSrc != SYSC_CLK_SRC_XTH) &&
+				(clkSrc != SYSC_CLK_SRC_XTL));
 	SYSC_WPT_UNLOCK();
 	SYSC->CLKCTRCFG &= ~SYSC_CLKCTRCFG_SYS_CLK_SEL;
 	SYSC_WPT_UNLOCK();

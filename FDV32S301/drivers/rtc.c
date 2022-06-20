@@ -28,7 +28,8 @@
  */
 void  RTC_Init(u32 u32ClkSrc,u32 u32HourFM)
 {
-	PARAM_CHECK( (u32ClkSrc != RTC_XTL) && (u32ClkSrc != RTC_LRC) && (u32ClkSrc != RTC_XTH_DIV128) && (u32ClkSrc != RTC_XTH_DIV256) && (u32ClkSrc != RTC_XTH_DIV512) && (u32ClkSrc !=RTC_XTH_DIV768));
+	PARAM_CHECK((u32ClkSrc != RTC_XTL) && (u32ClkSrc != RTC_LRC) && (u32ClkSrc != RTC_XTH_DIV128) &&
+				(u32ClkSrc != RTC_XTH_DIV256) && (u32ClkSrc != RTC_XTH_DIV512) && (u32ClkSrc != RTC_XTH_DIV768));
 	PARAM_CHECK( (u32HourFM != RTC_FMT_12H) && (u32HourFM != RTC_FMT_24H));
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_RTC;
 	switch (u32ClkSrc)
@@ -94,20 +95,31 @@ void RTC_DeInit(void)
  */
 void RTC_SetDate(int year,int month,int day,int week)
 {
-	PARAM_CHECK( (year<0) ||(year>99) || (month<1) || (month>12) || ( ((year%4==0)&&(month==2))? (day>29) : 0 ) || ( ((year%4!=0)&& (month==2))? (day>28) : 0 ) || ( ((month==4)||(month==6)||(month==9)||(month==11))? (day>30) : 0 ) ||( ((month==1)||(month==3)||(month==5)||(month==7)||(month==8)||(month==10)||(month==12))? (day>31) : 0 ) || (day<1) || (week<0) || (week>6));
+	PARAM_CHECK((year < 0) || (year > 99) || (month < 1) || (month > 12) ||
+				(((year % 4 == 0) && (month == 2)) ? (day > 29) : 0) ||
+				(((year % 4 != 0) && (month == 2)) ? (day > 28) : 0) ||
+				(((month == 4) || (month == 6) || (month == 9) || (month == 11)) ? (day > 30) : 0) ||
+				(((month == 1) || (month == 3) || (month == 5) || (month == 7) || (month == 8) || (month == 10) ||
+				  (month == 12))
+					 ? (day > 31)
+					 : 0) ||
+				(day < 1) || (week < 0) || (week > 6));
 	RTC_WPR_REG = RTC_WPR_V0;
 	RTC_WPR_REG = RTC_WPR_V1;
 	RTC->CON |= RTC_CON_WAIT;
-	while( ((RTC->STS & RTC_STS_WAITF) == 0)  );
+	while (((RTC->STS & RTC_STS_WAITF) == 0))
+		;
 	RTC_WPR_REG = RTC_WPR_V0;
 	RTC_WPR_REG = RTC_WPR_V1;
-	RTC->DR =  ( (year/10)<<RTC_DR_YEARH_pos ) | ( (year%10)<<RTC_DR_YEARL_pos) | ((month/10)<<RTC_DR_MONH_pos) | ((month%10)<<RTC_DR_MONL_pos) |
-	           ((day/10)<<RTC_DR_DAYH_pos) | ((day%10)<<RTC_DR_DAYL_pos)  | ( (week)<<RTC_DR_WEEK_pos);
+	RTC->DR = ((year / 10) << RTC_DR_YEARH_pos) | ((year % 10) << RTC_DR_YEARL_pos) |
+			  ((month / 10) << RTC_DR_MONH_pos) | ((month % 10) << RTC_DR_MONL_pos) | ((day / 10) << RTC_DR_DAYH_pos) |
+			  ((day % 10) << RTC_DR_DAYL_pos) | ((week) << RTC_DR_WEEK_pos);
 
 	RTC_WPR_REG = RTC_WPR_V0;
 	RTC_WPR_REG = RTC_WPR_V1;
 	RTC->CON &= ~RTC_CON_WAIT;
-	while( ((RTC->STS & RTC_STS_WAITF) != 0)  );
+	while (((RTC->STS & RTC_STS_WAITF) != 0))
+		;
 }
 /**
  * @brief : get date register value
@@ -175,21 +187,24 @@ void RTC_SetTime(int hour,int minute,int sec)
 	RTC_WPR_REG = RTC_WPR_V0;
 	RTC_WPR_REG = RTC_WPR_V1;
 	RTC->CON |= RTC_CON_WAIT;
-	while( ((RTC->STS & RTC_STS_WAITF) == 0) );
+	while (((RTC->STS & RTC_STS_WAITF) == 0))
+		;
 	RTC_WPR_REG = RTC_WPR_V0;
 	RTC_WPR_REG = RTC_WPR_V1;
-	RTC->TR = ((hour/10)<<RTC_TR_HOURH_pos) | ((hour%10)<<RTC_TR_HOURL_pos) | ((minute/10)<<RTC_TR_MINH_pos) | ((minute%10)<<RTC_TR_MINL_pos) |
+	RTC->TR = ((hour / 10) << RTC_TR_HOURH_pos) | ((hour % 10) << RTC_TR_HOURL_pos) |
+			  ((minute / 10) << RTC_TR_MINH_pos) | ((minute % 10) << RTC_TR_MINL_pos) |
 	          ((sec/10)<<RTC_TR_SECH_pos) | ((sec%10)<<RTC_TR_SECL_pos);
 	RTC_WPR_REG = RTC_WPR_V0;
 	RTC_WPR_REG = RTC_WPR_V1;
 	RTC->CON &= ~RTC_CON_WAIT;
-	while( ((RTC->STS & RTC_STS_WAITF) != 0) );
+	while (((RTC->STS & RTC_STS_WAITF) != 0))
+		;
 }
 
 /**
  * @brief : get time register value
  *
- * @return u32锛歳eg val(hour minute second)
+ * @return u32 RTC->TR reg val(hour minute second)
  */
 u32 RTC_GetTime(void)
 {
@@ -248,15 +263,18 @@ void RTC_SetAlarm(int week,int hour,int minute)
 	RTC_WPR_REG = RTC_WPR_V0;
 	RTC_WPR_REG = RTC_WPR_V1;
 	RTC->CON |= RTC_CON_WAIT;
-	while( ((RTC->STS & RTC_STS_WAITF) == 0) );
+	while (((RTC->STS & RTC_STS_WAITF) == 0))
+		;
 	RTC_WPR_REG = RTC_WPR_V0;
 	RTC_WPR_REG = RTC_WPR_V1;
-	RTC->ALM = (week<<RTC_ALM_ALMWEEK_pos) | (hour/10<<RTC_ALM_ALMHOURH_pos) | (hour%10<<RTC_ALM_ALMHOURL_pos) |
-	           (minute/10<<RTC_ALM_ALMMINH_pos) | (minute%10<<RTC_ALM_ALMMINL_pos);
+	RTC->ALM = (week << RTC_ALM_ALMWEEK_pos) | (hour / 10 << RTC_ALM_ALMHOURH_pos) |
+			   (hour % 10 << RTC_ALM_ALMHOURL_pos) | (minute / 10 << RTC_ALM_ALMMINH_pos) |
+			   (minute % 10 << RTC_ALM_ALMMINL_pos);
 	RTC_WPR_REG = RTC_WPR_V0;
 	RTC_WPR_REG = RTC_WPR_V1;
 	RTC->CON &= ~RTC_CON_WAIT;
-	while( ((RTC->STS & RTC_STS_WAITF) != 0) );
+	while (((RTC->STS & RTC_STS_WAITF) != 0))
+		;
 }
 
 /**

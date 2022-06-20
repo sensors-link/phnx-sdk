@@ -97,8 +97,7 @@ BOOL EFC_Init(void)
  */
 eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
 {
-	PARAM_CHECK(
-	    (Addr < 0x10100000) || ((Addr > 0x1011ffff) && (Addr < 0x10140000)) ||
+	PARAM_CHECK((Addr < 0x10100000) || ((Addr > 0x1011ffff) && (Addr < 0x10140000)) ||
 	    ((Addr > 0x10140dff) && (Addr < 0x10180000)) || (Addr > 0x101803ff));
 	u32 stat = EFC_STS_REG;
 	EFC_STS_REG = stat;
@@ -134,9 +133,7 @@ eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
 eReturnType EFC_PageProgram(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
-	PARAM_CHECK((u32Addr < 0x10100000) ||
-	            ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
-	            (u32Addr > 0x10140dff));
+	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
 	u32 stat = EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_ROW_PRG);
@@ -167,10 +164,8 @@ eReturnType EFC_PageProgram(u32 u32Addr)
  */
 eReturnType EFC_PageErase(u32 u32Addr)
 {
-	PARAM_CHECK((u32Addr < 0x10100000) ||
-	            ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
-	            ((u32Addr > 0x10140dff) && (u32Addr < 0x10180000)) ||
-	            (u32Addr > 0x101803ff));
+	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
+				((u32Addr > 0x10140dff) && (u32Addr < 0x10180000)) || (u32Addr > 0x101803ff));
 	u32 stat = EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PAGE_ERASE);
@@ -193,10 +188,8 @@ eReturnType EFC_PageErase(u32 u32Addr)
  */
 eReturnType EFC_ChipErase(u32 u32Addr)
 {
-	PARAM_CHECK((u32Addr < 0x10100000) ||
-	            ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
-	            ((u32Addr > 0x10140dff) && (u32Addr < 0x10180000)) ||
-	            (u32Addr > 0x101803ff));
+	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
+				((u32Addr > 0x10140dff) && (u32Addr < 0x10180000)) || (u32Addr > 0x101803ff));
 	u32 stat = EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_CHIP_ERASE);
@@ -219,9 +212,7 @@ eReturnType EFC_ChipErase(u32 u32Addr)
 eReturnType EFC_PageLoad(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
-	PARAM_CHECK((u32Addr < 0x10100000) ||
-	            ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
-	            (u32Addr > 0x10140dff));
+	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
 	u32 stat = EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PAGE_LOAD);
@@ -245,9 +236,7 @@ eReturnType EFC_PageLoad(u32 u32Addr)
 eReturnType EFC_PageEraseVerify(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
-	PARAM_CHECK((u32Addr < 0x10100000) ||
-	            ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
-	            (u32Addr > 0x10140dff));
+	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
 	u32 stat = EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PE_V);
@@ -270,9 +259,7 @@ eReturnType EFC_PageEraseVerify(u32 u32Addr)
 eReturnType EFC_ProgramVerify(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
-	PARAM_CHECK((u32Addr < 0x10100000) ||
-	            ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
-	            (u32Addr > 0x10140dff));
+	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
 	u32 stat = EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PP_V);
@@ -296,13 +283,10 @@ eReturnType EFC_ProgramVerify(u32 u32Addr)
  * @return eReturnType
  * @note: addr page (512Byte) align,call page erase
  */
-eReturnType EFC_FlashPageWrite(u32 u32Addr, u32 *pu32Dat, u32 u32Len,
-                               u32 u32PrgType)
+eReturnType EFC_FlashPageWrite(u32 u32Addr, u32 *pu32Dat, u32 u32Len, u32 u32PrgType)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
-	PARAM_CHECK((u32Addr < 0x10100000) ||
-	            ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
-	            (u32Addr > 0x10140dff));
+	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
 	PARAM_CHECK(u32Len & 0x1ff);
 	if (EFC_PageErase(u32Addr) != EFC_SUCCESS)
 	{
@@ -317,8 +301,7 @@ eReturnType EFC_FlashPageWrite(u32 u32Addr, u32 *pu32Dat, u32 u32Len,
 		int i;
 		for (i = 0; i < u32Len; ++i)
 		{
-			if (EFC_SingleProgram(u32Addr + (i << 2), EFC_PRG_WORD, *pu32Dat) !=
-			        EFC_SUCCESS)
+			if (EFC_SingleProgram(u32Addr + (i << 2), EFC_PRG_WORD, *pu32Dat) != EFC_SUCCESS)
 			{
 				return EFC_SING_PRG_FAIL;
 			}

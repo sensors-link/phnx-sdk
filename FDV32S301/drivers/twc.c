@@ -84,14 +84,11 @@ void TWC_RecieveControl(ControlStatus clt)
  * @param rxGlitchFiltCfg:TWC_RX_FILT_NO , TWC_RX_FILT_2N_CYCLE(n)
  * @note :sebus verify check even
  */
-void TWC_SEBUSConfig(int mode, int txLelCfg, int rxDecCfg,
-                     int rxGlitchFiltCfg)
+void TWC_SEBUSConfig(int mode, int txLelCfg, int rxDecCfg, int rxGlitchFiltCfg)
 {
 	PARAM_CHECK((mode != TWC_MODE_9000) && (mode != TWC_MODE_EPC));
-	PARAM_CHECK((txLelCfg != TWC_TX_LEVEL_HIGH_EN) &&
-	            (txLelCfg != TWC_TX_LEVEL_LOW_EN));
-	PARAM_CHECK((rxDecCfg != TWC_RX_DEC_MATCH_CMD_INT) &&
-	            (rxDecCfg != TWC_RX_DEC_NO_MT_CMD_INT));
+	PARAM_CHECK((txLelCfg != TWC_TX_LEVEL_HIGH_EN) && (txLelCfg != TWC_TX_LEVEL_LOW_EN));
+	PARAM_CHECK((rxDecCfg != TWC_RX_DEC_MATCH_CMD_INT) && (rxDecCfg != TWC_RX_DEC_NO_MT_CMD_INT));
 	PARAM_CHECK(rxGlitchFiltCfg > 15);
 	if (mode == TWC_MODE_9000)
 	{
@@ -143,10 +140,8 @@ void TWC_SetGapAndGapComp(int gap, int gapComp)
 void TWC_SWANBusConfig(int txBaud, int rxBaud, sSwanBusCfgParam *pParam)
 {
 	TWC->SWBR = txBaud | rxBaud;
-	PARAM_CHECK((pParam->txLelCfg != TWC_TX_LEVEL_HIGH_EN) &&
-	            (pParam->txLelCfg != TWC_TX_LEVEL_LOW_EN));
-	PARAM_CHECK((pParam->rxDecCfg != TWC_RX_DEC_MATCH_CMD_INT) &&
-	            (pParam->rxDecCfg != TWC_RX_DEC_NO_MT_CMD_INT));
+	PARAM_CHECK((pParam->txLelCfg != TWC_TX_LEVEL_HIGH_EN) && (pParam->txLelCfg != TWC_TX_LEVEL_LOW_EN));
+	PARAM_CHECK((pParam->rxDecCfg != TWC_RX_DEC_MATCH_CMD_INT) && (pParam->rxDecCfg != TWC_RX_DEC_NO_MT_CMD_INT));
 	PARAM_CHECK(pParam->rxGlitchFiltCfg > 15);
 	if (pParam->txLelCfg == TWC_TX_LEVEL_HIGH_EN)
 	{
@@ -167,12 +162,9 @@ void TWC_SWANBusConfig(int txBaud, int rxBaud, sSwanBusCfgParam *pParam)
 	TWC->CR &= ~(TWC_CR_RXGLITCHFILTCFG | TWC_CR_SEBUSEN);
 	TWC->CR |= pParam->rxGlitchFiltCfg;
 
-	PARAM_CHECK((pParam->rxParityCfg != TWC_RX_PARITY_HMM) &&
-	            (pParam->rxParityCfg != TWC_RX_PARITY_EVEN));
-	PARAM_CHECK((pParam->txCodeCfg != TWC_TX_CODE_MCT) &&
-	            (pParam->txCodeCfg != TWC_TX_CODE_NRZ));
-	PARAM_CHECK((pParam->txParityCfg != TWC_TX_PARITY_EVEN) &&
-	            (pParam->txParityCfg != TWC_TX_PARITY_ODD));
+	PARAM_CHECK((pParam->rxParityCfg != TWC_RX_PARITY_HMM) && (pParam->rxParityCfg != TWC_RX_PARITY_EVEN));
+	PARAM_CHECK((pParam->txCodeCfg != TWC_TX_CODE_MCT) && (pParam->txCodeCfg != TWC_TX_CODE_NRZ));
+	PARAM_CHECK((pParam->txParityCfg != TWC_TX_PARITY_EVEN) && (pParam->txParityCfg != TWC_TX_PARITY_ODD));
 	PARAM_CHECK(pParam->txBitCfg > 3);
 	if (pParam->rxParityCfg == TWC_RX_PARITY_HMM)
 	{

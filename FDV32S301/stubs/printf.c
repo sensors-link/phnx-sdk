@@ -37,8 +37,7 @@ static long getint(va_list *ap, int lflag)
 		return va_arg(*ap, int);
 }
 
-static inline void printnum(void (*putch)(int, void **), void **putdat,
-                            unsigned long num, unsigned base, int width,
+static inline void printnum(void (*putch)(int, void **), void **putdat, unsigned long num, unsigned base, int width,
                             int padc)
 {
 	unsigned digs[sizeof(num) * 8];
@@ -59,11 +58,9 @@ static inline void printnum(void (*putch)(int, void **), void **putdat,
 		putch(digs[pos] + (digs[pos] >= 10 ? 'a' - 10 : '0'), putdat);
 }
 
-static inline void print_double(void (*putch)(int, void **), void **putdat,
-                                double num, int width, int prec)
-{
-	union
+static inline void print_double(void (*putch)(int, void **), void **putdat, double num, int width, int prec)
 	{
+	union {
 		double d;
 		uint64_t u;
 	} u;
@@ -94,8 +91,7 @@ static inline void print_double(void (*putch)(int, void **), void **putdat,
 		putch(*p, putdat);
 }
 
-static void vprintfmt(void (*putch)(int, void **), void **putdat,
-                      const char *fmt, va_list ap)
+static void vprintfmt(void (*putch)(int, void **), void **putdat, const char *fmt, va_list ap)
 {
 	register const char *p;
 	const char *last_fmt;
@@ -194,8 +190,7 @@ process_precision:
 			if (width > 0 && padc != '-')
 				for (width -= strnlen(p, precision); width > 0; width--)
 					putch(padc, putdat);
-			for (; (ch = *p) != '\0' && (precision < 0 || --precision >= 0);
-			        width--)
+			for (; (ch = *p) != '\0' && (precision < 0 || --precision >= 0); width--)
 			{
 				putch(ch, putdat);
 				p++;

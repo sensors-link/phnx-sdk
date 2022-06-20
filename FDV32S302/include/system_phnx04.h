@@ -13,7 +13,8 @@
 #define __SYSTEM_PHNX04_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #define F_HRC1M 1

@@ -43,8 +43,10 @@
 #define SPI_SLAVE 0
 #define SPI_MASTER 1
 
-#define SPI_ClrIntFlag()                                                       \
-    { int tmp = SPI->SR; }
+#define SPI_ClrIntFlag()                                                                                               \
+	{                                                                                                                  \
+		int tmp = SPI->SR;                                                                                             \
+	}
 
 #define SPI_PIN_0_1_2_3 0
 #define SPI_PIN_12_13_14_15 1

@@ -2,11 +2,10 @@
 # http://clang.llvm.org/docs/ClangFormatStyleOptions.html
 #
 Language: Cpp
-BasedOnStyle: LLVM
+BasedOnStyle: Microsoft
 
 # 允许排序#include
 SortIncludes: false
 IndentWidth:     4
 TabWidth:        4
-UseTab:          Never
-
+UseTab:          Always

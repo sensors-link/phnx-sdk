@@ -27,8 +27,7 @@ void UART_Init(int mode, int iBaud)
 	u32 div1 = 0;
 	u32 div2 = 0;
 	u32 test;
-	PARAM_CHECK((mode != UART_MODE_10B_ASYNC) && (mode != UART_MODE_8B_SYNC) &&
-	            (mode != UART_MODE_11B_ASYNC));
+	PARAM_CHECK((mode != UART_MODE_10B_ASYNC) && (mode != UART_MODE_8B_SYNC) && (mode != UART_MODE_11B_ASYNC));
 
 	SystemCoreClockUpdate();
 

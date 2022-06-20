@@ -13,7 +13,7 @@ if env['BOARD'] == 'fdv32s301':
     upload_script = join(curDir, sub_dir, "env", "phoenix.cfg")
 
 elif env['BOARD'] == 'fdv32s302':
-    sub_dir = "FDV32S301"
+    sub_dir = "FDV32S302"
     ldscript = join(curDir, sub_dir, "env", "phnx04_flash.lds")
     upload_script = join(curDir, sub_dir, "env", "phoenix.cfg")
 
@@ -34,7 +34,7 @@ cpp_path.append(join(curDir, sub_dir, "stubs"))
 
 openocd_args = [
     "-f", '"' + upload_script + '"',
-    "-c", "init; halt;", "-c", "program {$SOURCE}; exit 0;"
+    "-c", "init; halt;", "-c", "program {$SOURCE}; ","-c softreset;exit 0;"
 ]
 
 env.Append(

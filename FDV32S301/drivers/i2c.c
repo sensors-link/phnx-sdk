@@ -44,8 +44,7 @@ void I2C_Init(int pin, int masterEn, int freq, int Addr)
 		I2C->SCLCR = 0;
 		if(num > 9)
 		{
-			I2C->SCLCR = ((((num - 8) >> 1) << 16) |
-			              (num - ((num - 8) >> 1)));
+			I2C->SCLCR = ((((num - 8) >> 1) << 16) | (num - ((num - 8) >> 1)));
 		}
 		else
 		{

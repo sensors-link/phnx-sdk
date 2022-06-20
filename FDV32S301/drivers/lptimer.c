@@ -23,8 +23,7 @@
 void LPT_Init(int iClkSrc, int iDel, int iMode)
 {
 	int iTmp = 1;
-	PARAM_CHECK((iClkSrc != PMU_CR_LPTCLKSEL_LRC) &&
-	            (iClkSrc != PMU_CR_LPTCLKSEL_XTL));
+	PARAM_CHECK((iClkSrc != PMU_CR_LPTCLKSEL_LRC) && (iClkSrc != PMU_CR_LPTCLKSEL_XTL));
 	PARAM_CHECK((iMode != LPT_SIG_TIME_CNT) && (iMode != LPT_PIT_CNT));
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_LPTIM | SYSC_CLKENCFG_PMU;
 	PMU->WPT = PMU_WPT_V0;

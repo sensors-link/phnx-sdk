@@ -21,8 +21,7 @@
  */
 void Timer_timing_Init(Timer_t timer,int delay)
 {
-	PARAM_CHECK((timer != TIMER1) && (timer != TIMER2) &&
-	            (timer != TIMER3)&&(timer != TIMER4));
+	PARAM_CHECK((timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER_PCKEN;
 
@@ -85,8 +84,7 @@ void Timer_timing_Init(Timer_t timer,int delay)
  */
 void Timer_Count_Init(Timer_t timer,int count)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) &&
-	            (timer != TIMER3)&&(timer != TIMER4));
+	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER_PCKEN;
 
@@ -164,8 +162,7 @@ void Timer_Count_Init(Timer_t timer,int count)
  */
 void Timer_PWMInit(Timer_t timer, int freq, int duty)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) &&
-	            (timer != TIMER3)&&(timer != TIMER4));
+	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER_PCKEN;
 
@@ -235,8 +232,7 @@ void Timer_PWMInit(Timer_t timer, int freq, int duty)
  */
 void Timer_DeInit(Timer_t timer)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) &&
-	            (timer != TIMER3)&&(timer != TIMER4));
+	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
 	switch(timer)
 	{
@@ -267,8 +263,7 @@ void Timer_DeInit(Timer_t timer)
  */
 void Timer_EnableControl(Timer_t timer, int iCtrl)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) &&
-	            (timer != TIMER3)&&(timer != TIMER4));
+	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 	switch(timer)
 	{
 	case TIMER0:
@@ -333,8 +328,7 @@ void Timer_EnableControl(Timer_t timer, int iCtrl)
  */
 void Timer_EnableIRQ(Timer_t timer)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) &&
-	            (timer != TIMER3)&&(timer != TIMER4));
+	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 	switch(timer)
 	{
 	case TIMER0:
@@ -364,8 +358,7 @@ void Timer_EnableIRQ(Timer_t timer)
  */
 void Timer_DisableIRQ(Timer_t timer)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) &&
-	            (timer != TIMER3)&&(timer != TIMER4));
+	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 	switch(timer)
 	{
 	case TIMER0:
@@ -397,8 +390,7 @@ void Timer_DisableIRQ(Timer_t timer)
  */
 FlagStatus Timer_GetIntFlag(Timer_t timer)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) &&
-	            (timer != TIMER3)&&(timer != TIMER4));
+	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
 	int ret = RESET;
 
@@ -432,8 +424,7 @@ FlagStatus Timer_GetIntFlag(Timer_t timer)
  */
 void Timer_ClrIntFlag(Timer_t timer)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) &&
-	            (timer != TIMER3)&&(timer != TIMER4));
+	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
 	switch(timer)
 	{

@@ -12,7 +12,8 @@
 #define __PHNX05_H__
 
 #ifdef cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 	/* IO definitions (access restrictions to peripheral registers) */
 	/**
@@ -187,7 +188,8 @@ extern "C" {
 	{
 		DISABLE = 0,
 		ENABLE = !DISABLE
-	} EventStatus, ControlStatus;
+	} EventStatus,
+		ControlStatus;
 
 	typedef enum
 	{
@@ -213,10 +215,8 @@ extern "C" {
 #define REG16(addr)     (*((volatile unsigned short *)(addr)))
 #define REG8(addr)      (*((volatile unsigned char *)(addr)))
 #define BIT(x)          ((unsigned int)0x01U << (x))
-#define BITS(start, end)              \
-    ((0xFFFFFFFFUL << (start)) & (0xFFFFFFFFUL >> (31U - (end))))
-#define GET_BITS(regval, start, end)  \
-    (((regval)&BITS((start), (end))) >> (start))
+#define BITS(start, end) ((0xFFFFFFFFUL << (start)) & (0xFFFFFFFFUL >> (31U - (end))))
+#define GET_BITS(regval, start, end) (((regval)&BITS((start), (end))) >> (start))
 
 	/* main flash and SRAM memory map */
 
@@ -268,9 +268,9 @@ extern "C" {
 	extern int __wrap_printf(const char *fmt, ...);
 #define PARAM_CHECK(x)                                                         \
     {                                                                          \
-        if (x) {                                                               \
-            __wrap_printf("Wrong parameters value: file:%s,on line:%d\r\n",    \
-                          __FILE__, __LINE__);                                 \
+		if (x)                                                                                                         \
+		{                                                                                                              \
+			__wrap_printf("Wrong parameters value: file:%s,on line:%d\r\n", __FILE__, __LINE__);                       \
             while (1)                                                          \
                 ;                                                              \
         }                                                                      \

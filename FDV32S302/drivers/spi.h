@@ -40,7 +40,10 @@
 #define SPI_SLAVE 		      (0)
 #define SPI_MASTER 		      (1)
 
-#define SPI_ClrIntFlag()      { int tmp = SPI->SR; }
+#define SPI_ClrIntFlag()                                                                                               \
+	{                                                                                                                  \
+		int tmp = SPI->SR;                                                                                             \
+	}
 
 // extern function declare
 void SPI_Init(int mode, int pol, int phase, int freq);

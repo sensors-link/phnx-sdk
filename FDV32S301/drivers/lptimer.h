@@ -38,8 +38,10 @@ typedef enum _CNT_MODE
 } eCntModeType;
 
 #define LPT_GetIntFlag() (LPTIM_INTSTS_REG & LPTIM_STS)
-#define LPT_ClrIntFlag()                                                       \
-    { LPTIM_INTSTS_REG = LPTIM_STS; }
+#define LPT_ClrIntFlag()                                                                                               \
+	{                                                                                                                  \
+		LPTIM_INTSTS_REG = LPTIM_STS;                                                                                  \
+	}
 
 // function
 

@@ -12,7 +12,8 @@
 #define _PHNX02_H
 
 #ifdef cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 	/* IO definitions (access restrictions to peripheral registers) */
 	/**
@@ -24,8 +25,7 @@ extern "C" {
 #ifdef __cplusplus
 #define __I volatile /*!< Defines 'read only' permissions                 */
 #else
-#define __I                                                                    \
-    volatile const /*!< Defines 'read only' permissions                 */
+#define __I volatile const /*!< Defines 'read only' permissions                 */
 #endif
 #define __O volatile  /*!< Defines 'write only' permissions                */
 #define __IO volatile /*!< Defines 'read / write' permissions              */
@@ -68,8 +68,7 @@ extern "C" {
 	{
 		__IO unsigned int CR;   /*!< Control Register */
 		__IO unsigned int TNVS; /*!< ROG/ERASE/CEb/NVR/ADDRESS to Web Setup time */
-		__IO unsigned int
-		TPROG; /*!< PROG/ERASE/CEb/NVR/ADDRESS to Web Setup time          */
+		__IO unsigned int TPROG;  /*!< PROG/ERASE/CEb/NVR/ADDRESS to Web Setup time          */
 		__IO unsigned int TPGS;   /*!< WEb low to PROG2 high Setup time */
 		__IO unsigned int TRCV;   /*!< Program Recovery Time */
 		__IO unsigned int TERASE; /*!< Erase time */
@@ -295,27 +294,41 @@ extern "C" {
 	} WDT_Type;
 
 	/* enum definitions */
-	typedef enum { DISABLE = 0, ENABLE = !DISABLE } EventStatus, ControlStatus;
-	typedef enum { FALSE = 0, TRUE = !FALSE } BOOL;
-	typedef enum { RESET = 0, SET = 1, MAX = 0X7FFFFFFF } FlagStatus;
-	typedef enum { ERROR = 0, SUCCESS = !ERROR } ErrStatus;
+	typedef enum
+	{
+		DISABLE = 0,
+		ENABLE = !DISABLE
+	} EventStatus,
+		ControlStatus;
+	typedef enum
+	{
+		FALSE = 0,
+		TRUE = !FALSE
+	} BOOL;
+	typedef enum
+	{
+		RESET = 0,
+		SET = 1,
+		MAX = 0X7FFFFFFF
+	} FlagStatus;
+	typedef enum
+	{
+		ERROR = 0,
+		SUCCESS = !ERROR
+	} ErrStatus;
 
 	/* bit operations */
 #define REG32(addr) (*((volatile unsigned int *)(addr)))
 #define REG16(addr) (*((volatile unsigned short *)(addr)))
 #define REG8(addr) (*((volatile unsigned char *)(addr)))
 #define BIT(x) ((unsigned int)0x01U << (x))
-#define BITS(start, end)                                                       \
-    ((0xFFFFFFFFUL << (start)) & (0xFFFFFFFFUL >> (31U - (end))))
-#define GET_BITS(regval, start, end)                                           \
-    (((regval)&BITS((start), (end))) >> (start))
+#define BITS(start, end) ((0xFFFFFFFFUL << (start)) & (0xFFFFFFFFUL >> (31U - (end))))
+#define GET_BITS(regval, start, end) (((regval)&BITS((start), (end))) >> (start))
 
 	/* main flash and SRAM memory map */
 
-#define FLASH_BASE                                                             \
-    ((unsigned int)0x10100000UL) /*!< main FLASH base address          */
-#define SRAM_BASE                                                              \
-    ((unsigned int)0x20000000UL) /*!< SRAM0 base address               */
+#define FLASH_BASE ((unsigned int)0x10100000UL) /*!< main FLASH base address          */
+#define SRAM_BASE ((unsigned int)0x20000000UL)	/*!< SRAM0 base address               */
 #define PAGE_BUFF_BASE 0x101c0000UL
 	/* ================================================================================
 	 */
@@ -387,9 +400,9 @@ extern "C" {
 	extern int __wrap_printf(const char *fmt, ...);
 #define PARAM_CHECK(x)                                                         \
     {                                                                          \
-        if (x) {                                                               \
-            __wrap_printf("Wrong parameters value: file:%s,on line:%d\r\n",    \
-                          __FILE__, __LINE__);                                 \
+		if (x)                                                                                                         \
+		{                                                                                                              \
+			__wrap_printf("Wrong parameters value: file:%s,on line:%d\r\n", __FILE__, __LINE__);                       \
             while (1)                                                          \
                 ;                                                              \
         }                                                                      \

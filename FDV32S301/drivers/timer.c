@@ -23,8 +23,7 @@
 void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
 {
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM_PCK | SYSC_CLKENCFG_IOM;
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) &&
-	            (pTim != TIM4));
+	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
 	PARAM_CHECK((mode != TIM_TM_AUTO_RUN) && (mode != TIM_TM_AUTO_LOAD));
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM_PCK | SYSC_CLKENCFG_IOM;
 	if (pTim == TIM1)
@@ -129,14 +128,12 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
 void TIM_CounterInit(TIM_Type *pTim, int cntPolarity, int portSel)
 {
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM_PCK | SYSC_CLKENCFG_IOM;
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) &&
-	            (pTim != TIM4));
+	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
 	if (pTim == TIM1)
 	{
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM1_CNT;
 		TIMERS->CON &= ~TIM_CON_TM_TIM1;
-		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) &&
-		            (cntPolarity != TIM_CNT_POLARITY_LOW));
+		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) && (cntPolarity != TIM_CNT_POLARITY_LOW));
 		if (cntPolarity == TIM_CNT_POLARITY_HIGH)
 		{
 			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM1;
@@ -157,8 +154,7 @@ void TIM_CounterInit(TIM_Type *pTim, int cntPolarity, int portSel)
 	{
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM2_CNT;
 		TIMERS->CON &= ~TIM_CON_TM_TIM2;
-		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) &&
-		            (cntPolarity != TIM_CNT_POLARITY_LOW));
+		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) && (cntPolarity != TIM_CNT_POLARITY_LOW));
 		if (cntPolarity == TIM_CNT_POLARITY_HIGH)
 		{
 			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM2;
@@ -179,8 +175,7 @@ void TIM_CounterInit(TIM_Type *pTim, int cntPolarity, int portSel)
 	{
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM3_CNT;
 		TIMERS->CON &= ~TIM_CON_TM_TIM3;
-		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) &&
-		            (cntPolarity != TIM_CNT_POLARITY_LOW));
+		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) && (cntPolarity != TIM_CNT_POLARITY_LOW));
 		if (cntPolarity == TIM_CNT_POLARITY_HIGH)
 		{
 			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM3;
@@ -201,8 +196,7 @@ void TIM_CounterInit(TIM_Type *pTim, int cntPolarity, int portSel)
 	{
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM4_CNT;
 		TIMERS->CON &= ~TIM_CON_TM_TIM4;
-		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) &&
-		            (cntPolarity != TIM_CNT_POLARITY_LOW));
+		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) && (cntPolarity != TIM_CNT_POLARITY_LOW));
 		if (cntPolarity == TIM_CNT_POLARITY_HIGH)
 		{
 			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM4;
@@ -231,11 +225,9 @@ void TIM_CounterInit(TIM_Type *pTim, int cntPolarity, int portSel)
  * @param portSel :TIMN_PWM_PORT_xxxx;
  * @param dtGap :us
  */
-void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty,
-                 int portSel, int dtGap)
+void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty, int portSel, int dtGap)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) &&
-	            (pTim != TIM4));
+	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
 	SystemCoreClockUpdate();
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM_PCK | SYSC_CLKENCFG_IOM;
 	if (pTim == TIM1)
@@ -254,10 +246,8 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty,
 		TIM1->CTCG2 = tcnt * (duty) / 100;
 		TIM1->CTCG1 = tcnt - (TIM1->CTCG2);
 		TIM1->PWCON &= ~TIM_PWCON_PWMCPOL;
-		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
+		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
+					(pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
 		if (pwmPolarity == TIM_PWM_POL_NPWM0_PWM1)
 		{
 			TIM1->PWCON |= (1 << 17);
@@ -289,8 +279,7 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty,
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM2_CNT;
 		TIMERS->CON |= TIM_CON_TM_TIM2;
 		TIMERS->CON |= TIM_CON_PWM_TIM2;
-		PARAM_CHECK((portSel != TIM2_PWM_PORT_P10_P11) &&
-		            (portSel != TIM2_PWM_PORT_P4_P5));
+		PARAM_CHECK((portSel != TIM2_PWM_PORT_P10_P11) && (portSel != TIM2_PWM_PORT_P4_P5));
 		if (portSel == TIM2_PWM_PORT_P10_P11)
 		{
 			IOM->AF0 &= ~IOM_AF0_P10_SEL;
@@ -312,10 +301,8 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty,
 		TIM2->CTCG1 = tcnt - (TIM2->CTCG2);
 
 		TIM2->PWCON &= ~TIM_PWCON_PWMCPOL;
-		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
+		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
+					(pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
 		if (pwmPolarity == TIM_PWM_POL_NPWM0_PWM1)
 		{
 			TIM2->PWCON |= (1 << 17);
@@ -347,8 +334,7 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty,
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM3_CNT;
 		TIMERS->CON |= TIM_CON_TM_TIM3;
 		TIMERS->CON |= TIM_CON_PWM_TIM3;
-		PARAM_CHECK((portSel != TIM3_PWM_PORT_P14_P15) &&
-		            (portSel != TIM3_PWM_PORT_P16_P13));
+		PARAM_CHECK((portSel != TIM3_PWM_PORT_P14_P15) && (portSel != TIM3_PWM_PORT_P16_P13));
 		if (portSel == TIM3_PWM_PORT_P14_P15)
 		{
 			IOM->AF0 &= ~IOM_AF0_P14_SEL;
@@ -369,10 +355,8 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty,
 		TIM3->CTCG2 = tcnt * (duty) / 100; //
 		TIM3->CTCG1 = tcnt - (TIM3->CTCG2);
 		TIM3->PWCON &= ~TIM_PWCON_PWMCPOL;
-		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
+		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
+					(pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
 		if (pwmPolarity == TIM_PWM_POL_NPWM0_PWM1)
 		{
 			TIM3->PWCON |= (1 << 17);
@@ -417,10 +401,8 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty,
 		TIM4->CTCG1 = tcnt - (TIM4->CTCG2);
 
 		TIM4->PWCON &= ~TIM_PWCON_PWMCPOL;
-		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
+		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
+					(pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
 		if (pwmPolarity == TIM_PWM_POL_NPWM0_PWM1)
 		{
 			TIM4->PWCON |= (1 << 17);
@@ -455,8 +437,7 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty,
  */
 void TIM_DeInit(TIM_Type *pTim)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) &&
-	            (pTim != TIM4));
+	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
 	if (pTim == TIM1)
 	{
 		TIMERS->CON &= ~TIM_CON_TE_TIM1;
@@ -561,8 +542,7 @@ void TIM_EnableControl(TIM_Type *pTim, int iCtrl)
  */
 void TIM_EnableIRQ(TIM_Type *pTim)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) &&
-	            (pTim != TIM4));
+	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
 	if (pTim == TIM1)
 	{
 		TIMERS->CON |= (1 << 8);
@@ -588,8 +568,7 @@ void TIM_EnableIRQ(TIM_Type *pTim)
  */
 void TIM_DisableIRQ(TIM_Type *pTim)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) &&
-	            (pTim != TIM4));
+	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
 	if (pTim == TIM1)
 	{
 		TIMERS->CON &= ~(1 << 8);
@@ -616,8 +595,7 @@ void TIM_DisableIRQ(TIM_Type *pTim)
  */
 void TIM_PauseCntControl(TIM_Type *pTim, ControlStatus ctl)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) &&
-	            (pTim != TIM4));
+	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
 	PARAM_CHECK((ctl != ENABLE) && (ctl != DISABLE));
 	if (pTim == TIM1)
 	{
@@ -674,8 +652,7 @@ void TIM_PauseCntControl(TIM_Type *pTim, ControlStatus ctl)
  */
 FlagStatus TIM_GetIntFlag(TIM_Type *pTim)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) &&
-	            (pTim != TIM4));
+	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
 	if (pTim == TIM1)
 	{
 		return (TIMERS->INTFLAG & (1 << 0)) ? SET : RESET;
@@ -700,27 +677,30 @@ FlagStatus TIM_GetIntFlag(TIM_Type *pTim)
  */
 void TIM_ClrIntFlag(TIM_Type *pTim)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) &&
-	            (pTim != TIM4));
+	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
 	if (pTim == TIM1)
 	{
 		TIMERS->INTCLR = (1 << 0);
-		while(TIMERS->INTFLAG & (1 << 0));
+		while (TIMERS->INTFLAG & (1 << 0))
+			;
 	}
 	else if (pTim == TIM2)
 	{
 		TIMERS->INTCLR = (1 << 1);
-		while(TIMERS->INTFLAG & (1 << 1));
+		while (TIMERS->INTFLAG & (1 << 1))
+			;
 	}
 	else if (pTim == TIM3)
 	{
 		TIMERS->INTCLR = (1 << 2);
-		while(TIMERS->INTFLAG & (1 << 2));
+		while (TIMERS->INTFLAG & (1 << 2))
+			;
 	}
 	else
 	{
 		TIMERS->INTCLR = (1 << 3);
-		while(TIMERS->INTFLAG & (1 << 3));
+		while (TIMERS->INTFLAG & (1 << 3))
+			;
 	}
 }
 

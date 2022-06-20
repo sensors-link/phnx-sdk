@@ -24,8 +24,7 @@
 void WDT_Init(int iDel, int iClkSrc, eOVModeType iOVMode)
 {
 	int iTmp = 1;
-	PARAM_CHECK((iClkSrc != PMU_CR_LPTCLKSEL_LRC) &&
-	            (iClkSrc != PMU_CR_LPTCLKSEL_XTL));
+	PARAM_CHECK((iClkSrc != PMU_CR_LPTCLKSEL_LRC) && (iClkSrc != PMU_CR_LPTCLKSEL_XTL));
 	PARAM_CHECK((iOVMode != WDT_OV_INT) && (iOVMode != WDT_OV_RST));
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_WDT | SYSC_CLKENCFG_PMU;
 	PMU->WPT = PMU_WPT_V0;

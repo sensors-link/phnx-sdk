@@ -37,58 +37,47 @@ void MEXT_IntHandler(void)
 	src = PLIC_GetCLAIM();
 	switch (src)
 	{
-	case (ADC_IRQn):
-	{
+	case (ADC_IRQn): {
 		ADC_IrqHandler();
 		break;
 	}
-	case (LPTIMER_IRQn):
-	{
+	case (LPTIMER_IRQn): {
 		LPTIMER_IrqHandler();
 		break;
 	}
-	case (TIMER0_IRQn):
-	{
+	case (TIMER0_IRQn): {
 		TIMER0_IrqHandler();
 		break;
 	}
-	case (TIMER1_IRQn):
-	{
+	case (TIMER1_IRQn): {
 		TIMER1_IrqHandler();
 		break;
 	}
-	case (TIMER2_IRQn):
-	{
+	case (TIMER2_IRQn): {
 		TIMER2_IrqHandler();
 		break;
 	}
-	case (TIMER3_IRQn):
-	{
+	case (TIMER3_IRQn): {
 		TIMER3_IrqHandler();
 		break;
 	}
-	case (TIMER4_IRQn):
-	{
+	case (TIMER4_IRQn): {
 		TIMER4_IrqHandler();
 		break;
 	}
-	case (UART1_IRQn):
-	{
+	case (UART1_IRQn): {
 		UART1_IrqHandler();
 		break;
 	}
-	case (ANAC_IRQn):
-	{
+	case (ANAC_IRQn): {
 		ANAC_IrqHandler();
 		break;
 	}
-	case (EFC_IRQn):
-	{
+	case (EFC_IRQn): {
 		EFC_IrqHandler();
 		break;
 	}
-	case (IOM_IRQn):
-	{
+	case (IOM_IRQn): {
 		IOM_IrqHandler();
 		break;
 	}
@@ -105,8 +94,7 @@ unsigned int handle_trap(unsigned int mcause, unsigned int epc)
 	{
 		MEXT_IntHandler();
 	}
-	else if ((mcause & MCAUSE_INT) &&
-	         ((mcause & MCAUSE_CAUSE) == EXP_M_SOFT_INT))
+	else if ((mcause & MCAUSE_INT) && ((mcause & MCAUSE_CAUSE) == EXP_M_SOFT_INT))
 	{
 		MSOFT_IntHandler();
 		// } else if ((mcause & MCAUSE_INT) && ((mcause & MCAUSE_CAUSE) ==

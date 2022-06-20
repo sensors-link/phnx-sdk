@@ -40,10 +40,8 @@ void PMU_DeInit(void)
  */
 void PMU_WakeConfig(int iWkMode, int iWKLevel, int iWKPinEn)
 {
-	PARAM_CHECK((iWkMode != PMU_WKCFG_PMUWKMODE_SYCN) &&
-	            (iWkMode != PMU_WKCFG_PMUWKMODE_ASYCN));
-	PARAM_CHECK((iWKLevel != PMU_WKCFG_GPIOWKLEV_LOW) &&
-	            (iWKLevel != PMU_WKCFG_GPIOWKLEV_HIGH));
+	PARAM_CHECK((iWkMode != PMU_WKCFG_PMUWKMODE_SYCN) && (iWkMode != PMU_WKCFG_PMUWKMODE_ASYCN));
+	PARAM_CHECK((iWKLevel != PMU_WKCFG_GPIOWKLEV_LOW) && (iWKLevel != PMU_WKCFG_GPIOWKLEV_HIGH));
 	PMU->WKCFG |= iWkMode;
 	if (iWKLevel == PMU_WK_LOW)
 		PMU->WKCFG &= ~(iWKPinEn << PMU_WKCFG_GPIOWKLEV_pos);

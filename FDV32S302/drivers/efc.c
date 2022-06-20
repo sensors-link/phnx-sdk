@@ -115,7 +115,8 @@ eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
 		PARAM_CHECK(Addr & 0x03);
 		REG32(Addr) = Data;
 	}
-	while (!EFC->STS);
+	while (!EFC->STS)
+		;
 
 	if (EFC->STS != EFC_STS_CD)
 		return EFC_SING_PRG_FAIL;
@@ -139,7 +140,8 @@ eReturnType EFC_PageErase(u32 u32Addr)
 	EFC->STS = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PAGE_ERASE);
 	REG32(u32Addr) = 0xffffffff;
-	while (!EFC->STS);
+	while (!EFC->STS)
+		;
 
 	if (EFC->STS != EFC_STS_CD)
 		return EFC_PAGE_ERASE_FAIL;
@@ -162,7 +164,8 @@ eReturnType EFC_ChipErase(u32 u32Addr)
 	EFC->STS = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_CHIP_ERASE);
 	REG32(u32Addr) = 0xffffffff;
-	while (!EFC->STS);
+	while (!EFC->STS)
+		;
 
 	if (EFC->STS != EFC_STS_CD)
 		return EFC_CHIP_ERASE_FAIL;

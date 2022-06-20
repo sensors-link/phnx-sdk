@@ -128,8 +128,7 @@ eReturnType EFC_ChipErase(u32 u32Addr);
 eReturnType EFC_PageLoad(u32 u32Addr);
 eReturnType EFC_PageEraseVerify(u32 u32Addr);
 eReturnType EFC_ProgramVerify(u32 u32Addr);
-eReturnType EFC_FlashPageWrite(u32 u32Addr, u32 *pu32Dat, u32 u32Len,
-                               u32 u32PrgType);
+eReturnType EFC_FlashPageWrite(u32 u32Addr, u32 *pu32Dat, u32 u32Len, u32 u32PrgType);
 BOOL EFC_EEPROMWrite(u32 addr, int iPrgType, u32 data);
 
 #endif /*__EFC_H__*/

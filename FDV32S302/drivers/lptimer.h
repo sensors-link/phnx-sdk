@@ -33,7 +33,9 @@ typedef enum _CNT_MODE
 
 #define LPT_GetIntFlag() (LPTIM->INTSTSG & LPTIM_STS)
 #define LPT_ClrIntFlag()                            \
-    { LPTIM->INTSTS = LPTIM_STS; }
+	{                                                                                                                  \
+		LPTIM->INTSTS = LPTIM_STS;                                                                                     \
+	}
 
 // function
 void LPT_Init(int iDel, int iMode);

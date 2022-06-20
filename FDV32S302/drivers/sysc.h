@@ -84,17 +84,10 @@
 #define SYSC_TIM2CLKDIV_pos 	 	    (8) // 0-ff:div(x+1)
 
 #define SYSC_GetAPBCLK()                                                       \
-    (SystemCoreClock /                                                         \
-     (((SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_APB_CLK_DIV) >>                       \
-       SYSC_CLKCTRCFG_APB_CLK_DIV_pos) +                                       \
-      1) /                                                                     \
-     (((SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_AHB_CLK_DIV) >>                       \
-       SYSC_CLKCTRCFG_AHB_CLK_DIV_pos) +                                       \
-      1))
+	(SystemCoreClock / (((SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_APB_CLK_DIV) >> SYSC_CLKCTRCFG_APB_CLK_DIV_pos) + 1) /      \
+	 (((SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_AHB_CLK_DIV) >> SYSC_CLKCTRCFG_AHB_CLK_DIV_pos) + 1))
 #define SYSC_GetAHBCLK()                                                       \
-    (SystemCoreClock / (((SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_AHB_CLK_DIV) >>     \
-                         SYSC_CLKCTRCFG_AHB_CLK_DIV_pos) +                     \
-                        1))
+	(SystemCoreClock / (((SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_AHB_CLK_DIV) >> SYSC_CLKCTRCFG_AHB_CLK_DIV_pos) + 1))
 
 // extend define
 #define SYSC_CLK_SRC_HRC                (0)

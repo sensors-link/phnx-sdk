@@ -155,7 +155,8 @@ void SPI_ClrCSN(void)
 void SPI_SendData(u8 data)
 {
 	SPI->DR = data;
-	while (!(SPI->SR & 0x01));
+	while (!(SPI->SR & 0x01))
+		;
 }
 /**
  * @brief recieve data
@@ -165,7 +166,8 @@ void SPI_SendData(u8 data)
 u8 SPI_RecieveData(void)
 {
 	SPI->DR = 0;
-	while (!(SPI->SR & 0x01));
+	while (!(SPI->SR & 0x01))
+		;
 	return SPI->DR;
 }
 

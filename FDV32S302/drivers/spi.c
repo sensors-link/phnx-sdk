@@ -76,7 +76,8 @@ void SPI_DeInit(void)
 	int i;
 	SYSC_WPT_UNLOCK();
 	SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_SPI;
-	for (i = 4; i > 0; --i);
+	for (i = 4; i > 0; --i)
+		;
 
 	SYSC->CLKENCFG &= ~SYSC_CLKENCFG_SPI;
 }
@@ -138,7 +139,8 @@ void SPI_ClrCSN(void)
 void SPI_SendData(u8 data)
 {
 	SPI->DR = data;
-	while (!(SPI->SR & SPI_SR_DONESR));
+	while (!(SPI->SR & SPI_SR_DONESR))
+		;
 }
 
 /**
@@ -149,7 +151,8 @@ void SPI_SendData(u8 data)
 u8 SPI_RecieveData(void)
 {
 	SPI->DR = 0;
-	while (!(SPI->SR & SPI_SR_DONESR));
+	while (!(SPI->SR & SPI_SR_DONESR))
+		;
 	return SPI->DR;
 }
 

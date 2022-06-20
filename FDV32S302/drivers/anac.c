@@ -38,7 +38,8 @@ void ANAC_DeInit(void)
 	int i;
 	SYSC_WPT_UNLOCK();
 	SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_ANAC;
-	for (i = 10; i > 0; --i);
+	for (i = 10; i > 0; --i)
+		;
 
 	SYSC->CLKENCFG &= ~SYSC_CLKENCFG_ANAC;
 }
@@ -77,8 +78,7 @@ void ANAC_AnalogPowerEn(void)
  * @param smpCycle ADC_SMP_CYCLE_xx
  * @note ：调用此函数后要进行AD通道的IO口设置为模拟口与选择模拟功能为AD输入
  */
-void ADC_Init(int chn, int buffEn, int verfSel, int verfVol, int smpTimes,
-              int smpCycle)
+void ADC_Init(int chn, int buffEn, int verfSel, int verfVol, int smpTimes, int smpCycle)
 {
 	ANAC->ADC_CFG = (chn << 7) | (verfSel << 4) | (verfVol << 1);
 	if (buffEn == ENABLE)

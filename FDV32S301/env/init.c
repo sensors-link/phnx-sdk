@@ -42,83 +42,67 @@ void MEXT_IntHandler(void)
 	src = PLIC_GetCLAIM();
 	switch (src)
 	{
-	case (PMU_IRQn):
-	{
+	case (PMU_IRQn): {
 		PMU_IrqHandler();
 		break;
 	}
-	case (LPT_IRQn):
-	{
+	case (LPT_IRQn): {
 		LPT_IrqHandler();
 		break;
 	}
-	case (TIMER1_IRQn):
-	{
+	case (TIMER1_IRQn): {
 		TIMER1_IrqHandler();
 		break;
 	}
-	case (TIMER2_IRQn):
-	{
+	case (TIMER2_IRQn): {
 		TIMER2_IrqHandler();
 		break;
 	}
-	case (TIMER3_IRQn):
-	{
+	case (TIMER3_IRQn): {
 		TIMER3_IrqHandler();
 		break;
 	}
-	case (TIMER4_IRQn):
-	{
+	case (TIMER4_IRQn): {
 		TIMER4_IrqHandler();
 		break;
 	}
-	case (UART1_IRQn):
-	{
+	case (UART1_IRQn): {
 		UART1_IrqHandler();
 		break;
 	}
-	case (UART2_IRQn):
-	{
+	case (UART2_IRQn): {
 		UART2_IrqHandler();
 		break;
 	}
-	case (SPI_IRQn):
-	{
+	case (SPI_IRQn): {
 		SPI_IrqHandler();
 		break;
 	}
-	case (ANAC_IRQn):
-	{
+	case (ANAC_IRQn): {
 		ANAC_IrqHandler();
 		break;
 	}
-	case (EFC_IRQn):
-	{
+	case (EFC_IRQn): {
 		EFC_IrqHandler();
 		break;
 	}
-	case (IOM_IRQn):
-	{
+	case (IOM_IRQn): {
 		IOM_IrqHandler();
 		break;
 	}
-	case (I2C_IRQn):
-	{
+	case (I2C_IRQn): {
 		I2C_IrqHandler();
 		break;
 	}
-	case (RTC_IRQn):
-	{
+	case (RTC_IRQn): {
 		RTC_IrqHandler();
 		break;
 	}
-	case (TWC_IRQn):
-	{
+	case (TWC_IRQn): {
 		TWC_IrqHandler();
 		break;
 	}
-	case (LPU_IRQn):
-	{
+	case (LPU_IRQn): {
 		LPU_IrqHandler();
 		break;
 	}
@@ -135,8 +119,7 @@ unsigned int handle_trap(unsigned int mcause, unsigned int epc)
 	{
 		MEXT_IntHandler();
 	}
-	else if ((mcause & MCAUSE_INT) &&
-	         ((mcause & MCAUSE_CAUSE) == EXP_M_SOFT_INT))
+	else if ((mcause & MCAUSE_INT) && ((mcause & MCAUSE_CAUSE) == EXP_M_SOFT_INT))
 	{
 		MSOFT_IntHandler();
 		// } else if ((mcause & MCAUSE_INT) && ((mcause & MCAUSE_CAUSE) ==
