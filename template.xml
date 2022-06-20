@@ -4,56 +4,53 @@
 	version="1.0"
 	supplier="Eclipse.org"
 	revision="1.0"
-	author="Hbird"
+	author="SLink"
 	copyright="Copyright (c) 2017 Liviu Ionescu. All rights reserved. This \
 program and the accompanying materials are made available under the terms \
 of the Eclipse Public License v1.0 which accompanies this distribution, \
 and is available athttp://www.eclipse.org/legal/epl-v10.html"
-	id="Hbird.exe.c.project"
-	label="%Hbird.template.label"
-	description="%Hbird.template.description"
+	id="SLink.exe.c.project"
+	label="%SLink.template.label"
+	description="%SLink.template.description"
 	help="help.html">
 	<property-group
 		id="chip"
-		label="%Hbird.group.target.label"
-		description="%Hbird.group.target.description"
+		label="%SLink.group.target.label"
+		description="%SLink.group.target.description"
 		type="PAGES-ONLY"
 		help="help.html">
-		
+
 		<property
-			id="HbirdCore"
-			label="%Hbird.core.label"
-			description="%Hbird.core.description"
+			id="SLinkCore"
+			label="%SLink.core.label"
+			description="%SLink.core.description"
 			type="select"
-			default="FDV32S301"
+			default="s100"
 			hidden="false"
 			persist="true">
 			<item          value="s100"         label="FDV32S301" />
 			<item          value="FDV32S302"	label="FDV32S302" />
-			<item          value="FDV32F003"	label="FDV32F003" />
+			<item          value="FDV32F003"   label="FDV32F003" />
 		</property>
 		</property-group>
-		
-		
-		
+
+
+
 		<property-group
 		id="softwave"
-		label="%Hbird.group.target.label"
-		description="%Hbird.group.target.description"
+		label="%SLink.group.target.label"
+		description="%SLink.group.target.description"
 		type="PAGES-ONLY"
 		help="help.html">
-		
+
 		<property
-			id="HbirdContent"
-			label="%Hbird.content.label"
-			description="%Hbird.content.description"
+			id="SLinkContent"
+			label="%SLink.content.label"
+			description="%SLink.content.description"
 			type="select"
 			default="hello"
 			hidden="false"
 			persist="true">
-			<item
-				value="empty"
-				label="Empty_Project" />
 			<item
 				value="hello"
 				label="Hello_World" />
@@ -102,10 +99,10 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 			hidden="false"
 			persist="true" />
 	</property-group>
-	
-	
 
-	<!-- Note: the redundant 'condition="1==1"' is a workaround to control the 
+
+
+	<!-- Note: the redundant 'condition="1==1"' is a workaround to control the
 		evaluation order. Without it, processes are evaluated after all ifs. -->
 	<if condition="1==1">
 		<!-- Create the project, with elf artifact extension. -->
@@ -124,7 +121,7 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 
 	<if condition="1==1">
 		<!-- Set fileExtension="cpp" if ccnature; default was "c". -->
-		<process type="ilg.gnumcueclipse.templates.core.SetPropertyIfHasNature">
+		<process type="org.eclipse.embedcdt.templates.core.SetPropertyIfHasNature">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -151,7 +148,7 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 	</if>
 
 	<if condition="1==1">
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalSetProperty">
+		<process type="org.eclipse.embedcdt.templates.core.ConditionalSetProperty">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -163,9 +160,9 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 				value="content" />
 			<simple
 				name="propertyValue"
-				value="$(HbirdContent)" />
+				value="$(SLinkContent)" />
 		</process>
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalSetProperty">
+		<process type="org.eclipse.embedcdt.templates.core.ConditionalSetProperty">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -177,12 +174,12 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 				value="coreName" />
 			<simple
 				name="propertyValue"
-				value="$(HbirdCore)" />
+				value="$(SLinkCore)" />
 		</process>
 	</if>
 
-	<if condition="$(HbirdCore)==s100">
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalSetProperty">
+	<if condition="$(SLinkCore)==s100">
+		<process type="org.eclipse.embedcdt.templates.core.ConditionalSetProperty">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -194,13 +191,13 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 				value="coreDescription" />
 			<simple
 				name="propertyValue"
-				value="$(HbirdCore)" />
+				value="$(SLinkCore)" />
 		</process>
 
 	</if>
 
-	<if condition="$(HbirdCore)==FDV32S302">
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalSetProperty">
+	<if condition="$(SLinkCore)==FDV32S302">
+		<process type="org.eclipse.embedcdt.templates.core.ConditionalSetProperty">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -212,12 +209,12 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 				value="coreDescription" />
 			<simple
 				name="propertyValue"
-				value="$(HbirdCore)" />
+				value="$(SLinkCore)" />
 		</process>
 	</if>
 
-	<if condition="$(HbirdCore)==FDV32F003">
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalSetProperty">
+	<if condition="$(SLinkCore)==FDV32F003">
+		<process type="org.eclipse.embedcdt.templates.core.ConditionalSetProperty">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -229,14 +226,14 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 				value="coreDescription" />
 			<simple
 				name="propertyValue"
-				value="$(HbirdCore)" />
+				value="$(SLinkCore)" />
 		</process>
 	</if>
-	
+
 	<!-- ==============================s100 ================================ -->
 
-	<if condition="$(HbirdCore)==s100">
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalCopyFolders">
+	<if condition="$(SLinkCore)==s100">
+		<process type="org.eclipse.embedcdt.templates.core.ConditionalCopyFolders">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -301,7 +298,7 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 						name="replaceable"
 						value="true" />
 				</element>
-			
+
 				<element>
 					<simple
 						name="source"
@@ -350,8 +347,8 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 
 	<!-- ==============================FDV32S302 ================================ -->
 
-	<if condition="$(HbirdCore)==FDV32S302">
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalCopyFolders">
+	<if condition="$(SLinkCore)==FDV32S302">
+		<process type="org.eclipse.embedcdt.templates.core.ConditionalCopyFolders">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -416,7 +413,7 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 						name="replaceable"
 						value="true" />
 				</element>
-			
+
 				<element>
 					<simple
 						name="source"
@@ -463,10 +460,10 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 		</process>
 	</if>
 
-	<!-- ==============================FDV32F003 ================================ -->
+	<!-- ==============================FDV32F003================================ -->
 
-	<if condition="$(HbirdCore)==FDV32F003">
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalCopyFolders">
+	<if condition="$(SLinkCore)==FDV32F003">
+		<process type="org.eclipse.embedcdt.templates.core.ConditionalCopyFolders">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -531,7 +528,7 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 						name="replaceable"
 						value="true" />
 				</element>
-			
+
 				<element>
 					<simple
 						name="source"
@@ -577,9 +574,9 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 			</complex-array>
 		</process>
 	</if>
-	
+
 	<!-- Target options -->
-	<if condition="$(HbirdCore)==s100">
+	<if condition="$(SLinkCore)==s100">
 		<process type="org.eclipse.cdt.managedbuilder.core.SetMBSStringOptionValue">
 			<simple
 				name="projectName"
@@ -823,7 +820,7 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 
 	</if>
 
-<if condition="$(HbirdCore)==FDV32S302">
+<if condition="$(SLinkCore)==FDV32S302">
 		<process type="org.eclipse.cdt.managedbuilder.core.SetMBSStringOptionValue">
 			<simple
 				name="projectName"
@@ -1067,7 +1064,7 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 
 	</if>
 
-	<if condition="$(HbirdCore)==FDV32F003">
+	<if condition="$(SLinkCore)==FDV32F003">
 		<process type="org.eclipse.cdt.managedbuilder.core.SetMBSStringOptionValue">
 			<simple
 				name="projectName"
@@ -1311,12 +1308,12 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 
 	</if>
 
-	
-<if condition="$(HbirdContent)==hello">
 
-	<process type="ilg.gnumcueclipse.templates.core.ConditionalCopyFolders">
-		
-		
+<if condition="$(SLinkContent)==hello">
+
+	<process type="org.eclipse.embedcdt.templates.core.ConditionalCopyFolders">
+
+
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -1324,7 +1321,7 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 				name="condition"
 				value="" />
 			<complex-array name="folders">
-				
+
 				<element>
 					<simple
 						name="source"
@@ -1339,59 +1336,19 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 						name="replaceable"
 						value="true" />
 				</element>
-				
-				
+
+
 			</complex-array>
 		</process>
-		
+
 	</if>
-	
-	
 
 
-<!-- ==============================empty================================ -->
-	
-	<if condition="$(HbirdContent)==empty">
 
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalCopyFolders">
-		
-		
-			<simple
-				name="projectName"
-				value="$(projectName)" />
-			<simple
-				name="condition"
-				value="" />
-			<complex-array name="folders">
-				
-				<element>
-					<simple
-						name="source"
-						value="software/empty" />
-					<simple
-						name="target"
-						value="src" />
-					<simple
-						name="pattern"
-						value=".*[.](c)" />
-					<simple
-						name="replaceable"
-						value="true" />
-				</element>
-				
-				
-			</complex-array>
-		</process>
-		
-	</if>
-	
-<!-- ==============================END empty================================= -->
+<!-- ==============================s100 OpenOCD================================ -->
 
-	
-<!-- ==============================s100 OpenOCD================================ -->	
-	
-	<if condition="$(HbirdCore)==s100" >
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalAddLiquidFiles">
+	<if condition="$(SLinkCore)==s100" >
+		<process type="org.eclipse.embedcdt.templates.core.ConditionalAddLiquidFiles">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -1413,13 +1370,13 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 			</complex-array>
 		</process>
 	</if>
-<!-- ==============================END s100 OpenOCD================================ -->	
+<!-- ==============================END s100 OpenOCD================================ -->
 
 
-<!-- ==============================FDV32S302 OpenOCD================================ -->	
-	
-	<if condition="$(HbirdCore)==FDV32S302" >
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalAddLiquidFiles">
+<!-- ==============================FDV32S302 OpenOCD================================ -->
+
+	<if condition="$(SLinkCore)==FDV32S302" >
+		<process type="org.eclipse.embedcdt.templates.core.ConditionalAddLiquidFiles">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -1441,12 +1398,12 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 			</complex-array>
 		</process>
 	</if>
-<!-- ==============================END FDV32S302 OpenOCD================================ -->	
+<!-- ==============================END FDV32S302 OpenOCD================================ -->
 
-<!-- ==============================FDV32F003 OpenOCD================================ -->	
-	
-	<if condition="$(HbirdCore)==FDV32F003" >
-		<process type="ilg.gnumcueclipse.templates.core.ConditionalAddLiquidFiles">
+<!-- ==============================FDV32F003 OpenOCD================================ -->
+
+	<if condition="$(SLinkCore)==FDV32F003" >
+		<process type="org.eclipse.embedcdt.templates.core.ConditionalAddLiquidFiles">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -1468,12 +1425,12 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 			</complex-array>
 		</process>
 	</if>
-<!-- ==============================END FDV32F003 OpenOCD================================ -->	
-	
-	
+<!-- ==============================END FDV32F003 OpenOCD================================ -->
+
+
     <!-- ==============================-O2================================ -->
 		<process
-			type="ilg.gnumcueclipse.templates.core.ConditionalSetMBSStringOptionValue">
+			type="org.eclipse.embedcdt.templates.core.ConditionalSetMBSStringOptionValue">
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -1499,7 +1456,8 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 		 </process>
 	<!-- ==============================-D_DEBUG================================ -->
 		<process
-			type="ilg.gnumcueclipse.templates.core.ConditionalAppendToMBSStringListOptionValues">
+			type="org.eclipse.embedcdt.templates.core.ConditionalAppendToMBSStringListOptionValues">
+
 			<simple
 				name="projectName"
 				value="$(projectName)" />
@@ -1513,7 +1471,7 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 						value="ilg.gnumcueclipse.managedbuild.cross.riscv.option.c.compiler.defs" />
 					<simple-array name="values">
 						<element value="_DEBUG" />
-					</simple-array>    
+					</simple-array>
 					<simple
 						name="path"
 						value="" />
@@ -1523,6 +1481,6 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html"
 				</element>
 			</complex-array>
 		 </process>
-		    
+
 
 </template>
