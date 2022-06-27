@@ -1,0 +1,20 @@
+name: '发布到PlatformIO(自动)'
+on:
+  release:
+    types: [published]
+
+jobs:
+  platformio-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare
+        run: |
+          sudo apt install -y unzip
+          python3 -m pip -q install platformio
+          python3 -m platformio account login -u ${{ secrets.PLATFORMIO_USERNAME }} -p ${{ secrets.PLATFORMIO_PASSWD }}
+          wget -q -O sdk.zip "https://github.com/${{ github.repository }}/archive/${GITHUB_REF}.zip"
+          unzip sdk.zip -d sdk
+      - name: publish
+        run: |
+          cd sdk
+          python3 -m platformio pkg publish --type tool --notify  --non-interactive
