@@ -28,4 +28,4 @@ extern int __wrap_printf(const char *fmt, ...);
 #define printf(...)
 #endif
 
-#endif/*__LIB_INCLUDE_H__*/
+#endif /*__LIB_INCLUDE_H__*/

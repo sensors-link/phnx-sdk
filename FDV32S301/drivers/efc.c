@@ -11,13 +11,13 @@
 
 #include "efc.h"
 
-#define EFC_OPR_OPEN(mode)                               \
-    {                                                    \
-        EFC_OPR_REG = EFC_OPR_PPRF_V0 | (mode);          \
-        EFC_OPR_REG = EFC_OPR_PPRF_V1 | (mode);          \
-        EFC_OPR_REG = EFC_OPR_PPRF_V2 | (mode);          \
-        EFC_OPR_REG = EFC_OPR_PPRF_V3 | (mode);          \
-    }
+#define EFC_OPR_OPEN(mode)                                                                                             \
+	{                                                                                                                  \
+		EFC_OPR_REG = EFC_OPR_PPRF_V0 | (mode);                                                                        \
+		EFC_OPR_REG = EFC_OPR_PPRF_V1 | (mode);                                                                        \
+		EFC_OPR_REG = EFC_OPR_PPRF_V2 | (mode);                                                                        \
+		EFC_OPR_REG = EFC_OPR_PPRF_V3 | (mode);                                                                        \
+	}
 
 /**
  * @brief EFC init
@@ -98,8 +98,8 @@ BOOL EFC_Init(void)
 eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
 {
 	PARAM_CHECK((Addr < 0x10100000) || ((Addr > 0x1011ffff) && (Addr < 0x10140000)) ||
-	    ((Addr > 0x10140dff) && (Addr < 0x10180000)) || (Addr > 0x101803ff));
-	u32 stat = EFC_STS_REG;
+				((Addr > 0x10140dff) && (Addr < 0x10180000)) || (Addr > 0x101803ff));
+	u32 stat	= EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_SIG_PRG);
 	if (iPrgType == EFC_PRG_BYTE)
@@ -134,7 +134,7 @@ eReturnType EFC_PageProgram(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
-	u32 stat = EFC_STS_REG;
+	u32 stat	= EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_ROW_PRG);
 	REG32(u32Addr) = 0xffffffff;
@@ -166,7 +166,7 @@ eReturnType EFC_PageErase(u32 u32Addr)
 {
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
 				((u32Addr > 0x10140dff) && (u32Addr < 0x10180000)) || (u32Addr > 0x101803ff));
-	u32 stat = EFC_STS_REG;
+	u32 stat	= EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PAGE_ERASE);
 	REG32(u32Addr) = 0xffffffff;
@@ -190,7 +190,7 @@ eReturnType EFC_ChipErase(u32 u32Addr)
 {
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
 				((u32Addr > 0x10140dff) && (u32Addr < 0x10180000)) || (u32Addr > 0x101803ff));
-	u32 stat = EFC_STS_REG;
+	u32 stat	= EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_CHIP_ERASE);
 	REG32(u32Addr) = 0xffffffff;
@@ -213,7 +213,7 @@ eReturnType EFC_PageLoad(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
-	u32 stat = EFC_STS_REG;
+	u32 stat	= EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PAGE_LOAD);
 	REG32(u32Addr) = 0xffffffff;
@@ -237,7 +237,7 @@ eReturnType EFC_PageEraseVerify(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
-	u32 stat = EFC_STS_REG;
+	u32 stat	= EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PE_V);
 	REG32(u32Addr) = 0xffffffff;
@@ -260,7 +260,7 @@ eReturnType EFC_ProgramVerify(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
-	u32 stat = EFC_STS_REG;
+	u32 stat	= EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PP_V);
 	REG32(u32Addr) = 0xffffffff;
@@ -298,7 +298,7 @@ eReturnType EFC_FlashPageWrite(u32 u32Addr, u32 *pu32Dat, u32 u32Len, u32 u32Prg
 	}
 	if (u32PrgType == EFC_FLASH_WRITE_WORD)
 	{
-		int i;
+		u32 i;
 		for (i = 0; i < u32Len; ++i)
 		{
 			if (EFC_SingleProgram(u32Addr + (i << 2), EFC_PRG_WORD, *pu32Dat) != EFC_SUCCESS)
@@ -314,7 +314,7 @@ eReturnType EFC_FlashPageWrite(u32 u32Addr, u32 *pu32Dat, u32 u32Len, u32 u32Prg
 	}
 	else
 	{
-		int i;
+		u32 i;
 		for (i = 0; i < u32Len; ++i)
 		{
 			REG32(PAGE_BUFF_BASE + (i << 2)) = *pu32Dat;

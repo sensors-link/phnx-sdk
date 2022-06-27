@@ -30,7 +30,7 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
 	{
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM1_CNT;
 		int pclk = SYSC_GetAPBCLK() / ((SYSC->TIMCLKDIV & 0xff) + 1);
-		int cnt = (long long)del * pclk / 1000000;
+		int cnt	 = (long long)del * pclk / 1000000;
 		PARAM_CHECK(cnt < 1 || cnt > 0xffff);
 		if (mode == TIM_TM_AUTO_RUN)
 		{
@@ -48,7 +48,7 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
 	{
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM2_CNT;
 		int pclk = SYSC_GetAPBCLK() / ((SYSC->TIMCLKDIV >> 8) + 1);
-		int cnt = (long long)del * pclk / 1000000;
+		int cnt	 = (long long)del * pclk / 1000000;
 		PARAM_CHECK(cnt < 1 || cnt > 0xffff);
 		if (mode == TIM_TM_AUTO_RUN)
 		{
@@ -151,7 +151,7 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty, int dtGap)
 		TIM1->CTCG1 = tcnt - (TIM1->CTCG2);
 		TIM1->PWCON &= ~TIM_PWCON_PWMCPOL;
 		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
+					(pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
 		if (pwmPolarity == TIM_PWM_POL_NPWM0_PWM1)
 		{
 			TIM1->PWCON |= (1 << 17);
@@ -167,7 +167,7 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty, int dtGap)
 		if (dtGap > 0)
 		{
 			TIM1->PWCON |= (1 << 16);
-			tcnt = (long long )pclk * dtGap / 1000000 ;
+			tcnt = (long long)pclk * dtGap / 1000000;
 			PARAM_CHECK(tcnt > 0xffff);
 			TIM1->PWCON &= ~0xffff;
 			TIM1->PWCON |= tcnt;
@@ -208,7 +208,7 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty, int dtGap)
 
 		TIM2->PWCON &= ~TIM_PWCON_PWMCPOL;
 		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
-		            (pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
+					(pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
 		if (pwmPolarity == TIM_PWM_POL_NPWM0_PWM1)
 		{
 			TIM2->PWCON |= (1 << 17);
@@ -224,7 +224,7 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty, int dtGap)
 		if (dtGap > 0)
 		{
 			TIM2->PWCON |= (1 << 16);
-			tcnt =  (long long )pclk * dtGap / 1000000 ;
+			tcnt = (long long)pclk * dtGap / 1000000;
 			PARAM_CHECK(tcnt > 0xffff);
 			TIM2->PWCON &= ~0xffff;
 			TIM2->PWCON |= tcnt;
@@ -379,6 +379,8 @@ FlagStatus TIM_GetIntFlag(TIM_Type *pTim)
 	{
 		return (TIMERS->INTFLAG & TIM_INTFLAG_TIM2) ? SET : RESET;
 	}
+
+	return RESET;
 }
 /**
  * @brief clear timer interrupt flag
@@ -418,4 +420,6 @@ u32 TIM_GetCurentCounter(TIM_Type *pTim)
 	{
 		return TIM2->CTVAL;
 	}
+
+	return 0;
 }

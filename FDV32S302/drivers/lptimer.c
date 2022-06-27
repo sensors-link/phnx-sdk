@@ -95,4 +95,3 @@ u16 LPT_GetCount(void)
 	}
 	return tmp0;
 }
-

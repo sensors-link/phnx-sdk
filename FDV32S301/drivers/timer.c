@@ -32,17 +32,16 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
 		if (mode == TIM_TM_AUTO_RUN)
 		{
 			TIMERS->CON &= ~TIM_CON_TM_TIM1;
-			int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-			int cnt = (long long)del * pclk / 1000000;
+			int pclk	= SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
+			int cnt		= (long long)del * pclk / 1000000;
 			TIM1->CTCG1 = cnt & 0xffff;
 			TIM1->CTCG2 = cnt >> 16;
-
 		}
 		else
 		{
 			TIMERS->CON |= TIM_CON_TM_TIM1;
 			int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-			int cnt = (long long)del * pclk / 1000000;
+			int cnt	 = (long long)del * pclk / 1000000;
 			PARAM_CHECK(cnt > 0xffff); // div handler can affect tim1/2
 			TIM1->CTCG1 = cnt;
 		}
@@ -54,17 +53,16 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
 		if (mode == TIM_TM_AUTO_RUN)
 		{
 			TIMERS->CON &= ~TIM_CON_TM_TIM2;
-			int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-			int cnt = (long long)del * pclk / 1000000;
+			int pclk	= SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
+			int cnt		= (long long)del * pclk / 1000000;
 			TIM2->CTCG1 = cnt & 0xffff;
 			TIM2->CTCG2 = cnt >> 16;
-
 		}
 		else
 		{
 			TIMERS->CON |= TIM_CON_TM_TIM2;
 			int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-			int cnt = (long long)del * pclk / 1000000;
+			int cnt	 = (long long)del * pclk / 1000000;
 			PARAM_CHECK(cnt > 0xffff); // div handler can affect tim1/2
 			TIM2->CTCG1 = cnt;
 		}
@@ -77,17 +75,16 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
 		if (mode == TIM_TM_AUTO_RUN)
 		{
 			TIMERS->CON &= ~TIM_CON_TM_TIM3;
-			int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-			int cnt = (long long)del * pclk / 1000000;
+			int pclk	= SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
+			int cnt		= (long long)del * pclk / 1000000;
 			TIM3->CTCG1 = cnt & 0xffff;
 			TIM3->CTCG2 = cnt >> 16;
-
 		}
 		else
 		{
 			TIMERS->CON |= TIM_CON_TM_TIM3;
 			int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-			int cnt = (long long)del * pclk / 1000000;
+			int cnt	 = (long long)del * pclk / 1000000;
 			PARAM_CHECK(cnt > 0xffff); // div handler can affect tim1/2
 			TIM3->CTCG1 = cnt;
 		}
@@ -100,8 +97,8 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
 		if (mode == TIM_TM_AUTO_RUN)
 		{
 			TIMERS->CON &= ~TIM_CON_TM_TIM4;
-			int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-			int cnt = (long long)del * pclk / 1000000;
+			int pclk	= SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
+			int cnt		= (long long)del * pclk / 1000000;
 			TIM4->CTCG1 = cnt & 0xffff;
 			TIM4->CTCG2 = cnt >> 16;
 		}
@@ -109,7 +106,7 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
 		{
 			TIMERS->CON |= TIM_CON_TM_TIM4;
 			int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-			int cnt = (long long)del * pclk / 1000000;
+			int cnt	 = (long long)del * pclk / 1000000;
 			PARAM_CHECK(cnt > 0xffff); // div handler can affect tim1/2
 			TIM4->CTCG1 = cnt;
 		}
@@ -125,7 +122,7 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
  * @param portSel :TIM1_CNT_PORT_P8_P9 , TIM2_CNT_PORT_P10_P11 ,
  * TIM3_CNT_PORT_P6_P7
  */
-void TIM_CounterInit(TIM_Type *pTim, int cntPolarity, int portSel)
+void TIM_CounterInit(TIM_Type *pTim, int cntPolarity)
 {
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM_PCK | SYSC_CLKENCFG_IOM;
 	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
@@ -142,7 +139,6 @@ void TIM_CounterInit(TIM_Type *pTim, int cntPolarity, int portSel)
 		{
 			TIMERS->CON |= TIM_CON_EXTPOL_TIM1;
 		}
-		PARAM_CHECK(portSel != TIM1_CNT_PORT_P8_P9);
 		IOM->AF0 &= ~IOM_AF0_P08_SEL;
 		IOM->AF0 |= IOM_AF0_P08_SEL_TIM1_GATE;
 		IOM->AF0 &= ~IOM_AF0_P09_SEL;
@@ -163,7 +159,6 @@ void TIM_CounterInit(TIM_Type *pTim, int cntPolarity, int portSel)
 		{
 			TIMERS->CON |= TIM_CON_EXTPOL_TIM2;
 		}
-		PARAM_CHECK(portSel != TIM2_CNT_PORT_P10_P11);
 		IOM->AF0 &= ~IOM_AF0_P10_SEL;
 		IOM->AF0 |= IOM_AF0_P10_SEL_TIM2_GATE;
 		IOM->AF0 &= ~IOM_AF0_P11_SEL;
@@ -184,7 +179,6 @@ void TIM_CounterInit(TIM_Type *pTim, int cntPolarity, int portSel)
 		{
 			TIMERS->CON |= TIM_CON_EXTPOL_TIM3;
 		}
-		PARAM_CHECK(portSel != TIM3_CNT_PORT_P0_P1);
 		IOM->AF0 &= ~IOM_AF0_P00_SEL;
 		IOM->AF0 |= IOM_AF0_P00_SEL_TIM3_GATE;
 		IOM->AF0 &= ~IOM_AF0_P01_SEL;
@@ -205,7 +199,6 @@ void TIM_CounterInit(TIM_Type *pTim, int cntPolarity, int portSel)
 		{
 			TIMERS->CON |= TIM_CON_EXTPOL_TIM4;
 		}
-		PARAM_CHECK(portSel != TIM4_CNT_PORT_P6_P7);
 		IOM->AF0 &= ~IOM_AF0_P06_SEL;
 		IOM->AF0 |= IOM_AF0_P06_SEL_TIM4_GATE;
 		IOM->AF0 &= ~IOM_AF0_P07_SEL;
@@ -607,7 +600,6 @@ void TIM_PauseCntControl(TIM_Type *pTim, ControlStatus ctl)
 		{
 			TIMERS->CON &= ~(1 << 24);
 		}
-
 	}
 	else if (pTim == TIM2)
 	{
@@ -703,4 +695,3 @@ void TIM_ClrIntFlag(TIM_Type *pTim)
 			;
 	}
 }
-

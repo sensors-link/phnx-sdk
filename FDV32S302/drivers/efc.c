@@ -11,13 +11,13 @@
 
 #include "efc.h"
 
-#define EFC_OPR_OPEN(mode)                      \
-{                                               \
-    EFC->OPR = EFC_OPR_PPRF_V0 | (mode);        \
-    EFC->OPR = EFC_OPR_PPRF_V1 | (mode);        \
-    EFC->OPR = EFC_OPR_PPRF_V2 | (mode);        \
-    EFC->OPR = EFC_OPR_PPRF_V3 | (mode);        \
-}
+#define EFC_OPR_OPEN(mode)                                                                                             \
+	{                                                                                                                  \
+		EFC->OPR = EFC_OPR_PPRF_V0 | (mode);                                                                           \
+		EFC->OPR = EFC_OPR_PPRF_V1 | (mode);                                                                           \
+		EFC->OPR = EFC_OPR_PPRF_V2 | (mode);                                                                           \
+		EFC->OPR = EFC_OPR_PPRF_V3 | (mode);                                                                           \
+	}
 
 /**
  * @brief EFC init
@@ -98,7 +98,7 @@ BOOL EFC_Init(void)
 eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
 {
 	PARAM_CHECK((Addr < 0x10100000) || ((Addr > 0x10107fff) && (Addr < 0x10140000)) ||
-	            ((Addr > 0x101403ff) && (Addr < 0x10180000)) || (Addr > 0x101807ff));
+				((Addr > 0x101403ff) && (Addr < 0x10180000)) || (Addr > 0x101807ff));
 
 	u32 stat = EFC->STS;
 	EFC->STS = stat;
@@ -124,7 +124,6 @@ eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
 	return EFC_SUCCESS;
 }
 
-
 /**
  * @brief page erase
  *
@@ -135,7 +134,7 @@ eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
 eReturnType EFC_PageErase(u32 u32Addr)
 {
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x10107fff) && (u32Addr < 0x10140000)) ||
-	            ((u32Addr > 0x101403ff) && (u32Addr < 0x10180000)) || (u32Addr > 0x101807ff));
+				((u32Addr > 0x101403ff) && (u32Addr < 0x10180000)) || (u32Addr > 0x101807ff));
 	u32 stat = EFC->STS;
 	EFC->STS = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PAGE_ERASE);
@@ -159,7 +158,7 @@ eReturnType EFC_PageErase(u32 u32Addr)
 eReturnType EFC_ChipErase(u32 u32Addr)
 {
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x10107fff) && (u32Addr < 0x10140000)) ||
-	            ((u32Addr > 0x101403ff) && (u32Addr < 0x10180000)) || (u32Addr > 0x101807ff));
+				((u32Addr > 0x101403ff) && (u32Addr < 0x10180000)) || (u32Addr > 0x101807ff));
 	u32 stat = EFC->STS;
 	EFC->STS = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_CHIP_ERASE);

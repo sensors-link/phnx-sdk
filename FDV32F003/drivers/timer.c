@@ -19,13 +19,13 @@
  * @param timer :timer 1-4
  * @param delay :us
  */
-void Timer_timing_Init(Timer_t timer,int delay)
+void Timer_timing_Init(Timer_t timer, int delay)
 {
 	PARAM_CHECK((timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER_PCKEN;
 
-	switch(timer)
+	switch (timer)
 	{
 	case TIMER1:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER1_PCKEN;
@@ -34,7 +34,7 @@ void Timer_timing_Init(Timer_t timer,int delay)
 		TIM1->TCR &= ~Timer_tCR_TCS;
 		TIM1->TCR |= 0x01 << 2;
 		TIM1->TCR |= Timer_tCR_TON;
-		TIM1->TN   = delay;
+		TIM1->TN = delay;
 		TIMERS->TIE |= TIMER1_TIE;
 		TIMERS->TIF |= TIMER1_TIF;
 		break;
@@ -45,7 +45,7 @@ void Timer_timing_Init(Timer_t timer,int delay)
 		TIM2->TCR &= ~Timer_tCR_TCS;
 		TIM2->TCR |= 0x01 << 2;
 		TIM2->TCR |= Timer_tCR_TON;
-		TIM2->TN   = delay;
+		TIM2->TN = delay;
 		TIMERS->TIE |= TIMER2_TIE;
 		TIMERS->TIF |= TIMER2_TIF;
 		break;
@@ -56,7 +56,7 @@ void Timer_timing_Init(Timer_t timer,int delay)
 		TIM3->TCR &= ~Timer_tCR_TCS;
 		TIM3->TCR |= 0x01 << 2;
 		TIM3->TCR |= Timer_tCR_TON;
-		TIM3->TN   = delay;
+		TIM3->TN = delay;
 		TIMERS->TIE |= TIMER3_TIE;
 		TIMERS->TIF |= TIMER3_TIF;
 		break;
@@ -67,7 +67,7 @@ void Timer_timing_Init(Timer_t timer,int delay)
 		TIM4->TCR &= ~Timer_tCR_TCS;
 		TIM4->TCR |= 0x11 << 2;
 		TIM4->TCR |= Timer_tCR_TON;
-		TIM4->TN   = delay;
+		TIM4->TN = delay;
 		TIMERS->TIE |= TIMER4_TIE;
 		TIMERS->TIF |= TIMER4_TIF;
 		break;
@@ -82,19 +82,19 @@ void Timer_timing_Init(Timer_t timer,int delay)
  * @param timer :timer 0-4
  * @param count :count
  */
-void Timer_Count_Init(Timer_t timer,int count)
+void Timer_Count_Init(Timer_t timer, int count)
 {
 	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER_PCKEN;
 
-	switch(timer)
+	switch (timer)
 	{
 	case TIMER0:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER0_PCKEN;
 		TIMERS->T0CR |= TIMER0_T0CR_T0EN;
 		TIMERS->T0CR |= TIMER0_T0CR_T0RLDEN;
-		TIMERS->T0CR &=~TIMER0_T0CR_PSA;
+		TIMERS->T0CR &= ~TIMER0_T0CR_PSA;
 		TIMERS->T0CR |= 0x001;
 		TIMERS->T0RLD = count;
 		TIMERS->TIE |= TIMER1_TIE;
@@ -107,7 +107,7 @@ void Timer_Count_Init(Timer_t timer,int count)
 		TIM1->TCR |= Timer_tCR_TCS;
 		TIM1->TCR |= 0x01 << 2;
 		TIM1->TCR |= Timer_tCR_TON;
-		TIM1->TN   = count;
+		TIM1->TN = count;
 		TIMERS->TIE |= TIMER1_TIE;
 		TIMERS->TIF |= TIMER1_TIF;
 		break;
@@ -118,7 +118,7 @@ void Timer_Count_Init(Timer_t timer,int count)
 		TIM2->TCR |= Timer_tCR_TCS;
 		TIM2->TCR |= 0x01 << 2;
 		TIM2->TCR |= Timer_tCR_TON;
-		TIM2->TN   = count;
+		TIM2->TN = count;
 		TIMERS->TIE |= TIMER2_TIE;
 		TIMERS->TIF |= TIMER2_TIF;
 		break;
@@ -129,7 +129,7 @@ void Timer_Count_Init(Timer_t timer,int count)
 		TIM3->TCR |= Timer_tCR_TCS;
 		TIM3->TCR |= 0x01 << 2;
 		TIM3->TCR |= Timer_tCR_TON;
-		TIM3->TN   = count;
+		TIM3->TN = count;
 		TIMERS->TIE |= TIMER3_TIE;
 		TIMERS->TIF |= TIMER3_TIF;
 		break;
@@ -141,7 +141,7 @@ void Timer_Count_Init(Timer_t timer,int count)
 		TIM4->TCR |= Timer_tCR_TCS;
 		TIM4->TCR |= 0x01 << 2;
 		TIM4->TCR |= Timer_tCR_TON;
-		TIM4->TN   = count;
+		TIM4->TN = count;
 		TIMERS->TIE |= TIMER4_TIE;
 		TIMERS->TIF |= TIMER4_TIF;
 		break;
@@ -166,7 +166,7 @@ void Timer_PWMInit(Timer_t timer, int freq, int duty)
 
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER_PCKEN;
 
-	switch(timer)
+	switch (timer)
 	{
 	case TIMER0:
 
@@ -179,8 +179,8 @@ void Timer_PWMInit(Timer_t timer, int freq, int duty)
 		TIM1->TCR |= Timer_tCR_TCS;
 		TIM1->TCR |= 0x01 << 2;
 		TIM1->TCR |= Timer_tCR_TON;
-		TIM1->PWMPD= freq;
-		TIM1->PWMDC= duty;
+		TIM1->PWMPD = freq;
+		TIM1->PWMDC = duty;
 		TIMERS->TIE |= TIMER1_TIE;
 		TIMERS->TIF |= TIMER1_TIF;
 		break;
@@ -191,8 +191,8 @@ void Timer_PWMInit(Timer_t timer, int freq, int duty)
 		TIM2->TCR |= Timer_tCR_TCS;
 		TIM2->TCR |= 0x01 << 2;
 		TIM2->TCR |= Timer_tCR_TON;
-		TIM2->PWMPD= freq;
-		TIM2->PWMDC= duty;
+		TIM2->PWMPD = freq;
+		TIM2->PWMDC = duty;
 		TIMERS->TIE |= TIMER2_TIE;
 		TIMERS->TIF |= TIMER2_TIF;
 		break;
@@ -203,8 +203,8 @@ void Timer_PWMInit(Timer_t timer, int freq, int duty)
 		TIM3->TCR |= Timer_tCR_TCS;
 		TIM3->TCR |= 0x01 << 2;
 		TIM3->TCR |= Timer_tCR_TON;
-		TIM3->PWMPD= freq;
-		TIM3->PWMDC= duty;
+		TIM3->PWMPD = freq;
+		TIM3->PWMDC = duty;
 		TIMERS->TIE |= TIMER3_TIE;
 		TIMERS->TIF |= TIMER3_TIF;
 		break;
@@ -216,8 +216,8 @@ void Timer_PWMInit(Timer_t timer, int freq, int duty)
 		TIM4->TCR |= Timer_tCR_TCS;
 		TIM4->TCR |= 0x01 << 2;
 		TIM4->TCR |= Timer_tCR_TON;
-		TIM4->PWMPD= freq;
-		TIM4->PWMDC= duty;
+		TIM4->PWMPD = freq;
+		TIM4->PWMDC = duty;
 		TIMERS->TIE |= TIMER4_TIE;
 		TIMERS->TIF |= TIMER4_TIF;
 		break;
@@ -234,22 +234,22 @@ void Timer_DeInit(Timer_t timer)
 {
 	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
-	switch(timer)
+	switch (timer)
 	{
 	case TIMER0:
-		//TODO
+		// TODO
 		break;
 	case TIMER1:
-		//TODO
+		// TODO
 		break;
 	case TIMER2:
-		//TODO
+		// TODO
 		break;
 	case TIMER3:
-		//TODO
+		// TODO
 		break;
 	case TIMER4:
-		//TODO
+		// TODO
 		break;
 	default:
 		break;
@@ -264,11 +264,11 @@ void Timer_DeInit(Timer_t timer)
 void Timer_EnableControl(Timer_t timer, int iCtrl)
 {
 	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
-	switch(timer)
+	switch (timer)
 	{
 	case TIMER0:
 		TIMERS->TIF = (1 << 0);
-		if(iCtrl == ENABLE)
+		if (iCtrl == ENABLE)
 		{
 			TIMERS->T0CR |= TIMER0_CTRL_EN;
 		}
@@ -278,7 +278,7 @@ void Timer_EnableControl(Timer_t timer, int iCtrl)
 		}
 		break;
 	case TIMER1:
-		if(iCtrl == ENABLE)
+		if (iCtrl == ENABLE)
 		{
 			TIMERS->TCR1 |= TIMER1_CTRL_EN;
 		}
@@ -288,7 +288,7 @@ void Timer_EnableControl(Timer_t timer, int iCtrl)
 		}
 		break;
 	case TIMER2:
-		if(iCtrl == ENABLE)
+		if (iCtrl == ENABLE)
 		{
 			TIMERS->TCR2 |= TIMER2_CTRL_EN;
 		}
@@ -298,7 +298,7 @@ void Timer_EnableControl(Timer_t timer, int iCtrl)
 		}
 		break;
 	case TIMER3:
-		if(iCtrl == ENABLE)
+		if (iCtrl == ENABLE)
 		{
 			TIMERS->TCR3 |= TIMER3_CTRL_EN;
 		}
@@ -308,7 +308,7 @@ void Timer_EnableControl(Timer_t timer, int iCtrl)
 		}
 		break;
 	case TIMER4:
-		if(iCtrl == ENABLE)
+		if (iCtrl == ENABLE)
 		{
 			TIMERS->TCR4 |= TIMER4_CTRL_EN;
 		}
@@ -329,7 +329,7 @@ void Timer_EnableControl(Timer_t timer, int iCtrl)
 void Timer_EnableIRQ(Timer_t timer)
 {
 	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
-	switch(timer)
+	switch (timer)
 	{
 	case TIMER0:
 		TIMERS->TIE |= (1 << 0);
@@ -359,7 +359,7 @@ void Timer_EnableIRQ(Timer_t timer)
 void Timer_DisableIRQ(Timer_t timer)
 {
 	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
-	switch(timer)
+	switch (timer)
 	{
 	case TIMER0:
 		TIMERS->TIE &= ~(1 << 0);
@@ -381,7 +381,6 @@ void Timer_DisableIRQ(Timer_t timer)
 	}
 }
 
-
 /**
  * @brief get timer interrupt flag
  *
@@ -394,25 +393,25 @@ FlagStatus Timer_GetIntFlag(Timer_t timer)
 
 	int ret = RESET;
 
-	if(TIMER0 == timer)
+	if (TIMER0 == timer)
 	{
-		ret =  (TIMERS->TIF & (1 << 0) ? SET : RESET);
+		ret = (TIMERS->TIF & (1 << 0) ? SET : RESET);
 	}
-	else if(TIMER1 == timer)
+	else if (TIMER1 == timer)
 	{
-		ret =  (TIMERS->TIF & (1 << 1) ? SET : RESET);
+		ret = (TIMERS->TIF & (1 << 1) ? SET : RESET);
 	}
-	else if(TIMER2 == timer)
+	else if (TIMER2 == timer)
 	{
-		ret =  (TIMERS->TIF & (1 << 2) ? SET : RESET);
+		ret = (TIMERS->TIF & (1 << 2) ? SET : RESET);
 	}
-	else if(TIMER3 == timer)
+	else if (TIMER3 == timer)
 	{
-		ret =  (TIMERS->TIF & (1 << 3) ? SET : RESET);
+		ret = (TIMERS->TIF & (1 << 3) ? SET : RESET);
 	}
-	else if(TIMER4 == timer)
+	else if (TIMER4 == timer)
 	{
-		ret =  (TIMERS->TIF & (1 << 4) ? SET : RESET);
+		ret = (TIMERS->TIF & (1 << 4) ? SET : RESET);
 	}
 
 	return (FlagStatus)ret;
@@ -426,7 +425,7 @@ void Timer_ClrIntFlag(Timer_t timer)
 {
 	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
-	switch(timer)
+	switch (timer)
 	{
 	case TIMER0:
 		TIMERS->TIF = (1 << 0);

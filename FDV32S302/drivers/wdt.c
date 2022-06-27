@@ -17,11 +17,10 @@
  * @brief wdt init
  *
  * @param iDel:  delay ms  (lrc:max 256s xtl:max 64s)
- * @param iClkSrc: LP_CLKSEL_LRC , LP_CLKSEL_XTL
  * @param iOVMode :WDT_OV_INT , WDT_OV_RST
  * note:clk source = lrc  at least 4ms err
  */
-void WDT_Init(int iDel, int iClkSrc, eOVModeType iOVMode)
+void WDT_Init(int iDel, eOVModeType iOVMode)
 {
 	int iTmp = 1;
 	PARAM_CHECK((iOVMode != WDT_OV_INT) && (iOVMode != WDT_OV_RST));
@@ -57,4 +56,3 @@ void WDT_DeInit(void)
 	PMU->CR &= ~PMU_CR_WDTCLKEN;
 	SYSC->CLKENCFG &= ~SYSC_CLKENCFG_WDT;
 }
-

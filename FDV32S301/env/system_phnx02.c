@@ -105,7 +105,7 @@ void SystemInit(void)
 void SystemCoreClockUpdate(void)
 {
 	unsigned int dwTmp;
-	int clkSrc = (SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_SYS_CLK_SEL);
+	int			 clkSrc = (SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_SYS_CLK_SEL);
 	if (clkSrc == SYSC_CLKCTRCFG_SYS_CLK_SEL_XTH)
 		SystemCoreClock = XTH_FREQ;
 	else if (clkSrc == SYSC_CLKCTRCFG_SYS_CLK_SEL_XTL)
@@ -125,9 +125,5 @@ void SystemCoreClockUpdate(void)
 			SystemCoreClock = 8000000;
 		else if ((dwTmp >> 2) == 5)
 			SystemCoreClock = 16000000;
-		//	else if((dwTmp >> 2) == 6)
-		//		SystemCoreClock= 24000000;
-		// else if((dwTmp >> 2) == 7)
-		// 	SystemCoreClock= 32000000;
 	}
 }

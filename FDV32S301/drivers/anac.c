@@ -64,7 +64,6 @@ void ANAC_AnalogPowerEn(void)
 	}
 }
 
-
 /**
  * @brief adc init
  *
@@ -186,5 +185,3 @@ void ADC_ClrIntFlag(void)
 {
 	ANAC->ANAC_FLAG |= 0x01;
 }
-
-

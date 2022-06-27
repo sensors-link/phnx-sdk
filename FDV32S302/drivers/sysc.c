@@ -111,7 +111,7 @@ void SYSC_SetTimer1ClkDiv(int div)
 {
 	PARAM_CHECK((div < DIV1) || (div > 256));
 	SYSC->TIMCLKDIV &= ~SYSC_TIM1CLKDIV;
-	SYSC->TIMCLKDIV = div<<SYSC_TIM1CLKDIV_pos;
+	SYSC->TIMCLKDIV = div << SYSC_TIM1CLKDIV_pos;
 }
 
 /**
@@ -132,10 +132,10 @@ void SYSC_SetTimer2ClkDiv(int div)
  * @param div 分频（div（0-127）+1）*2
  * @param clt
  */
-void SYSC_TestClkOutControl(int div,ControlStatus clt)
+void SYSC_TestClkOutControl(int div, ControlStatus clt)
 {
 	PARAM_CHECK((div < 0) || (div > 256));
-	if(clt == ENABLE)
+	if (clt == ENABLE)
 		SYSC->TESTCKSEL |= SYSC_TESTCKSEL_EN;
 	else
 		SYSC->TESTCKSEL &= ~SYSC_TESTCKSEL_EN;
@@ -143,4 +143,3 @@ void SYSC_TestClkOutControl(int div,ControlStatus clt)
 	SYSC->TESTCKSEL &= ~SYSC_TESTCKSEL_CLK_DIV;
 	SYSC->TESTCKSEL |= div << SYSC_TESTCKSEL_CLK_DIV_pos;
 }
-

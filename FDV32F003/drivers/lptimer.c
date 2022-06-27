@@ -24,10 +24,10 @@ void LPT_Init(int iDel, int iMode)
 	PARAM_CHECK((iMode != LPT_SIG_TIME_CNT) && (iMode != LPT_PIT_CNT));
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_LPTIM_CKEN;
 
-	iTmp = iDel>>2;
+	iTmp = iDel >> 2;
 
 	PARAM_CHECK((iTmp > 0xffff) || (iTmp < 1));
-	LPTIM->CR  |= 1 << 4;
+	LPTIM->CR |= 1 << 4;
 	LPTIM->CFG = iTmp - 1;
 	if (iMode == LPT_SIG_TIME_CNT)
 	{
@@ -89,7 +89,7 @@ u16 LPT_GetCount(void)
 	u16 tmp0;
 	while (1)
 	{
-		tmp0 = LPTIM->CNT & LPTIM_CNT;
+		tmp0	 = LPTIM->CNT & LPTIM_CNT;
 		u16 tmp1 = LPTIM->CNT & LPTIM_CNT;
 		if (tmp0 == tmp1)
 			break;

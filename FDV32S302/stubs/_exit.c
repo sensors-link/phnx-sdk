@@ -1,7 +1,5 @@
 /* See LICENSE of license details. */
 
-#include <unistd.h>
-
 #include "stub.h"
 
 void _exit(int code)
@@ -12,6 +10,7 @@ void _exit(int code)
 	//   write_hex(STDERR_FILENO, code);
 	//   write(STDERR_FILENO, "\n", 1);
 
+	(void)code;
 	for (;;)
 		;
 }

@@ -9,3 +9,6 @@ SortIncludes: false
 IndentWidth:     4
 TabWidth:        4
 UseTab:          Always
+AlignConsecutiveMacros: true
+AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: true

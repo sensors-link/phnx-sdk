@@ -1,5 +1,5 @@
 /**
- * @file system_phnx02.c
+ * @file system_phnx04.c
  * @author bifei.tang
  * @brief
  * @version 0.1
@@ -23,7 +23,7 @@ unsigned int SystemCoreClock = 8000000;
 extern void trap_entry();
 
 /**
- * @brief 系统时钟初始�?
+ * @brief 系统时钟初始化
  *
  */
 void SystemInit(void)
@@ -42,9 +42,9 @@ void SystemInit(void)
 	tmp = ANAC->CLK_CFG;
 	tmp &= ~ANAC_CLK_CFG_HRC_FSEL;
 	tmp |= (SYSC_CLK_SRC_SEL) << 2;
-	ANAC->WPROT = ANAC_WPROT_V0;
-	ANAC->WPROT = ANAC_WPROT_V1;
-	ANAC->CLK_CFG = tmp;
+	ANAC->WPROT	   = ANAC_WPROT_V0;
+	ANAC->WPROT	   = ANAC_WPROT_V1;
+	ANAC->CLK_CFG  = tmp;
 	SYSC->WRPROCFG = SYSC_WRPROCFG_V0;
 	SYSC->WRPROCFG = SYSC_WRPROCFG_V1;
 	SYSC->CLKCTRCFG &= ~(SYSC_CLKCTRCFG_APB_CLK_DIV | SYSC_CLKCTRCFG_AHB_CLK_DIV | SYSC_CLKCTRCFG_SYS_CLK_SEL);
@@ -71,7 +71,7 @@ void SystemInit(void)
 void SystemCoreClockUpdate(void)
 {
 	unsigned int dwTmp;
-	int clkSrc = (SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_SYS_CLK_SEL);
+	int			 clkSrc = (SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_SYS_CLK_SEL);
 
 	if (clkSrc == SYSC_CLKCTRCFG_SYS_CLK_SEL_LRC)
 		SystemCoreClock = 8000;

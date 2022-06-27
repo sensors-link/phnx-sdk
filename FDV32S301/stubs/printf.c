@@ -1,12 +1,7 @@
 /* The functions in this file are only meant to support Dhrystone on an
  * embedded RV32 system and are obviously incorrect in general. */
 
-#include <stdarg.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <unistd.h>
+#include "stub.h"
 
 #undef putchar
 int putchar(int ch)
@@ -17,7 +12,7 @@ int putchar(int ch)
 static void sprintf_putch(int ch, void **data)
 {
 	char **pstr = (char **)data;
-	**pstr = ch;
+	**pstr		= ch;
 	(*pstr)++;
 }
 
@@ -38,10 +33,10 @@ static long getint(va_list *ap, int lflag)
 }
 
 static inline void printnum(void (*putch)(int, void **), void **putdat, unsigned long num, unsigned base, int width,
-                            int padc)
+							int padc)
 {
 	unsigned digs[sizeof(num) * 8];
-	int pos = 0;
+	int		 pos = 0;
 
 	while (1)
 	{
@@ -59,9 +54,10 @@ static inline void printnum(void (*putch)(int, void **), void **putdat, unsigned
 }
 
 static inline void print_double(void (*putch)(int, void **), void **putdat, double num, int width, int prec)
-	{
+{
+	(void)width;
 	union {
-		double d;
+		double	 d;
 		uint64_t u;
 	} u;
 	u.d = num;
@@ -94,11 +90,11 @@ static inline void print_double(void (*putch)(int, void **), void **putdat, doub
 static void vprintfmt(void (*putch)(int, void **), void **putdat, const char *fmt, va_list ap)
 {
 	register const char *p;
-	const char *last_fmt;
-	register int ch;
-	unsigned long num;
-	int base, lflag, width, precision;
-	char padc;
+	const char *		 last_fmt;
+	register int		 ch;
+	unsigned long		 num;
+	int					 base, lflag, width, precision;
+	char				 padc;
 
 	while (1)
 	{
@@ -112,15 +108,14 @@ static void vprintfmt(void (*putch)(int, void **), void **putdat, const char *fm
 		fmt++;
 
 		// Process a %-escape sequence
-		last_fmt = fmt;
-		padc = ' ';
-		width = -1;
+		last_fmt  = fmt;
+		padc	  = ' ';
+		width	  = -1;
 		precision = -1;
-		lflag = 0;
-reswitch:
+		lflag	  = 0;
+	reswitch:
 		switch (ch = *(unsigned char *)fmt++)
 		{
-
 		// flag to pad on the right
 		case '-':
 			padc = '-';
@@ -144,7 +139,7 @@ reswitch:
 			for (precision = 0;; ++fmt)
 			{
 				precision = precision * 10 + ch - '0';
-				ch = *fmt;
+				ch		  = *fmt;
 				if (ch < '0' || ch > '9')
 					break;
 			}
@@ -162,7 +157,7 @@ reswitch:
 		case '#':
 			goto reswitch;
 
-process_precision:
+		process_precision:
 			if (width < 0)
 				width = precision, precision = -1;
 			goto reswitch;
@@ -231,9 +226,9 @@ process_precision:
 		// (unsigned) hexadecimal
 		case 'x':
 			base = 16;
-unsigned_number:
+		unsigned_number:
 			num = getuint(&ap, lflag);
-signed_number:
+		signed_number:
 			printnum(putch, putdat, num, base, width, padc);
 			break;
 
@@ -244,7 +239,7 @@ signed_number:
 
 		// unrecognized escape sequence - just print it literally
 		default:
-bad:
+		bad:
 			putch('%', putdat);
 			fmt = last_fmt;
 			break;
@@ -266,7 +261,7 @@ int __wrap_printf(const char *fmt, ...)
 int __wrap_sprintf(char *str, const char *fmt, ...)
 {
 	va_list ap;
-	char *str0 = str;
+	char *	str0 = str;
 	va_start(ap, fmt);
 
 	vprintfmt(sprintf_putch, (void **)&str, fmt, ap);

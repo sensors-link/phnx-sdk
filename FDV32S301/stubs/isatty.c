@@ -1,6 +1,6 @@
 /* See LICENSE of license details. */
 
-#include <unistd.h>
+#include "stub.h"
 
 int _isatty(int fd)
 {

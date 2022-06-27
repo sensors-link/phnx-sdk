@@ -23,12 +23,11 @@ unsigned int SystemCoreClock = 8000000;
 extern void trap_entry();
 
 /**
- * @brief 系统时钟初始
+ * @brief 系统时钟初始化
  *
  */
 void SystemInit(void)
 {
-
 #if (SYSC_CLK_SRC_SEL == F_LRC)
 	SYSC_WRPROCFG_REG = SYSC_WRPROCFG_V0;
 	SYSC_WRPROCFG_REG = SYSC_WRPROCFG_V1;
@@ -58,8 +57,9 @@ void SystemInit(void)
 
 void SystemCoreClockUpdate(void)
 {
-	unsigned int dwTmp;
 	int clkSrc = (SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_SYS_CLK_SEL);
 	if (clkSrc == SYSC_CLKCTRCFG_SYS_CLK_SEL_LRC)
 		SystemCoreClock = 8000;
+	else
+		SystemCoreClock = 8000000;
 }

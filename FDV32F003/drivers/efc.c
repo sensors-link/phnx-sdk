@@ -11,13 +11,13 @@
 
 #include "efc.h"
 
-#define EFC_OPR_OPEN(mode)                         \
-{                                                  \
-        EFC_OPR_REG = EFC_OPR_PPRF_V0 | (mode);    \
-        EFC_OPR_REG = EFC_OPR_PPRF_V1 | (mode);    \
-        EFC_OPR_REG = EFC_OPR_PPRF_V2 | (mode);    \
-        EFC_OPR_REG = EFC_OPR_PPRF_V3 | (mode);    \
-}
+#define EFC_OPR_OPEN(mode)                                                                                             \
+	{                                                                                                                  \
+		EFC_OPR_REG = EFC_OPR_PPRF_V0 | (mode);                                                                        \
+		EFC_OPR_REG = EFC_OPR_PPRF_V1 | (mode);                                                                        \
+		EFC_OPR_REG = EFC_OPR_PPRF_V2 | (mode);                                                                        \
+		EFC_OPR_REG = EFC_OPR_PPRF_V3 | (mode);                                                                        \
+	}
 
 /**
  * @brief EFC init
@@ -97,7 +97,7 @@ BOOL EFC_Init(void)
  */
 eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
 {
-	u32 stat = EFC_STS_REG;
+	u32 stat	= EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_SIG_PRG);
 	if (iPrgType == EFC_PRG_BYTE)
@@ -123,7 +123,6 @@ eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
 	return EFC_SUCCESS;
 }
 
-
 /**
  * @brief page erase
  *
@@ -133,8 +132,7 @@ eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
  */
 eReturnType EFC_PageErase(u32 u32Addr)
 {
-
-	u32 stat = EFC_STS_REG;
+	u32 stat	= EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PAGE_ERASE);
 	REG32(u32Addr) = 0xffffffff;
@@ -156,8 +154,7 @@ eReturnType EFC_PageErase(u32 u32Addr)
  */
 eReturnType EFC_ChipErase(u32 u32Addr)
 {
-
-	u32 stat = EFC_STS_REG;
+	u32 stat	= EFC_STS_REG;
 	EFC_STS_REG = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_CHIP_ERASE);
 	REG32(u32Addr) = 0xffffffff;
@@ -169,7 +166,6 @@ eReturnType EFC_ChipErase(u32 u32Addr)
 	}
 	return EFC_SUCCESS;
 }
-
 
 /**
  * @brief :eeprom write one data

@@ -46,7 +46,7 @@ void CRC_DeInit(void)
  */
 u16 CRC_Calculate(void *pDat, eDataType u8DataType, u32 u32Len)
 {
-	int i;
+	u32 i;
 	PARAM_CHECK((u8DataType != DATA_8BIT) && (u8DataType != DATA_16BIT) && (u8DataType != DATA_32BIT));
 	PARAM_CHECK(u32Len < 1);
 	CRC_RSL_REG = 0xffff;
@@ -94,7 +94,7 @@ u16 CRC_Calculate(void *pDat, eDataType u8DataType, u32 u32Len)
  */
 BOOL CRC_Check(void *pDat, eDataType u8DataType, u32 u32Len, u16 crc)
 {
-	int i;
+	u32 i;
 	PARAM_CHECK((u8DataType != DATA_8BIT) && (u8DataType != DATA_16BIT) && (u8DataType != DATA_32BIT));
 	PARAM_CHECK(u32Len < 1);
 	CRC_RSL_REG = 0xffff;

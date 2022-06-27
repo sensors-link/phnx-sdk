@@ -169,7 +169,8 @@ void UART_RcvVerifyCfg(UART_Type *psUart, int chk)
  * @brief enable control
  *
  * @param psUart :UART1,UART2
- * @param enType :UART_EN_TYPE_SM2 | UART_EN_TYPE_REN | UART_EN_TYPE_SFD,支持或操作一次设置多个
+ * @param enType :UART_EN_TYPE_SM2 | UART_EN_TYPE_REN |
+ * UART_EN_TYPE_SFD,支持或操作一次设置多个
  */
 void UART_EnableControl(UART_Type *psUart, int enType)
 {
@@ -191,7 +192,8 @@ void UART_EnableControl(UART_Type *psUart, int enType)
  * @brief enable interrupt
  *
  * @param psUart :UART1,UART2
- * @param type: UART_IRQ_TYPE_RXST | UART_IRQ_TYPE_RX | UART_IRQ_TYPE_TX,支持或操作一次设置多个
+ * @param type: UART_IRQ_TYPE_RXST | UART_IRQ_TYPE_RX |
+ * UART_IRQ_TYPE_TX,支持或操作一次设置多个
  */
 void UART_EnableIRQ(UART_Type *psUart, int type)
 {
@@ -207,7 +209,8 @@ void UART_EnableIRQ(UART_Type *psUart, int type)
  * @brief disable interrupt
  *
  * @param psUart :UART1,UART2,LPUART
- * @param type: UART_IRQ_TYPE_RXST | UART_IRQ_TYPE_RX | UART_IRQ_TYPE_TX,支持或操作一次设置多个
+ * @param type: UART_IRQ_TYPE_RXST | UART_IRQ_TYPE_RX |
+ * UART_IRQ_TYPE_TX,支持或操作一次设置多个
  */
 void UART_DisableIRQ(UART_Type *psUart, int type)
 {
@@ -353,4 +356,3 @@ void UART_ClrIntFlag(UART_Type *psUart, u32 val)
 	PARAM_CHECK((psUart != UART1) && (psUart != UART2));
 	psUart->ISR = val;
 }
-

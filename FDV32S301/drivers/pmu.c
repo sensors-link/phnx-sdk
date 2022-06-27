@@ -34,8 +34,8 @@ void PMU_DeInit(void)
  *
  * @param iWkMode:PMU_WKCFG_PMUWKMODE_SYCN , PMU_WKCFG_PMUWKMODE_ASYCN
  * @param iWKLevel:PMU_WK_LOW , PMU_WK_HIGH
- * @param iWKPinEn : PMU_WK_PIN16 [| PMU_WK_PIN17 | PMU_WK_PIN18 | PMU_WK_PIN19]
- * surp,t '|' combination
+ * @param iWKPinEn : PMU_WK_PIN16 [| PMU_WK_PIN17 | PMU_WK_PIN18 |
+ * PMU_WK_PIN19] surp,t '|' combination
  *
  */
 void PMU_WakeConfig(int iWkMode, int iWKLevel, int iWKPinEn)

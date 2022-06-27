@@ -15,17 +15,15 @@
 /**
  * @brief i2c init
  *
- * @param pin I2C_PIN_06_07 , I2C_PIN_12_13
  * @param masterEn :ENABLE , DISABLE
  * @param freq :kHz
  * @param Addr :7bit self addr and access addr
  */
-void I2C_Init(int pin, int masterEn, int freq, int Addr)
+void I2C_Init(int masterEn, int freq, int Addr)
 {
 	u32 pclk;
 	u32 num;
 
-	PARAM_CHECK((pin != I2C_PIN_12_13));
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_IOM;
 	IOM->AF0 &= ~(IOM_AF0_P12_SEL | IOM_AF0_P13_SEL);
 	IOM->AF0 |= (IOM_AF0_P12_SEL_I2C_SDA | IOM_AF0_P13_SEL_I2C_SCL);
@@ -40,15 +38,15 @@ void I2C_Init(int pin, int masterEn, int freq, int Addr)
 		SystemCoreClockUpdate();
 		pclk = SYSC_GetAPBCLK();
 		PARAM_CHECK((int)(pclk / 1000 / freq) < 8);
-		num = pclk / 1000 / freq;
+		num		   = pclk / 1000 / freq;
 		I2C->SCLCR = 0;
-		if(num > 9)
+		if (num > 9)
 		{
 			I2C->SCLCR = ((((num - 8) >> 1) << 16) | (num - ((num - 8) >> 1)));
 		}
 		else
 		{
-			I2C->SCLCR = ((1 << 16) | (num-1));
+			I2C->SCLCR = ((1 << 16) | (num - 1));
 		}
 	}
 	else

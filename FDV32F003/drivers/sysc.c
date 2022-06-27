@@ -90,41 +90,14 @@ void SYSC_PCLKDisable(ePCLKEN_Type perp)
 	SYSC->CLKENCFG &= ~perp;
 }
 
-
 /**
  * @brief 测试时钟输出控制
  *
  * @param div 分频（div�?0-127�?+1�?*2
  * @param clt
  */
-void SYSC_TestClkOutControl(int div,ControlStatus clt)
+void SYSC_TestClkOutControl(int div, ControlStatus clt)
 {
 	PARAM_CHECK((div < 0) || (div > 127));
 	SYSC->TESTCKSEL = (clt << 7) | div;
-}
-
-int SYSC_APBCLK_Get(void)
-{
-	int div2  = 0;
-	int div1  = 0;
-	int clock = 0;
-
-	div2 = SRC_CLK_DIV2();
-	div1 = SRC_CLK_DIV1();
-
-	clock = SystemCoreClock/div1;
-	clock = clock/div2;
-
-	return clock;
-}
-
-int SYSC_AHBCLK_Get(void)
-{
-	int div1  = 0;
-	int clock = 0;
-
-	//div1  = SRC_CLK_DIV1();
-	//clock = SystemCoreClock/div1;
-
-	return clock;
 }

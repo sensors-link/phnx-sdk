@@ -14,16 +14,16 @@
 
 // register bits defines
 // LPTIM_CR
-#define LPTIM_CR_IE 		BIT(3)
-#define LPTIM_CR_PITE 		BIT(2)
-#define LPTIM_CR_EN 		BIT(0)
+#define LPTIM_CR_IE	  BIT(3)
+#define LPTIM_CR_PITE BIT(2)
+#define LPTIM_CR_EN	  BIT(0)
 // LPTIM_CFG
-#define LPTIM_CFG 			BITS(0, 15)
-#define LPTIM_CFG_pos 		(0) // 0-0xffff:(x+1)*(1/fclk)
+#define LPTIM_CFG	  BITS(0, 15)
+#define LPTIM_CFG_pos (0) // 0-0xffff:(x+1)*(1/fclk)
 // LPTIM_CNT
-#define LPTIM_CNT 			BITS(0, 15)
+#define LPTIM_CNT BITS(0, 15)
 // LPTIM_STS
-#define LPTIM_STS 			BIT(0)
+#define LPTIM_STS BIT(0)
 
 typedef enum _CNT_MODE
 {
@@ -32,7 +32,7 @@ typedef enum _CNT_MODE
 } eCntModeType;
 
 #define LPT_GetIntFlag() (LPTIM->INTSTSG & LPTIM_STS)
-#define LPT_ClrIntFlag()                            \
+#define LPT_ClrIntFlag()                                                                                               \
 	{                                                                                                                  \
 		LPTIM->INTSTS = LPTIM_STS;                                                                                     \
 	}
@@ -43,6 +43,6 @@ void LPT_DeInit(void);
 void LPT_EnableControl(int iCtrl);
 void LPT_EnableIRQ(void);
 void LPT_DisableIRQ(void);
-u16  LPT_GetCount(void);
+u16	 LPT_GetCount(void);
 
 #endif /*__LPTIM_H__*/

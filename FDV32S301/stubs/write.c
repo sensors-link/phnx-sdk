@@ -1,12 +1,6 @@
 /* See LICENSE of license details. */
 
-#include <stdint.h>
-#include <string.h>
-#include <errno.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include "stub.h"
-#include "phnx02.h"
 
 typedef unsigned int size_t;
 

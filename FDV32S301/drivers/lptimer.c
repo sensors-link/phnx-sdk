@@ -110,7 +110,7 @@ u16 LPT_GetCount(void)
 	u16 tmp0;
 	while (1)
 	{
-		tmp0 = LPTIM->CNT & LPTIM_CNT;
+		tmp0	 = LPTIM->CNT & LPTIM_CNT;
 		u16 tmp1 = LPTIM->CNT & LPTIM_CNT;
 		if (tmp0 == tmp1)
 			break;

@@ -1,11 +1,5 @@
 /* See LICENSE of license details. */
 
-#include <stdint.h>
-#include <string.h>
-#include <errno.h>
-#include <phnx05.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include "stub.h"
 
 typedef unsigned int size_t;
@@ -20,6 +14,21 @@ ssize_t _write(int fd, const void *ptr, size_t len)
 	{
 		for (size_t jj = 0; jj < len; jj++)
 		{
+#if defined(_UART2)
+			UART2->SBUF = current[jj]; // sbuf
+			while (((UART2->ISR) & 0x00000001) != 0x00000001)
+			{
+			};
+			UART2->ISR = (0xff << 0); // clear intf
+			if (current[jj] == '\n')
+			{
+				UART2->SBUF = '\r';
+				while (((UART2->ISR) & 0x00000001) != 0x00000001)
+				{
+				};
+				UART2->ISR = (0xff << 0); // clear intf
+			}
+#else
 			UART1->SBUF = current[jj]; // sbuf
 			while (((UART1->ISR) & 0x00000001) != 0x00000001)
 			{
@@ -33,6 +42,7 @@ ssize_t _write(int fd, const void *ptr, size_t len)
 				};
 				UART1->ISR = (0xff << 0); // clear intf
 			}
+#endif
 		}
 		return len;
 	}

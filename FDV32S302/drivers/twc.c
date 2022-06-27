@@ -224,7 +224,7 @@ void TWC_SWANBusConfig(int txBaud, int rxBaud, sSwanBusCfgParam *pParam)
  */
 void TWC_RecieveEncodeControl(ControlStatus ctl)
 {
-	if( ctl == ENABLE)
+	if (ctl == ENABLE)
 	{
 		TWC->CR |= TWC_CR_RXRECEN;
 	}
@@ -237,7 +237,8 @@ void TWC_RecieveEncodeControl(ControlStatus ctl)
 /**
  * @brief set cmd1-3 register  cmd and mask
  *
- * @param cmdRegNo :TWC_CMD_1  , TWC_CMD_2 , TWC_CMD_3 , TWC_CMD_4, TWC_CMD_5, TWC_CMD_6
+ * @param cmdRegNo :TWC_CMD_1  , TWC_CMD_2 , TWC_CMD_3 , TWC_CMD_4, TWC_CMD_5,
+ * TWC_CMD_6
  * @param cmd :cmd value
  * @param msk :mask value
  * @note :mask set all 1 , cmd novalid
@@ -312,7 +313,7 @@ void TWC_SendDisable(void)
  */
 void TWC_SwanBusSendStartConfig(ControlStatus clt)
 {
-	if( clt == ENABLE)
+	if (clt == ENABLE)
 		TWC->TXS |= TWC_TXS_TXSTART;
 	else
 		TWC->TXS &= ~TWC_TXS_TXSTART;
@@ -327,7 +328,6 @@ void TWC_EnableIRQControl(eTansferEnd_Type val)
 {
 	TWC->INTEN = val;
 }
-
 
 /**
  * @brief:Clear interrupt flag

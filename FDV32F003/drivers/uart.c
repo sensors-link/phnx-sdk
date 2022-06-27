@@ -24,14 +24,11 @@
 void UART_Init(int mode, int iBaud)
 {
 	u32 pclk = 0;
-	u32 div1 = 0;
-	u32 div2 = 0;
-	u32 test;
 	PARAM_CHECK((mode != UART_MODE_10B_ASYNC) && (mode != UART_MODE_8B_SYNC) && (mode != UART_MODE_11B_ASYNC));
 
 	SystemCoreClockUpdate();
 
-	pclk = SYSC_APBCLK_Get();
+	pclk = SYSC_GetAPBCLK();
 
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_UART_PCKEN;
 	UART1->SCON = 0;
@@ -45,7 +42,7 @@ void UART_Init(int mode, int iBaud)
 	else if (mode == UART_MODE_10B_ASYNC)
 	{
 		UART1->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
-		//REG32(0xB700) = UART1->BDIV;
+		// REG32(0xB700) = UART1->BDIV;
 		UART1->SCON = ((UART_MODE_10B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
 	}
 	else
@@ -211,7 +208,6 @@ u16 UART_Receive9BitData(void)
  * @note 不查询发送完成标�??? */
 void UART_WriteData(u16 dat)
 {
-
 	if (dat & (1 << 8))
 	{
 		UART1->SCON |= UART_SCON_TB8;

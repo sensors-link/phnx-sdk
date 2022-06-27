@@ -12,21 +12,21 @@
 #include "wdt.h"
 #include "sysc.h"
 
-#define WDT_StartCount()                 \
-{                                        \
-    WDT_RST_REG = WDT_START_RST_V0;      \
-    WDT_RST_REG = WDT_START_RST_V1;      \
-}
-#define WDT_ClrCount()                   \
-{                                        \
-    WDT_RST_REG = WDT_START_RST_V0;      \
-    WDT_RST_REG = WDT_START_RST_V1;      \
-}
-#define WDT_ClrIntFlag()                 \
-{                                        \
-    WDT_RST_REG = WDT_START_RST_V0;      \
-    WDT_RST_REG = WDT_START_RST_V1;      \
-}
+#define WDT_StartCount()                                                                                               \
+	{                                                                                                                  \
+		WDT_RST_REG = WDT_START_RST_V0;                                                                                \
+		WDT_RST_REG = WDT_START_RST_V1;                                                                                \
+	}
+#define WDT_ClrCount()                                                                                                 \
+	{                                                                                                                  \
+		WDT_RST_REG = WDT_START_RST_V0;                                                                                \
+		WDT_RST_REG = WDT_START_RST_V1;                                                                                \
+	}
+#define WDT_ClrIntFlag()                                                                                               \
+	{                                                                                                                  \
+		WDT_RST_REG = WDT_START_RST_V0;                                                                                \
+		WDT_RST_REG = WDT_START_RST_V1;                                                                                \
+	}
 
 /**
  * @brief wdt init
@@ -44,7 +44,7 @@ void WDT_Init(int ps, int iDel, eOVModeType iOVMode)
 
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_LPWDT_PCKEN;
 
-	//setting ps
+	// setting ps
 	WDT_CR_REG |= (ps << 8) & 0xF00;
 
 	iDel = iDel >> 2;

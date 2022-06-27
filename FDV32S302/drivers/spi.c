@@ -37,7 +37,6 @@ void SPI_Init(int mode, int pol, int phase, int freq)
 	else
 		SPI->CR0 &= ~SPI_CR0_CPOL;
 
-
 	if (phase == SPI_CPHA_MIDD)
 		SPI->CR0 |= SPI_CR0_CPHA;
 	else

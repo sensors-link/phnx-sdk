@@ -13,18 +13,18 @@
 #include "phnx02.h"
 
 // register  defines
-#define LPTIM_CR_REG REG32(LPTIM_BASE + 0x00)
-#define LPTIM_CFG_REG REG32(LPTIM_BASE + 0x04)
-#define LPTIM_CNT_REG REG32(LPTIM_BASE + 0x08)
+#define LPTIM_CR_REG	 REG32(LPTIM_BASE + 0x00)
+#define LPTIM_CFG_REG	 REG32(LPTIM_BASE + 0x04)
+#define LPTIM_CNT_REG	 REG32(LPTIM_BASE + 0x08)
 #define LPTIM_INTSTS_REG REG32(LPTIM_BASE + 0x0c)
 
 // register bits defines
 // LPTIM_CR
-#define LPTIM_CR_IE BIT(3)
+#define LPTIM_CR_IE	  BIT(3)
 #define LPTIM_CR_PITE BIT(2)
-#define LPTIM_CR_EN BIT(0)
+#define LPTIM_CR_EN	  BIT(0)
 // LPTIM_CFG
-#define LPTIM_CFG BITS(0, 15)
+#define LPTIM_CFG	  BITS(0, 15)
 #define LPTIM_CFG_pos (0) // 0-0xffff:(x+1)*(1/fclk)
 // LPTIM_CNT
 #define LPTIM_CNT BITS(0, 15)
@@ -50,6 +50,6 @@ void LPT_DeInit(void);
 void LPT_EnableControl(int iCtrl);
 void LPT_EnableIRQ(void);
 void LPT_DisableIRQ(void);
-u16 LPT_GetCount(void);
+u16	 LPT_GetCount(void);
 
 #endif

@@ -23,7 +23,7 @@ void GPIO_PinSelect(int pin, int fun)
 	PARAM_CHECK((pin == 0) || (pin >= (1 << 20)));
 	for (int i = 0; i < 16; ++i)
 	{
-		if( pin & 0x0001)
+		if (pin & 0x0001)
 		{
 			IOM->AF0 &= ~(0x03 << (i << 1));
 			IOM->AF0 |= (fun << (i << 1));
@@ -221,4 +221,3 @@ void GPIO_ClrIntFlag(int pin)
 {
 	IOM->INTF = pin;
 }
-
