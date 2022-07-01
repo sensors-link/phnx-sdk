@@ -17,4 +17,4 @@ jobs:
       - name: publish
         run: |
           cd sdk
-          python3 -m platformio pkg publish --type tool --notify  --non-interactive
+          python3 -m platformio pkg publish --type library --notify  --non-interactive
