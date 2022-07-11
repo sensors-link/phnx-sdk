@@ -328,7 +328,9 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html" id="SLink.exe.c.pr
 			<complex-array name="resourcePaths">
 				<element>
 					<simple name="id" value="ilg.gnumcueclipse.managedbuild.cross.riscv.option.optimization.level" />
-					<simple name="value" value="ilg.gnumcueclipse.managedbuild.cross.riscv.option.optimization.level.none" />
+					<!-- <simple name="value" value="ilg.gnumcueclipse.managedbuild.cross.riscv.option.optimization.level.none" /> -->
+					<!-- <simple name="value" value="ilg.gnumcueclipse.managedbuild.cross.riscv.option.optimization.level.more" /> -->
+					<simple name="value" value="ilg.gnumcueclipse.managedbuild.cross.riscv.option.optimization.level.size" />
 					<simple name="path" value="" />
 					<simple name="buildType" value="debug" />
 				</element>

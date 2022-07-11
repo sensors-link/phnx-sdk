@@ -9,18 +9,15 @@ sub_dir = ''
 
 if env['BOARD'] == 'fdv32s301':
     sub_dir = "FDV32S301"
-    ldscript = join(curDir, sub_dir, "env", "phnx02_flash.lds")
-    upload_script = join(curDir, sub_dir, "env", "phoenix.cfg")
 
 elif env['BOARD'] == 'fdv32s302':
     sub_dir = "FDV32S302"
-    ldscript = join(curDir, sub_dir, "env", "phnx04_flash.lds")
-    upload_script = join(curDir, sub_dir, "env", "phoenix.cfg")
 
 elif env['BOARD'] == 'fdv32f003':
     sub_dir = "FDV32F003"
-    ldscript = join(curDir, sub_dir, "env", "phnx05_flash.lds")
-    upload_script = join(curDir, sub_dir, "env", "phoenix05.cfg")
+
+ldscript = join(curDir, sub_dir, "env", "flash.lds")
+upload_script = join(curDir, sub_dir, "env", "phoenix.cfg")
 
 src_filter.append("+<" + join(curDir, sub_dir, "drivers", "*.c") + ">")
 src_filter.append("+<" + join(curDir, sub_dir, "stubs", "*.c") + ">")

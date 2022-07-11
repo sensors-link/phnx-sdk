@@ -17,4 +17,5 @@ jobs:
       - name: publish
         run: |
           cd sdk
+          perl -i -pe "s/\@VERSION\@//${GITHUB_REF}##*/v" library.json
           python3 -m platformio pkg publish --type library --notify  --non-interactive
