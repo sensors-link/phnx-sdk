@@ -48,16 +48,14 @@ void WDT_Init(int iDel, int iClkSrc, eOVModeType iOVMode)
 		++iTmp;
 		iDel >>= 1;
 	}
+
 	PARAM_CHECK((iTmp > 16) || (iTmp == 0));
-	WDT_CR_REG = iTmp - 1;
+	WDT->CR = iTmp - 1;
 	if (iOVMode == WDT_OV_INT)
-	{
-		WDT_CR_REG |= WDT_CR_WINTEN;
-	}
+		WDT->CR |= WDT_CR_WINTEN;
 	else
-	{
-		WDT_CR_REG &= ~WDT_CR_WINTEN;
-	}
+		WDT->CR &= ~WDT_CR_WINTEN;
+
 	PMU->WPT = PMU_WPT_V0;
 	PMU->WPT = PMU_WPT_V1;
 	PMU->CR |= PMU_CR_WDTCLKEN;

@@ -59,6 +59,7 @@ void PMU_WakeConfig(int iWkMode, int iWKLevel, int iWKPinEn)
  */
 void PMU_EnterSleep(void)
 {
+	CLEAR_CSR(0xbff, CUSTOMCSR0_SLEEPDEEPEN);
 	asm volatile("wfi");
 }
 

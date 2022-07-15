@@ -9,8 +9,9 @@
  *
  */
 
-#ifndef __TWC_H
-#define __TWC_H
+#ifndef __TWC_H__
+#define __TWC_H__
+
 #include "phnx02.h"
 // twc_cr
 #define TWC_CR_RXRECEN		   BIT(8)

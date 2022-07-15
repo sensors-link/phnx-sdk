@@ -70,6 +70,7 @@
 #define TWC_SWBR_RXBR_40K (13 << 0)
 #define TWC_SWBR_RXBR_50K (14 << 0)
 #define TWC_SWBR_RXBR_60K (15 << 0)
+
 // twc_gapw
 #define TWC_GAPW_GAPCOMP	 BITS(8, 14)
 #define TWC_GAPW_GAPCYC		 BITS(0, 7)

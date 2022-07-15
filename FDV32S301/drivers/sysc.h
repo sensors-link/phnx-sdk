@@ -9,21 +9,10 @@
  *
  */
 
-#ifndef __SYSC_H
-#define __SYSC_H
+#ifndef __SYSC_H__
+#define __SYSC_H__
 
 #include "phnx02.h"
-
-/* registers definitions */
-#define SYSC_CLKCTRCFG_REG	REG32((SYSC_BASE) + 0x00U)
-#define SYSC_WRPROCFG_REG	REG32((SYSC_BASE) + 0x04U)
-#define SYSC_CLKENCFG_REG	REG32((SYSC_BASE) + 0x08U)
-#define SYSC_MSFTRSTCFG_REG REG32((SYSC_BASE) + 0x0cU)
-
-#define SYSC_TESTCKSEL_REG	 REG32((SYSC_BASE) + 0x14U)
-#define SYSC_ANCLKDIV_REG	 REG32((SYSC_BASE) + 0x18U)
-#define SYSC_TIMCLKDIV_REG	 REG32((SYSC_BASE) + 0x1cU)
-#define SYSC_BZTIMCLKDIV_REG REG32((SYSC_BASE) + 0x20U)
 
 // SYSC_CLKCTRCFG
 #define SYSC_CLKCTRCFG_DSW_WKUP_DLY	  BITS(23, 31)
@@ -42,13 +31,14 @@
 #define SYSC_CLKCTRCFG_SYS_CLK_SEL_XTL (3 << 4)
 
 // SYSC_WRPROCFG
-#define SYSC_WRPROCFG	 BITS(0, 15)
+#define SYSC_WRPROCFG BITS(0, 15)
+
 #define SYSC_WRPROCFG_V0 0x5a5a
 #define SYSC_WRPROCFG_V1 0xa5a5
 #define SYSC_WPT_UNLOCK()                                                                                              \
 	{                                                                                                                  \
-		SYSC->WRPROCFG = 0x5a5a;                                                                                       \
-		SYSC->WRPROCFG = 0xa5a5;                                                                                       \
+		SYSC->WRPROCFG = SYSC_WRPROCFG_V0;                                                                             \
+		SYSC->WRPROCFG = SYSC_WRPROCFG_V1;                                                                             \
 	}
 
 // SYSC_CLKENCFG
@@ -92,14 +82,17 @@
 #define SYSC_TESTCKSEL_EN		   BIT(7)
 #define SYSC_TESTCKSEL_CLK_DIV	   BITS(0, 6)
 #define SYSC_TESTCKSEL_CLK_DIV_pos (0) // div(x+1)*2
+
 // SYSC_ANCLKDIV
 #define SYSC_ANAC_500K_CLK_DIV		BITS(4, 8)
 #define SYSC_ANAC_ANAC_SCLK_DIV		BITS(0, 3)
 #define SYSC_ANAC_500K_CLK_DIV_pos	(4) // 0-1f:div(x+1)
 #define SYSC_ANAC_ANAC_SCLK_DIV_pos (0) // 0-0f:div(x+1)*2
+
 // SYSC_TIMCLKDIV
 #define SYSC_TIMCLKDIV_012	   BITS(0, 7)
 #define SYSC_TIMCLKDIV_012_pos (0) // 0-ff:div(x+1)
+
 // SYSC_BZTIMCLKDIV
 #define SYSC_BZTIMCLKDIV_3	   BITS(0, 7)
 #define SYSC_BZTIMCLKDIV_3_pos (0) // 0-ff:div(x+1)

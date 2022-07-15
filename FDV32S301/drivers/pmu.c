@@ -44,13 +44,10 @@ void PMU_WakeConfig(int iWkMode, int iWKLevel, int iWKPinEn)
 	PARAM_CHECK((iWKLevel != PMU_WKCFG_GPIOWKLEV_LOW) && (iWKLevel != PMU_WKCFG_GPIOWKLEV_HIGH));
 	PMU->WKCFG |= iWkMode;
 	if (iWKLevel == PMU_WK_LOW)
-	{
 		PMU->WKCFG &= ~(iWKPinEn << PMU_WKCFG_GPIOWKLEV_pos);
-	}
 	else
-	{
 		PMU->WKCFG |= (iWKPinEn << PMU_WKCFG_GPIOWKLEV_pos);
-	}
+
 	PMU->WKCFG |= iWKPinEn;
 }
 
@@ -98,6 +95,7 @@ void PMU_SoftCoreReset(void)
 {
 	SET_CSR(0xbff, CUSTOMCSR0_SYSRESETREQ);
 }
+
 /**
  * @brief reset digital region
  *
@@ -107,6 +105,7 @@ void PMU_SoftDigitalReset(void)
 	PMU_WPT_UNLOCK();
 	PMU->SOFTRST |= (1 << 1);
 }
+
 /**
  * @brief reset awo and dig region
  *
@@ -157,6 +156,7 @@ void PMU_ClrIntFlag(int wk_rstREG, int val)
 	else
 		PMU->RSTSTS = val;
 }
+
 /**
  * @brief get backup register value
  *
@@ -166,6 +166,7 @@ u32 PMU_GetBAKRValue(void)
 {
 	return PMU->BAKR;
 }
+
 /**
  * @brief set backup register value
  *

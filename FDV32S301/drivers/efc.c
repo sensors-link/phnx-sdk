@@ -13,10 +13,10 @@
 
 #define EFC_OPR_OPEN(mode)                                                                                             \
 	{                                                                                                                  \
-		EFC_OPR_REG = EFC_OPR_PPRF_V0 | (mode);                                                                        \
-		EFC_OPR_REG = EFC_OPR_PPRF_V1 | (mode);                                                                        \
-		EFC_OPR_REG = EFC_OPR_PPRF_V2 | (mode);                                                                        \
-		EFC_OPR_REG = EFC_OPR_PPRF_V3 | (mode);                                                                        \
+		EFC->OPR = EFC_OPR_PPRF_V0 | (mode);                                                                           \
+		EFC->OPR = EFC_OPR_PPRF_V1 | (mode);                                                                           \
+		EFC->OPR = EFC_OPR_PPRF_V2 | (mode);                                                                           \
+		EFC->OPR = EFC_OPR_PPRF_V3 | (mode);                                                                           \
 	}
 
 /**
@@ -28,9 +28,8 @@ BOOL EFC_Init(void)
 {
 	SystemCoreClockUpdate();
 	if (SystemCoreClock < 1000000)
-	{
 		return FALSE;
-	}
+
 	if (SystemCoreClock == 1000000)
 	{
 		EFC_WPT_UNLOCK();
@@ -84,6 +83,7 @@ BOOL EFC_Init(void)
 		EFC_WPT_UNLOCK();
 		EFC->TERASE = 0x4c6;
 	}
+
 	return TRUE;
 }
 
@@ -99,8 +99,8 @@ eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
 {
 	PARAM_CHECK((Addr < 0x10100000) || ((Addr > 0x1011ffff) && (Addr < 0x10140000)) ||
 				((Addr > 0x10140dff) && (Addr < 0x10180000)) || (Addr > 0x101803ff));
-	u32 stat	= EFC_STS_REG;
-	EFC_STS_REG = stat;
+	u32 stat = EFC->STS;
+	EFC->STS = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_SIG_PRG);
 	if (iPrgType == EFC_PRG_BYTE)
 		REG8(Addr) = Data;
@@ -114,12 +114,12 @@ eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data)
 		PARAM_CHECK(Addr & 0x03);
 		REG32(Addr) = Data;
 	}
-	while (!EFC_STS_REG)
+	while (!EFC->STS)
 		;
-	if (EFC_STS_REG != EFC_STS_CD)
-	{
+
+	if (EFC->STS != EFC_STS_CD)
 		return EFC_SING_PRG_FAIL;
-	}
+
 	return EFC_SUCCESS;
 }
 
@@ -134,22 +134,22 @@ eReturnType EFC_PageProgram(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
-	u32 stat	= EFC_STS_REG;
-	EFC_STS_REG = stat;
+	u32 stat = EFC->STS;
+	EFC->STS = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_ROW_PRG);
 	REG32(u32Addr) = 0xffffffff;
-	while (!EFC_STS_REG)
+	while (!EFC->STS)
 		;
-	if (EFC_STS_REG != EFC_STS_CD)
+	if (EFC->STS != EFC_STS_CD)
 	{
 		return EFC_PAGE_PRG_FAIL;
 	}
-	EFC_STS_REG = EFC_STS_CD;
+	EFC->STS = EFC_STS_CD;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_ROW_PRG);
 	REG32(u32Addr + 256) = 0xffffffff;
-	while (!EFC_STS_REG)
+	while (!EFC->STS)
 		;
-	if (EFC_STS_REG != EFC_STS_CD)
+	if (EFC->STS != EFC_STS_CD)
 	{
 		return EFC_PAGE_PRG_FAIL;
 	}
@@ -166,16 +166,16 @@ eReturnType EFC_PageErase(u32 u32Addr)
 {
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
 				((u32Addr > 0x10140dff) && (u32Addr < 0x10180000)) || (u32Addr > 0x101803ff));
-	u32 stat	= EFC_STS_REG;
-	EFC_STS_REG = stat;
+	u32 stat = EFC->STS;
+	EFC->STS = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PAGE_ERASE);
 	REG32(u32Addr) = 0xffffffff;
-	while (!EFC_STS_REG)
+	while (!EFC->STS)
 		;
-	if (EFC_STS_REG != EFC_STS_CD)
-	{
+
+	if (EFC->STS != EFC_STS_CD)
 		return EFC_PAGE_ERASE_FAIL;
-	}
+
 	return EFC_SUCCESS;
 }
 
@@ -190,16 +190,16 @@ eReturnType EFC_ChipErase(u32 u32Addr)
 {
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) ||
 				((u32Addr > 0x10140dff) && (u32Addr < 0x10180000)) || (u32Addr > 0x101803ff));
-	u32 stat	= EFC_STS_REG;
-	EFC_STS_REG = stat;
+	u32 stat = EFC->STS;
+	EFC->STS = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_CHIP_ERASE);
 	REG32(u32Addr) = 0xffffffff;
-	while (!EFC_STS_REG)
+	while (!EFC->STS)
 		;
-	if (EFC_STS_REG != EFC_STS_CD)
-	{
+
+	if (EFC->STS != EFC_STS_CD)
 		return EFC_CHIP_ERASE_FAIL;
-	}
+
 	return EFC_SUCCESS;
 }
 /**
@@ -213,13 +213,13 @@ eReturnType EFC_PageLoad(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
-	u32 stat	= EFC_STS_REG;
-	EFC_STS_REG = stat;
+	u32 stat = EFC->STS;
+	EFC->STS = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PAGE_LOAD);
 	REG32(u32Addr) = 0xffffffff;
-	while (!EFC_STS_REG)
+	while (!EFC->STS)
 		;
-	if (EFC_STS_REG != EFC_STS_CD)
+	if (EFC->STS != EFC_STS_CD)
 	{
 		return EFC_PAGE_LOAD_FAIL;
 	}
@@ -237,13 +237,13 @@ eReturnType EFC_PageEraseVerify(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
-	u32 stat	= EFC_STS_REG;
-	EFC_STS_REG = stat;
+	u32 stat = EFC->STS;
+	EFC->STS = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PE_V);
 	REG32(u32Addr) = 0xffffffff;
-	while (!EFC_STS_REG)
+	while (!EFC->STS)
 		;
-	if (EFC_STS_REG != EFC_STS_CD)
+	if (EFC->STS != EFC_STS_CD)
 	{
 		return EFC_PE_VERIFY_FAIL;
 	}
@@ -260,13 +260,13 @@ eReturnType EFC_ProgramVerify(u32 u32Addr)
 {
 	PARAM_CHECK(u32Addr & 0x1ff);
 	PARAM_CHECK((u32Addr < 0x10100000) || ((u32Addr > 0x1011ffff) && (u32Addr < 0x10140000)) || (u32Addr > 0x10140dff));
-	u32 stat	= EFC_STS_REG;
-	EFC_STS_REG = stat;
+	u32 stat = EFC->STS;
+	EFC->STS = stat;
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PP_V);
 	REG32(u32Addr) = 0xffffffff;
-	while (!EFC_STS_REG)
+	while (!EFC->STS)
 		;
-	if (EFC_STS_REG != EFC_STS_CD)
+	if (EFC->STS != EFC_STS_CD)
 	{
 		return EFC_PP_VERIFY_FAIL;
 	}
@@ -343,11 +343,11 @@ BOOL EFC_EEPROMWrite(u32 addr, int iPrgType, u32 data)
 {
 	PARAM_CHECK((addr < 0x10180000) || (addr > 0x101803ff));
 	if (EFC_PageErase(addr) != EFC_SUCCESS)
-	{
 		return FALSE;
-	}
+
 	if (REG32(addr) != 0xffffffff)
 		return FALSE;
+
 	EFC_SingleProgram(addr, iPrgType, data);
 	if (iPrgType == EFC_PRG_BYTE)
 	{

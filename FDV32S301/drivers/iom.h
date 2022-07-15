@@ -9,25 +9,10 @@
  *
  */
 
-#ifndef __IOM_H
-#define __IOM_H
-#include "phnx02.h"
+#ifndef __IOM_H__
+#define __IOM_H__
 
-/*register defines*/
-#define IOM_DATA_REG		 REG32(IOM_BASE + 0x00)
-#define IOM_OE_REG			 REG32(IOM_BASE + 0x04)
-#define IOM_PU_REG			 REG32(IOM_BASE + 0x08)
-#define IOM_PD_REG			 REG32(IOM_BASE + 0x0c)
-#define IOM_OTYPE_REG		 REG32(IOM_BASE + 0x10)
-#define IOM_ADS_REG			 REG32(IOM_BASE + 0x14)
-#define IOM_DRS_REG			 REG32(IOM_BASE + 0x18)
-#define IOM_AF0_REG			 REG32(IOM_BASE + 0x1c)
-#define IOM_AF1_REG			 REG32(IOM_BASE + 0x20)
-#define IOM_INT_TYPE_REG	 REG32(IOM_BASE + 0x24)
-#define IOM_INT_POLARITY_REG REG32(IOM_BASE + 0x28)
-#define IOM_EXT_INTE_REG	 REG32(IOM_BASE + 0x2c)
-#define IOM_INTF_REG		 REG32(IOM_BASE + 0x30)
-#define IOM_CTL_REG			 REG32(IOM_BASE + 0x34)
+#include "phnx02.h"
 
 /*register bit defines*/
 
@@ -154,9 +139,9 @@
 #define IOM_AF1_P18_SEL_LPUART_RX (2 << 4)
 #define IOM_AF1_P18_SEL_SPI_SCK	  (3 << 4)
 
+#define IOM_AF1_P19_SEL_GPIO	  (0 << 6)
 #define IOM_AF1_P19_SEL_TWC_TX	  (1 << 6)
 #define IOM_AF1_P19_SEL_LPUART_TX (2 << 6)
-#define IOM_AF1_P19_SEL_GPIO	  (0 << 6)
 #define IOM_AF1_P19_SEL_SPI_CS	  (3 << 6)
 
 // IOM_CTL
@@ -187,18 +172,19 @@
 #define GPIO_ALL   (0xfffff)
 
 // extern define
-#define PIN_FUNC_0 0
-#define PIN_FUNC_1 1
-#define PIN_FUNC_2 2
-#define PIN_FUNC_3 3
+#define PIN_FUNC_0 (0)
+#define PIN_FUNC_1 (1)
+#define PIN_FUNC_2 (2)
+#define PIN_FUNC_3 (3)
 
-#define PIN_INT_TYPE_EDGE  0
-#define PIN_INT_TYPE_LEVEL 1
+#define PIN_INT_TYPE_EDGE  (0)
+#define PIN_INT_TYPE_LEVEL (1)
 
-#define PIN_INT_POL_LOW	 0
-#define PIN_INT_POL_HIGH 1
+#define PIN_INT_POL_LOW	 (0)
+#define PIN_INT_POL_HIGH (1)
 
 // extern function declare
+void GPIO_PinSelect(int pin, int fun);
 void GPIO_PinConfigure(int pin, int analogEn, int outputEn, int puEn, int pdEn, int outOpenDrainEn);
 void GPIO_PinConfigStrongDrive(int pin, ControlStatus ctl);
 int	 GPIO_GetData(void);
@@ -210,4 +196,4 @@ void GPIO_PinIRQControl(int pin, int en);
 int	 GPIO_GetIntFlag(void);
 void GPIO_ClrIntFlag(int pin);
 
-#endif
+#endif /*__IOM_H__*/

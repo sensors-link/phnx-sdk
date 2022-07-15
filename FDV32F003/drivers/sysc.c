@@ -101,3 +101,14 @@ void SYSC_TestClkOutControl(int div, ControlStatus clt)
 	PARAM_CHECK((div < 0) || (div > 127));
 	SYSC->TESTCKSEL = (clt << 7) | div;
 }
+
+/**
+ * @brief set anac , adc module clock div
+ *
+ * @param div : val:0-15 ==> div0-30  even
+ */
+void SYSC_SetADC_CLKDiv(int div)
+{
+	SYSC->ADCCLKDIV &= ~SYSC_ADC_SCLK_DIV;
+	SYSC->ADCCLKDIV |= div << SYSC_ADC_SCLK_DIV_pos;
+}

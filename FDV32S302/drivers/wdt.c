@@ -43,6 +43,7 @@ void WDT_Init(int iDel, eOVModeType iOVMode)
 	PMU->WPT = PMU_WPT_V0;
 	PMU->WPT = PMU_WPT_V1;
 	PMU->CR |= PMU_CR_WDTCLKEN;
+	WDT_StartCount();
 }
 
 /**

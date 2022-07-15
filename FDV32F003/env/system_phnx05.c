@@ -48,7 +48,7 @@ void SystemInit(void)
 	SystemCoreClockUpdate();
 #ifdef _DEBUG
 	GPIO_PinSelect(GPIO_PIN0 | GPIO_PIN1, PIN_FUNC_1);
-	UART_Init(UART_MODE_10B_ASYNC, 9600);
+	UART_Init(UART_MODE_10B_ASYNC, _BAUD_FREQ);
 #endif
 	WRITE_CSR(mtvec, &trap_entry);
 	EnableGlobleIRQ();

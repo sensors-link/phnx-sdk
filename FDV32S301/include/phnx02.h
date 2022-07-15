@@ -8,8 +8,8 @@
  * @copyright Fanhai Data Tech. (c) 2020
  *
  */
-#ifndef _PHNX02_H
-#define _PHNX02_H
+#ifndef __PHNX02_H__
+#define __PHNX02_H__
 
 #include "risc_v_csr.h"
 #include "system_phnx02.h"
@@ -20,36 +20,35 @@ extern "C"
 #endif
 /* IO definitions (access restrictions to peripheral registers) */
 /**
-
   <strong>IO Type Qualifiers</strong> are used
   \li to specify the access to peripheral variables.
   \li for automatic generation of peripheral register debug information.
-  */
+ */
 #ifdef __cplusplus
-#define __I volatile /*!< Defines 'read only' permissions                 */
+#define __I volatile /*!< Defines 'read only' permissions               */
 #else
 #define __I volatile const /*!< Defines 'read only' permissions                 */
 #endif
-#define __O	 volatile /*!< Defines 'write only' permissions                */
-#define __IO volatile /*!< Defines 'read / write' permissions              */
+#define __O	 volatile /*!< Defines 'write only' permissions             */
+#define __IO volatile /*!< Defines 'read / write' permissions           */
 
 	/* define interrupt number */
 	typedef enum IRQn
 	{
-		/* ---------------------  Phonix02 Specific Interrupt Numbers
+		/* ---------------------  Phonix04 Specific Interrupt Numbers
 			   ------------*/
-		RSV_IRQn	= 0,  /*!< Reserved Interrupt						*/
-		PMU_IRQn	= 1,  /*!< PMU Interrupt							*/
+		RSV_IRQn	= 0,  /*!< Reserved Interrupt					*/
+		PMU_IRQn	= 1,  /*!< PMU Interrupt						*/
 		LPT_IRQn	= 2,  /*!< LPT Interrupt						*/
 		TIMER1_IRQn = 3,  /*!< TIMER1 Interrupt					*/
-		TIMER2_IRQn = 4,  /*!< TIMER2 Interrupt */
+		TIMER2_IRQn = 4,  /*!< TIMER2 Interrupt					*/
 		TIMER3_IRQn = 5,  /*!< TIMER3 Interrupt */
 		TIMER4_IRQn = 6,  /*!< TIMER4 Interrupt */
-		UART1_IRQn	= 7,  /*!< UART1 Interrupt							*/
-		UART2_IRQn	= 8,  /*!< UART2 Interrupt  */
-		SPI_IRQn	= 9,  /*!< SPI Interrupt									*/
-		ANAC_IRQn	= 10, /*!< ANAC Interrupt  */
-		EFC_IRQn	= 11, /*!< EFC Interrupt   */
+		UART1_IRQn	= 7,  /*!< UART1 Interrupt					*/
+		UART2_IRQn	= 8,  /*!< UART2 Interrupt					*/
+		SPI_IRQn	= 9,  /*!< SPI Interrupt						*/
+		ANAC_IRQn	= 10, /*!< ANAC Interrupt						*/
+		EFC_IRQn	= 11, /*!< EFC Interrupt						*/
 		IOM_IRQn	= 12, /*!< IOM Interrupt						*/
 		I2C_IRQn	= 13, /*!< I2C Interrupt					*/
 		RTC_IRQn	= 14, /*!< RTC Interrupt						*/

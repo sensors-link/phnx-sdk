@@ -8,19 +8,21 @@
  * @copyright Fanhai Data Tech. (c) 2020
  *
  */
-#ifndef __TIM_H
-#define __TIM_H
+#ifndef __TIM_H__
+#define __TIM_H__
+
 #include "phnx02.h"
 
 // reg bit definitions
+// TIM PWCON
 #define TIM_PWCON_PWMCPOL BITS(17, 18)
 #define TIM_PWCON_DTEN	  BITS(16)
 #define TIM_PWCON_DTUGAP  BITS(0, 15)
 
 #define TIM_PWCON_PWMCPOL_pos (17) // 0-3
+#define TIM_PWCON_DTUGAP_pos  (0)  // 0-0xffff
 
-#define TIM_PWCON_DTUGAP_pos (0) // 0-0xffff
-
+// TIM CON
 #define TIM_CON_PAUSE	   BITS(24, 27)
 #define TIM_CON_PAUSE_TIM1 BIT(24)
 #define TIM_CON_PAUSE_TIM2 BIT(25)
@@ -64,12 +66,14 @@
 #define TIM_CON_TE_TIM3 BIT(2)
 #define TIM_CON_TE_TIM4 BIT(3)
 
+// TIM INTFLAG
 #define TIM_INTFLAG		 BITS(0, 3)
 #define TIM_INTFLAG_TIM1 BIT(0)
 #define TIM_INTFLAG_TIM2 BIT(1)
 #define TIM_INTFLAG_TIM3 BIT(2)
 #define TIM_INTFLAG_TIM4 BIT(3)
 
+// TIM INTCLR
 #define TIM_INTCLR		BITS(0, 3)
 #define TIM_INTCLR_TIM1 BIT(0)
 #define TIM_INTCLR_TIM2 BIT(1)

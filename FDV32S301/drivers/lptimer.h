@@ -8,15 +8,9 @@
  * @copyright Fanhai Data Tech. (c) 2020
  *
  */
-#ifndef __LPTIM_H
-#define __LPTIM_H
+#ifndef __LPTIM_H__
+#define __LPTIM_H__
 #include "phnx02.h"
-
-// register  defines
-#define LPTIM_CR_REG	 REG32(LPTIM_BASE + 0x00)
-#define LPTIM_CFG_REG	 REG32(LPTIM_BASE + 0x04)
-#define LPTIM_CNT_REG	 REG32(LPTIM_BASE + 0x08)
-#define LPTIM_INTSTS_REG REG32(LPTIM_BASE + 0x0c)
 
 // register bits defines
 // LPTIM_CR
@@ -37,14 +31,13 @@ typedef enum _CNT_MODE
 	LPT_PIT_CNT,
 } eCntModeType;
 
-#define LPT_GetIntFlag() (LPTIM_INTSTS_REG & LPTIM_STS)
+#define LPT_GetIntFlag() (LPTIM->INTSTSG & LPTIM_STS)
 #define LPT_ClrIntFlag()                                                                                               \
 	{                                                                                                                  \
-		LPTIM_INTSTS_REG = LPTIM_STS;                                                                                  \
+		LPTIM->INTSTS = LPTIM_STS;                                                                                     \
 	}
 
 // function
-
 void LPT_Init(int iClkSrc, int iDel, int iMode);
 void LPT_DeInit(void);
 void LPT_EnableControl(int iCtrl);
@@ -52,4 +45,4 @@ void LPT_EnableIRQ(void);
 void LPT_DisableIRQ(void);
 u16	 LPT_GetCount(void);
 
-#endif
+#endif /*__LPTIM_H__*/

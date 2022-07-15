@@ -144,8 +144,9 @@
 #define ANAC_LVD_CFG_SRCSEL BITS(1, 2)
 #define ANAC_LVD_CFG_EN		BIT(0)
 
-#define ANAC_LVD_CFG_FLT_pos   (8)
-#define ANAC_LVD_CFG_VTSEL_pos (3)
+#define ANAC_LVD_CFG_IBTRIM_pos (16)
+#define ANAC_LVD_CFG_FLT_pos	(8)
+#define ANAC_LVD_CFG_VTSEL_pos	(3)
 
 #define ANAC_LVD_CFG_SRCSEL_LOWPWR_VCC (0 << 1)
 #define ANAC_LVD_CFG_SRCSEL_VCC		   (1 << 1)
@@ -239,8 +240,8 @@
 #define ANAC_WPROT_V1 0xa5a5
 #define ANAC_WPT_UNLOCK()                                                                                              \
 	{                                                                                                                  \
-		ANAC->WPROT = 0x5a5a;                                                                                          \
-		ANAC->WPROT = 0xa5a5;                                                                                          \
+		ANAC->WPROT = ANAC_WPROT_V0;                                                                                   \
+		ANAC->WPROT = ANAC_WPROT_V1;                                                                                   \
 	}
 
 // ADC macro define
@@ -296,6 +297,7 @@ typedef enum _ADC_VAL_NO
 // extern function declare
 void ANAC_Init(int freq);
 void ANAC_DeInit(void);
+void ANAC_AnalogPowerEn(void);
 void ADC_Init(int chn, int buffEn, int verfSel, int verfVol, int smpTimes, int smpCycle);
 void ADC_Enable(void);
 void ADC_Disable(void);
@@ -306,6 +308,5 @@ u32	 ADC_GetSingleResultValue(int valNo);
 u32	 ADC_GetAverageValue(void);
 BOOL ADC_GetIntFlag(void);
 void ADC_ClrIntFlag(void);
-void ANAC_AnalogPowerEn(void);
 
 #endif /*__ANAC_H__*/

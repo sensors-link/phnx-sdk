@@ -34,6 +34,7 @@ void LPT_Init(int iDel, int iMode)
 	PMU->WPT = PMU_WPT_V0;
 	PMU->WPT = PMU_WPT_V1;
 	PMU->CR |= PMU_CR_LPTCLKEN;
+	LPTIM->CR |= LPTIM_CR_EN;
 }
 
 /**

@@ -9,23 +9,23 @@
  *
  */
 
-#ifndef __PMU_H
-#define __PMU_H
+#ifndef __PMU_H__
+#define __PMU_H__
 #include "phnx04.h"
 
 // reg bits def
 // pmu CR
 #define PMU_CR_HRCKEEPALIVE BIT(10)
 #define PMU_CR_VDDLPCFG		BITS(8, 9) // dp/pd valid
+#define PMU_CR_WDTCLKEN		BIT(7)
+#define PMU_CR_LPTCLKEN		BIT(6)
+#define PMU_CR_LVDCHIPRSTEN BIT(4)
+#define PMU_CR_PDNEN		BITS(0, 3)
+
 #define PMU_CR_VDDLPCFG_1P5 (0 << 8)
 #define PMU_CR_VDDLPCFG_1P2 (1 << 8)
 
-#define PMU_CR_WDTCLKEN BIT(7)
-#define PMU_CR_LPTCLKEN BIT(6)
-
-#define PMU_CR_LVDCHIPRSTEN BIT(4)
-#define PMU_CR_PDNEN		BITS(0, 3)
-#define PMU_CR_PDNEN_V		0x0a
+#define PMU_CR_PDNEN_V 0x0a
 
 // PMU WKCFG
 #define PMU_WKCFG_PMUWKMODE		  BIT(9)
@@ -79,8 +79,8 @@
 #define PMU_WPT_V1 (0x3c)
 #define PMU_WPT_UNLOCK()                                                                                               \
 	{                                                                                                                  \
-		PMU->WPT = 0xc3;                                                                                               \
-		PMU->WPT = 0x3c;                                                                                               \
+		PMU->WPT = PMU_WPT_V0;                                                                                         \
+		PMU->WPT = PMU_WPT_V1;                                                                                         \
 	}
 
 // extend define

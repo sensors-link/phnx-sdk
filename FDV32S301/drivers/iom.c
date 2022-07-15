@@ -13,6 +13,35 @@
 #include "iom.h"
 
 /**
+ * @brief 引脚复用功能选择
+ * @param pin :GPIO_PINxx，支持或操作
+ * @param fun PIN_FUNC_X
+ */
+void GPIO_PinSelect(int pin, int fun)
+{
+	SYSC->CLKENCFG |= SYSC_CLKENCFG_IOM;
+	PARAM_CHECK((pin == 0) || (pin >= (1 << 20)));
+	for (int i = 0; i < 16; ++i)
+	{
+		if (pin & 0x0001)
+		{
+			IOM->AF0 &= ~(0x03 << (i << 1));
+			IOM->AF0 |= (fun << (i << 1));
+		}
+		pin >>= 1;
+	}
+	for (int i = 0; i < 4; ++i)
+	{
+		if (pin & 0x0001)
+		{
+			IOM->AF1 &= ~(0x03 << (i << 1));
+			IOM->AF1 |= (fun << (i << 1));
+		}
+		pin >>= 1;
+	}
+}
+
+/**
  * @brief port pin configure
  *
  * @param pin :GPIO_PINxx     surport '|' combine
@@ -40,48 +69,33 @@ void GPIO_PinConfigure(int pin, int analogEn, int outputEn, int puEn, int pdEn, 
 			if (pinTmp & 0x01)
 			{
 				if (i < 16)
-				{
 					IOM->AF0 &= ~(3 << (i << 1));
-				}
 				else
-				{
 					IOM->AF1 &= ~(3 << ((i - 16) << 1));
-				}
 			}
+
 			pinTmp >>= 1;
 		}
+
 		if (outputEn == ENABLE)
-		{
 			IOM->OE |= pin;
-		}
 		else
-		{
 			IOM->OE &= ~pin;
-		}
+
 		if (outOpenDrainEn == ENABLE)
-		{
 			IOM->OTYPE |= pin;
-		}
 		else
-		{
 			IOM->OTYPE &= ~pin;
-		}
+
 		if (pdEn == ENABLE)
-		{
 			IOM->PD |= pin;
-		}
 		else
-		{
 			IOM->PD &= ~pin;
-		}
+
 		if (puEn == ENABLE)
-		{
 			IOM->PU |= pin;
-		}
 		else
-		{
 			IOM->PU &= ~pin;
-		}
 	}
 }
 
@@ -94,14 +108,11 @@ void GPIO_PinConfigure(int pin, int analogEn, int outputEn, int puEn, int pdEn, 
 void GPIO_PinConfigStrongDrive(int pin, ControlStatus ctl)
 {
 	if (ctl == ENABLE)
-	{
 		IOM->DRS |= pin;
-	}
 	else
-	{
 		IOM->DRS &= ~pin;
-	}
 }
+
 /**
  * @brief get data register value
  *
@@ -111,6 +122,7 @@ int GPIO_GetData(void)
 {
 	return IOM->DATA;
 }
+
 /**
  * @brief set pin
  *
@@ -120,6 +132,7 @@ void GPIO_SetPin(int pin)
 {
 	IOM->DATA |= pin;
 }
+
 /**
  * @brief clear pin
  *
@@ -142,21 +155,14 @@ void GPIO_PinIntConfig(int pin, int type, int polarity)
 	PARAM_CHECK((type != PIN_INT_TYPE_EDGE) && (type != PIN_INT_TYPE_LEVEL));
 	PARAM_CHECK((polarity != PIN_INT_POL_HIGH) && (polarity != PIN_INT_POL_LOW));
 	if (type == PIN_INT_TYPE_LEVEL)
-	{
 		IOM->INT_TYPE |= pin;
-	}
 	else
-	{
 		IOM->INT_TYPE &= ~pin;
-	}
+
 	if (polarity == PIN_INT_POL_HIGH)
-	{
 		IOM->INT_POLARITY |= pin;
-	}
 	else
-	{
 		IOM->INT_POLARITY &= ~pin;
-	}
 }
 /**
  * @brief globle interrupt control
@@ -168,29 +174,19 @@ void GPIO_PinIntConfig(int pin, int type, int polarity)
 void GPIO_GlobleIRQControl(int syncDisEn, int debounceEn, int en)
 {
 	if (syncDisEn == ENABLE)
-	{
 		IOM->CTL |= (1 << 2);
-	}
 	else
-	{
 		IOM->CTL &= ~(1 << 2);
-	}
+
 	if (debounceEn == ENABLE)
-	{
 		IOM->CTL |= 0x02;
-	}
 	else
-	{
 		IOM->CTL &= ~0x02;
-	}
+
 	if (en == ENABLE)
-	{
 		IOM->CTL |= 0x01;
-	}
 	else
-	{
 		IOM->CTL &= ~0x01;
-	}
 }
 /**
  * @brief pin interrupt control
@@ -201,14 +197,11 @@ void GPIO_GlobleIRQControl(int syncDisEn, int debounceEn, int en)
 void GPIO_PinIRQControl(int pin, int en)
 {
 	if (en == ENABLE)
-	{
 		IOM->EXT_INTE |= pin;
-	}
 	else
-	{
 		IOM->EXT_INTE &= ~pin;
-	}
 }
+
 /**
  * @brief get interrupt flag register value
  *
@@ -218,6 +211,7 @@ int GPIO_GetIntFlag(void)
 {
 	return IOM->INTF;
 }
+
 /**
  * @brief clear interrupt flag
  *

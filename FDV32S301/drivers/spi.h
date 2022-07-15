@@ -9,18 +9,13 @@
  *
  */
 
-#ifndef __SPI_H
-#define __SPI_H
+#ifndef __SPI_H__
+#define __SPI_H__
+
 #include "phnx02.h"
 
-/* SPI definitions */
-#define SPI_CR0_REG REG32(SPI_BASE + 0x00)
-#define SPI_CSN_REG REG32(SPI_BASE + 0x04)
-#define SPI_SR_REG	REG32(SPI_BASE + 0x08)
-#define SPI_DR_REG	REG32(SPI_BASE + 0x0c)
-
 // reg bit definitions
-
+// SPI CR0
 #define SPI_CR0_CPOL	BIT(7)
 #define SPI_CR0_CPHA	BIT(6)
 #define SPI_CR0_MSTCFIE BIT(5)
@@ -30,18 +25,20 @@
 
 #define SPI_CR0_SCLKDIV_pos (0) // 0-7 div(2^(x+1))
 
+// SPI SR
+#define SPI_SR_SPI_CS  BIT(2)
 #define SPI_SR_MSTCFSR BIT(1)
 #define SPI_SR_DONESR  BIT(0)
 
 // extend define
-#define SPI_CPOL_LOW  0
-#define SPI_CPOL_HIGH 1
+#define SPI_CPOL_LOW  (0)
+#define SPI_CPOL_HIGH (1)
 
-#define SPI_CPHA_FIST 0
-#define SPI_CPHA_MIDD 1
+#define SPI_CPHA_FIST (0)
+#define SPI_CPHA_MIDD (1)
 
-#define SPI_SLAVE  0
-#define SPI_MASTER 1
+#define SPI_SLAVE  (0)
+#define SPI_MASTER (1)
 
 #define SPI_ClrIntFlag()                                                                                               \
 	{                                                                                                                  \
@@ -64,4 +61,4 @@ void SPI_SendData(u8 data);
 u8	 SPI_RecieveData(void);
 u32	 SPI_GetStatus(void);
 
-#endif
+#endif /*__SPI_H__*/

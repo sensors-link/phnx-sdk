@@ -14,12 +14,14 @@
 
 // firmware include file
 #include "efc.h"
-#include "iom.h"
 #include "lptimer.h"
 #include "sysc.h"
 #include "timer.h"
 #include "uart.h"
 #include "wdt.h"
+#include "anac.h"
+#include "adc.h"
+#include "iom.h"
 
 #ifdef _DEBUG
 extern int __wrap_printf(const char *fmt, ...);

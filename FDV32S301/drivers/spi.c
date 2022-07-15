@@ -47,18 +47,17 @@ void SPI_Init(int pin, int mode, int pol, int phase, int freq)
 	PARAM_CHECK((pol != SPI_CPOL_HIGH) && (pol != SPI_CPOL_LOW));
 	PARAM_CHECK((phase != SPI_CPHA_FIST) && (phase != SPI_CPHA_MIDD));
 	PARAM_CHECK((mode != SPI_SR_MSTCFSR) && (mode != SPI_SLAVE));
+
 	if (pol == SPI_CPOL_HIGH)
 		SPI->CR0 |= SPI_CR0_CPOL;
 	else
 		SPI->CR0 &= ~SPI_CR0_CPOL;
+
 	if (phase == SPI_CPHA_MIDD)
-	{
 		SPI->CR0 |= SPI_CR0_CPHA;
-	}
 	else
-	{
 		SPI->CR0 &= ~SPI_CR0_CPHA;
-	}
+
 	if (mode == SPI_MASTER)
 	{
 		SPI->CR0 |= SPI_CR0_MSMODE;
@@ -70,6 +69,7 @@ void SPI_Init(int pin, int mode, int pol, int phase, int freq)
 		{
 			if (div < 2)
 				break;
+
 			tmp += 1;
 			div >>= 1;
 		}
@@ -93,6 +93,7 @@ void SPI_DeInit(void)
 	SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_SPI;
 	for (i = 4; i > 0; --i)
 		;
+
 	SYSC->CLKENCFG &= ~SYSC_CLKENCFG_SPI;
 }
 
@@ -104,13 +105,9 @@ void SPI_DeInit(void)
 void SPI_MasterConflictIRQControl(ControlStatus ctl)
 {
 	if (ctl == ENABLE)
-	{
 		SPI->CR0 |= SPI_CR0_MSTCFIE;
-	}
 	else
-	{
 		SPI->CR0 &= ~SPI_CR0_MSTCFIE;
-	}
 }
 
 /**
@@ -121,6 +118,7 @@ void SPI_EnableIRQ(void)
 {
 	SPI->CR0 |= SPI_CR0_DONEIE;
 }
+
 /**
  * @brief trasfer done interrupt disable
  *
@@ -138,6 +136,7 @@ void SPI_SetCSN(void)
 {
 	SPI->CSN = 0x01;
 }
+
 /**
  * @brief set cs low
  *
@@ -155,9 +154,10 @@ void SPI_ClrCSN(void)
 void SPI_SendData(u8 data)
 {
 	SPI->DR = data;
-	while (!(SPI->SR & 0x01))
+	while (!(SPI->SR & SPI_SR_DONESR))
 		;
 }
+
 /**
  * @brief recieve data
  *
@@ -166,7 +166,7 @@ void SPI_SendData(u8 data)
 u8 SPI_RecieveData(void)
 {
 	SPI->DR = 0;
-	while (!(SPI->SR & 0x01))
+	while (!(SPI->SR & SPI_SR_DONESR))
 		;
 	return SPI->DR;
 }

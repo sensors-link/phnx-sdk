@@ -11,6 +11,7 @@
 
 #ifndef __UART_H__
 #define __UART_H__
+
 #include "phnx04.h"
 
 /*register bit definitions */

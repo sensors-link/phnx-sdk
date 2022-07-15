@@ -56,14 +56,16 @@ void SYSC_SetAHBCLKDiv(int div)
 /**
  * @brief :reset peripher
  *
- * @param module:  PRST_XX,支持或操作一次设置多个pin
+ * @param module: surport '|' combine
+ *
+ *  PRST_XX,
  *
  */
 void SYSC_ResetPeripher(eRSTP_Type module)
 {
 	int i;
 	SYSC_WPT_UNLOCK();
-	SYSC->MSFTRSTCFG |= module;
+	SYSC->MSFTRSTCFG = module;
 	for (i = 5; i > 0; --i)
 		;
 }
@@ -71,7 +73,8 @@ void SYSC_ResetPeripher(eRSTP_Type module)
 /**
  * @brief peripher clock enable
  *
- * @param perp : PCLK_EN_xx,支持或操作一次设置多个pin
+ * @param perp :surport '|' combine
+ * PCLK_EN_xx
  */
 void SYSC_PCLKEnable(ePCLKEN_Type perp)
 {
@@ -81,7 +84,8 @@ void SYSC_PCLKEnable(ePCLKEN_Type perp)
 /**
  * @brief peripher clock disable
  *
- * @param perp :PCLK_EN_xx,支持或操作一次设置多个pin
+ * @param perp :surport '|' combine
+ * PCLK_EN_xx
  */
 void SYSC_PCLKDisable(ePCLKEN_Type perp)
 {
@@ -96,10 +100,14 @@ void SYSC_PCLKDisable(ePCLKEN_Type perp)
  */
 void SYSC_SetANAC_CLKDiv(int div, int m500kDiv)
 {
-	SYSC->ANCLKDIV &= ~SYSC_ANAC_ANAC_SCLK_DIV;
-	SYSC->ANCLKDIV |= div << SYSC_ANAC_ANAC_SCLK_DIV_pos;
-	SYSC->ANCLKDIV &= ~SYSC_ANAC_500K_CLK_DIV;
-	SYSC->ANCLKDIV |= m500kDiv << SYSC_ANAC_500K_CLK_DIV_pos;
+	u32 data;
+
+	data = SYSC->ANCLKDIV;
+	data &= ~SYSC_ANAC_ANAC_SCLK_DIV;
+	data |= div << SYSC_ANAC_ANAC_SCLK_DIV_pos;
+	data &= ~SYSC_ANAC_500K_CLK_DIV;
+	data |= m500kDiv << SYSC_ANAC_500K_CLK_DIV_pos;
+	SYSC->ANCLKDIV = data;
 }
 
 /**

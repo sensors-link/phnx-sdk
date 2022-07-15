@@ -13,20 +13,8 @@
 #define __EFC_H__
 #include "phnx02.h"
 
-/* EFC definitions */
-#define EFC_CR_REG	   REG32(EFC_BASE + 0x00)
-#define EFC_TNVS_REG   REG32(EFC_BASE + 0x04)
-#define EFC_TPROG_REG  REG32(EFC_BASE + 0x08)
-#define EFC_TPGS_REG   REG32(EFC_BASE + 0x0c)
-#define EFC_TRCV_REG   REG32(EFC_BASE + 0x10)
-#define EFC_TERASE_REG REG32(EFC_BASE + 0x14)
-#define EFC_WPT_REG	   REG32(EFC_BASE + 0x18)
-#define EFC_OPR_REG	   REG32(EFC_BASE + 0x1c)
-#define EFC_PVEV_REG   REG32(EFC_BASE + 0x20)
-#define EFC_STS_REG	   REG32(EFC_BASE + 0x24)
-
 /*register bit definitions */
-// EFCCR
+// EFC_CR
 #define EFC_CR_ERS2KDIV	  BITS(22, 31)
 #define EFC_CR_PRG2MDIV	  BITS(16, 21)
 #define EFC_CR_MRDCYC	  BITS(12, 15)
@@ -57,7 +45,8 @@
 #define EFC_TERASE_TSERS BITS(7, 10)
 #define EFC_TERASE_TCERS BITS(0, 6)
 // EFC_WPT
-#define EFC_WPT			BITS(0, 7)
+#define EFC_WPT BITS(0, 7)
+
 #define EFC_WPT_VALUE_0 0xc3
 #define EFC_WPT_VALUE_1 0x3c
 #define EFC_WPT_UNLOCK()                                                                                               \
@@ -67,14 +56,16 @@
 	}
 
 // EFC_OPR
-#define EFC_OPR_WE		BIT(7)
-#define EFC_OPR_OPRF	BITS(4, 6)
+#define EFC_OPR_WE	 BIT(7)
+#define EFC_OPR_OPRF BITS(4, 6)
+
 #define EFC_OPR_PPRF_V0 (0x00 << 4)
 #define EFC_OPR_PPRF_V1 (0x07 << 4)
 #define EFC_OPR_PPRF_V2 (0x09 << 4)
 #define EFC_OPR_PPRF_V3 (0x0c << 4)
 
-#define EFC_OPR_OPRMODE			   BITS(0, 3)
+#define EFC_OPR_OPRMODE BITS(0, 3)
+
 #define EFC_OPR_OPRMODE_SIG_PRG	   0
 #define EFC_OPR_OPRMODE_ROW_PRG	   1
 #define EFC_OPR_OPRMODE_PAGE_ERASE 2

@@ -145,4 +145,5 @@ void SYSC_PCLKEnable(ePCLKEN_Type perp);
 void SYSC_PCLKDisable(ePCLKEN_Type perp);
 void SYSC_SetANAC_CLKDiv(int div, int m500kDiv);
 void SYSC_TestClkOutControl(int div, ControlStatus clt);
+void SYSC_SetADC_CLKDiv(int div);
 #endif /*__SYSC_H__*/

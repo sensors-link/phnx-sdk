@@ -108,6 +108,7 @@ void ADC_Enable(void)
 {
 	ANAC->ADC_CTL |= 0x01;
 }
+
 /**
  * @brief ADC disable
  *
@@ -125,10 +126,6 @@ void ADC_EnableIRQ(void)
 {
 	ANAC->ADC_CTL |= (1 << 1);
 }
-/**
- * @brief start AD convert
- *
- */
 
 /**
  * @brief ADC disable interrupt
@@ -138,6 +135,7 @@ void ADC_DisableIRQ(void)
 {
 	ANAC->ADC_CTL &= ~(1 << 1);
 }
+
 /**
  * @brief ADC start convert
  *
@@ -168,6 +166,7 @@ u32 ADC_GetAverageValue(void)
 {
 	return ANAC->AVG_VAL;
 }
+
 /**
  * @brief get interrupt flag
  *
@@ -177,6 +176,7 @@ BOOL ADC_GetIntFlag(void)
 {
 	return (ANAC->ANAC_FLAG & 0x01) ? TRUE : FALSE;
 }
+
 /**
  * @brief clear interrupt flag
  *

@@ -9,8 +9,9 @@
  *
  */
 
-#ifndef __SYSTEM_PHNX02_H
-#define __SYSTEM_PHNX02_H
+#ifndef __SYSTEM_PHNX02_H__
+#define __SYSTEM_PHNX02_H__
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -30,9 +31,7 @@ extern "C"
 #define F_HRC4M	 3
 #define F_HRC8M	 4
 #define F_HRC16M 5
-//#define F_HRC24M 6
-//#define F_HRC32M 7
-#define F_LRC 8
+#define F_LRC	 8
 
 // user configure
 #ifndef SYSC_CLK_SRC_SEL

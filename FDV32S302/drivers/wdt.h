@@ -11,6 +11,7 @@
 
 #ifndef __WDT_H__
 #define __WDT_H__
+
 #include "phnx04.h"
 
 // WDT_CR
@@ -47,7 +48,6 @@ typedef enum _OV_MODE
 #define WDT_GetIntFlag() (WDT->CR & WDT_CR_WDTINTFLAG)
 
 // extern function declare
-
 void WDT_Init(int iDel, eOVModeType iOVMode);
 void WDT_DeInit(void);
 

@@ -44,7 +44,7 @@ void GPIO_PinSelect(int pin, int fun)
 /**
  * @brief port pin configure
  *
- * @param pin :GPIO_PINxx ,支持或操作一次设置多个pin
+ * @param pin :GPIO_PINxx     surport '|' combine
  * @param analogEn:ENABLE , DISABLE
  * @param outputEn :ENABLE , DISABLE
  * @param puEn :ENABLE , DISABLE
@@ -102,10 +102,10 @@ void GPIO_PinConfigure(int pin, int analogEn, int outputEn, int puEn, int pdEn, 
 /**
  * @brief port pin config strong drive
  *
- * @param pin :GPIO_PINxx ,支持或操作一次设置多个pin
+ * @param pin :GPIO_PINxx    surport '|' combine
  * @param ctl :ENABLE , DISABLE
  */
-void GPIO_PinConfigDrive(int pin, ControlStatus ctl)
+void GPIO_PinConfigStrongDrive(int pin, ControlStatus ctl)
 {
 	if (ctl == ENABLE)
 		IOM->DRS |= pin;
@@ -126,7 +126,7 @@ int GPIO_GetData(void)
 /**
  * @brief set pin
  *
- * @param pin :GPIO_PINxx ,支持或操作一次设置多个pin
+ * @param pin :GPIO_PINxx    surport '|' combine
  */
 void GPIO_SetPin(int pin)
 {
@@ -136,7 +136,7 @@ void GPIO_SetPin(int pin)
 /**
  * @brief clear pin
  *
- * @param pin :GPIO_PINxx ,支持或操作一次设置多个pin
+ * @param pin :GPIO_PINxx    surport '|' combine
  */
 void GPIO_ClrPin(int pin)
 {
@@ -146,7 +146,7 @@ void GPIO_ClrPin(int pin)
 /**
  * @brief pin interrupt configure
  *
- * @param pin :GPIO_PINxx ,支持或操作一次设置多个pin
+ * @param pin :GPIO_PINxx     surport '|' combine
  * @param type : PIN_INT_TYPE_EDGE  , PIN_INT_TYPE_LEVEL
  * @param polarity: PIN_INT_POL_HIGH , PIN_INT_POL_LOW
  */
@@ -191,7 +191,7 @@ void GPIO_GlobleIRQControl(int syncDisEn, int debounceEn, int en)
 /**
  * @brief pin interrupt control
  *
- * @param pin :GPIO_PINxx ,支持或操作一次设置多个pin
+ * @param pin :GPIO_PINxx   surport '|' combine
  * @param en:ENABLE , DISABLE
  */
 void GPIO_PinIRQControl(int pin, int en)
@@ -215,7 +215,7 @@ int GPIO_GetIntFlag(void)
 /**
  * @brief clear interrupt flag
  *
- * @param pin :GPIO_PINxx ,支持或操作一次设置多个pin
+ * @param pin :GPIO_PINxx surport '|' combine
  */
 void GPIO_ClrIntFlag(int pin)
 {

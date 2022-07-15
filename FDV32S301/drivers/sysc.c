@@ -81,6 +81,7 @@ void SYSC_PCLKEnable(ePCLKEN_Type perp)
 {
 	SYSC->CLKENCFG |= perp;
 }
+
 /**
  * @brief peripher clock disable
  *
@@ -91,6 +92,7 @@ void SYSC_PCLKDisable(ePCLKEN_Type perp)
 {
 	SYSC->CLKENCFG &= ~perp;
 }
+
 /**
  * @brief set anac , adc module clock div
  *

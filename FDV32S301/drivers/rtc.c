@@ -31,6 +31,8 @@ void RTC_Init(u32 u32ClkSrc, u32 u32HourFM)
 				(u32ClkSrc != RTC_XTH_DIV256) && (u32ClkSrc != RTC_XTH_DIV512) && (u32ClkSrc != RTC_XTH_DIV768));
 	PARAM_CHECK((u32HourFM != RTC_FMT_12H) && (u32HourFM != RTC_FMT_24H));
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_RTC;
+	RTC_WPR_REG = RTC_WPR_V0;
+	RTC_WPR_REG = RTC_WPR_V1;
 	switch (u32ClkSrc)
 	{
 	case RTC_XTL:
@@ -342,17 +344,19 @@ void RTC_PeriodCofig(int en, int irqEn, int prd_sel, int interval)
 	if (prd_sel == RTC_PRD_SEL_TIME_DATE)
 	{
 		RTC_WPT_UNLOCK();
+		RTC->CON &= ~RTC_CON_PRDSEL;
+		RTC_WPT_UNLOCK();
 		RTC->CON &= ~RTC_CON_PRDS;
 		RTC_WPT_UNLOCK();
 		RTC->CON |= interval << RTC_CON_PRDS_pos;
 	}
 	else
 	{
+		RTC_WPT_UNLOCK();
+		RTC->CON |= RTC_CON_PRDSEL;
 		PARAM_CHECK((interval < 0) || (interval > 63));
 		RTC_WPT_UNLOCK();
 		RTC->CON &= ~RTC_CON_PRDX;
-		RTC_WPT_UNLOCK();
-		RTC->CON |= RTC_CON_PRDSEL_PRDX;
 		RTC_WPT_UNLOCK();
 		RTC->CON |= interval << RTC_CON_PRDX_pos;
 	}

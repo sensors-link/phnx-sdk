@@ -37,6 +37,7 @@ void TWC_Init(int pin)
 	ANAC->CLK_CFG |= ANAC_CLK_CFG_MRC_EN;
 	for (i = 1000; i > 0; --i)
 		;
+
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TWC;
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TWC_MRCK;
 }
@@ -52,6 +53,7 @@ void TWC_DeInit(void)
 	SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_TWC;
 	for (i = 10; i > 0; --i)
 		;
+
 	ANAC_WPT_UNLOCK();
 	ANAC->CLK_CFG &= ~ANAC_CLK_CFG_MRC_EN;
 	SYSC->CLKENCFG &= ~SYSC_CLKENCFG_TWC;

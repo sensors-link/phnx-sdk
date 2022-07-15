@@ -46,13 +46,10 @@ void LPT_Init(int iClkSrc, int iDel, int iMode)
 	PARAM_CHECK((iTmp > 0xffff) || (iTmp < 1));
 	LPTIM->CFG = iTmp - 1;
 	if (iMode == LPT_SIG_TIME_CNT)
-	{
-		LPTIM_CR_REG &= ~LPTIM_CR_PITE;
-	}
+		LPTIM->CR &= ~LPTIM_CR_PITE;
 	else
-	{
-		LPTIM_CR_REG |= LPTIM_CR_PITE;
-	}
+		LPTIM->CR |= LPTIM_CR_PITE;
+
 	PMU->WPT = PMU_WPT_V0;
 	PMU->WPT = PMU_WPT_V1;
 	PMU->CR |= PMU_CR_LPTCLKEN;
@@ -89,15 +86,16 @@ void LPT_DeInit(void)
  */
 void LPT_EnableIRQ(void)
 {
-	LPTIM_CR_REG |= LPTIM_CR_IE;
+	LPTIM->CR |= LPTIM_CR_IE;
 }
+
 /**
  * @brief disable interrupt
  *
  */
 void LPT_DisableIRQ(void)
 {
-	LPTIM_CR_REG &= ~LPTIM_CR_IE;
+	LPTIM->CR &= ~LPTIM_CR_IE;
 }
 
 /**
@@ -107,11 +105,11 @@ void LPT_DisableIRQ(void)
  */
 u16 LPT_GetCount(void)
 {
-	u16 tmp0;
+	u16 tmp0, tmp1;
 	while (1)
 	{
-		tmp0	 = LPTIM->CNT & LPTIM_CNT;
-		u16 tmp1 = LPTIM->CNT & LPTIM_CNT;
+		tmp0 = LPTIM->CNT & LPTIM_CNT;
+		tmp1 = LPTIM->CNT & LPTIM_CNT;
 		if (tmp0 == tmp1)
 			break;
 	}

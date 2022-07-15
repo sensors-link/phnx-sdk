@@ -25,7 +25,6 @@ void ANAC_Init(int freq)
 	PARAM_CHECK(tmp < 2);
 	int tmp1 = SystemCoreClock / 1000 / (((tmp / 2 - 1) + 1) * 2) / 500;
 	PARAM_CHECK(tmp1 < 2);
-	ANAC->ME_CTL = ANAC_ME_CTL_ANAC_EN;
 	SYSC_SetANAC_CLKDiv(tmp / 2 - 1, tmp1 - 1);
 }
 
@@ -40,7 +39,6 @@ void ANAC_DeInit(void)
 	SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_ANAC;
 	for (i = 10; i > 0; --i)
 		;
-
 	SYSC->CLKENCFG &= ~SYSC_CLKENCFG_ANAC;
 }
 
@@ -88,7 +86,6 @@ void ADC_Init(int chn, int buffEn, int verfSel, int verfVol, int smpTimes, int s
 	{
 		ANAC->ADC_CFG &= ~(1 << 6);
 	}
-
 	if (verfSel == ADC_VREF_SEL_INT)
 	{
 		ANAC->ADC_CFG |= 0x01;
@@ -102,7 +99,7 @@ void ADC_Init(int chn, int buffEn, int verfSel, int verfVol, int smpTimes, int s
 }
 
 /**
- * @brief ANAC enalble
+ * @brief ADC enalble
  *
  */
 void ADC_Enable(void)
@@ -111,7 +108,7 @@ void ADC_Enable(void)
 }
 
 /**
- * @brief ANAC disable
+ * @brief ADC disable
  *
  */
 void ADC_Disable(void)
@@ -120,7 +117,7 @@ void ADC_Disable(void)
 }
 
 /**
- * @brief ANAC enable interrupt
+ * @brief ADC enable interrupt
  *
  */
 void ADC_EnableIRQ(void)
@@ -129,7 +126,7 @@ void ADC_EnableIRQ(void)
 }
 
 /**
- * @brief ANAC disable interrupt
+ * @brief ADC disable interrupt
  *
  */
 void ADC_DisableIRQ(void)
@@ -138,7 +135,7 @@ void ADC_DisableIRQ(void)
 }
 
 /**
- * @brief ANAC start convert
+ * @brief ADC start convert
  *
  */
 void ADC_StartConvert(void)
@@ -147,7 +144,7 @@ void ADC_StartConvert(void)
 }
 
 /**
- * @brief ANAC get single convert result value
+ * @brief ADC get single convert result value
  *
  * @param valNo :ADC_VAL_NOx
  * @return u32 :val

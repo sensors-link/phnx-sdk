@@ -29,14 +29,14 @@
 #define SYSC_CLKCTRCFG_SYS_CLK_SEL_LRC (1 << 4)
 
 // SYSC_WRPROCFG
-#define SYSC_WRPROCFG BITS(15, 0)
+#define SYSC_WRPROCFG BITS(0, 15)
 
 #define SYSC_WRPROCFG_V0 0x5a5a
 #define SYSC_WRPROCFG_V1 0xa5a5
 #define SYSC_WPT_UNLOCK()                                                                                              \
 	{                                                                                                                  \
-		SYSC->WRPROCFG = 0x5a5a;                                                                                       \
-		SYSC->WRPROCFG = 0xa5a5;                                                                                       \
+		SYSC->WRPROCFG = SYSC_WRPROCFG_V0;                                                                             \
+		SYSC->WRPROCFG = SYSC_WRPROCFG_V1;                                                                             \
 	}
 
 // SYSC_CLKENCFG
