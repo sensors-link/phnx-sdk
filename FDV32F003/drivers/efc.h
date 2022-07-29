@@ -11,18 +11,7 @@
 
 #ifndef __EFC_H__
 #define __EFC_H__
-#include "../include/phnx05.h"
-
-/* EFC definitions */
-#define EFC_CR_REG	   REG32(EFC_BASE + 0x00)
-#define EFC_TNVS_REG   REG32(EFC_BASE + 0x04)
-#define EFC_TPROG_REG  REG32(EFC_BASE + 0x08)
-#define EFC_TPGS_REG   REG32(EFC_BASE + 0x0c)
-#define EFC_TRCV_REG   REG32(EFC_BASE + 0x10)
-#define EFC_TERASE_REG REG32(EFC_BASE + 0x14)
-#define EFC_WPT_REG	   REG32(EFC_BASE + 0x18)
-#define EFC_OPR_REG	   REG32(EFC_BASE + 0x1c)
-#define EFC_STS_REG	   REG32(EFC_BASE + 0x24)
+#include "phnx05.h"
 
 /*register bit definitions */
 // EFCCR
@@ -38,19 +27,25 @@
 
 // EFC_TNVS
 #define EFC_TNVS BITS(0, 3)
+
 // EFC_TPROG
 #define EFC_TPROG BITS(0, 3)
+
 // EFC_TPGS
 #define EFC_TPGS BITS(0, 3)
+
 // EFC_TRCV
 #define EFC_TRCV_TPRCV	BITS(16, 19)
 #define EFC_TRCV_TSERCV BITS(9, 15)
 #define EFC_TRCV_TCERCV BITS(0, 8)
+
 // EFC_TERASE
 #define EFC_TERASE_TSERS BITS(7, 10)
 #define EFC_TERASE_TCERS BITS(0, 6)
+
 // EFC_WPT
-#define EFC_WPT			BITS(0, 7)
+#define EFC_WPT BITS(0, 7)
+
 #define EFC_WPT_VALUE_0 (0xC3)
 #define EFC_WPT_VALUE_1 (0x3C)
 // EFC WPT unlock function
@@ -63,12 +58,13 @@
 // EFC_OPR
 #define EFC_OPR_WE		BIT(7)
 #define EFC_OPR_OPRF	BITS(4, 6)
+#define EFC_OPR_OPRMODE BITS(0, 3)
+
 #define EFC_OPR_PPRF_V0 (0x00 << 4)
 #define EFC_OPR_PPRF_V1 (0x07 << 4)
 #define EFC_OPR_PPRF_V2 (0x09 << 4)
 #define EFC_OPR_PPRF_V3 (0x0c << 4)
 
-#define EFC_OPR_OPRMODE			   BITS(0, 3)
 #define EFC_OPR_OPRMODE_SIG_PRG	   (0)
 #define EFC_OPR_OPRMODE_REV		   (1)
 #define EFC_OPR_OPRMODE_PAGE_ERASE (2)
@@ -106,12 +102,8 @@ typedef enum _EFC_RETURN_TYPE
 // efc function declare
 BOOL		EFC_Init(void);
 eReturnType EFC_SingleProgram(u32 Addr, int iPrgType, u32 Data);
-eReturnType EFC_PageProgram(u32 u32Addr);
 eReturnType EFC_PageErase(u32 u32Addr);
 eReturnType EFC_ChipErase(u32 u32Addr);
-eReturnType EFC_PageLoad(u32 u32Addr);
-eReturnType EFC_PageEraseVerify(u32 u32Addr);
-eReturnType EFC_ProgramVerify(u32 u32Addr);
 eReturnType EFC_FlashPageWrite(u32 u32Addr, u32 *pu32Dat, u32 u32Len, u32 u32PrgType);
 BOOL		EFC_EEPROMWrite(u32 addr, u32 data, int iPrgType);
 

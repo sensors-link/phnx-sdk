@@ -11,12 +11,7 @@
 
 #ifndef __ADC_H__
 #define __ADC_H__
-#include "../include/phnx05.h"
-
-// register defines
-#define ADC_CFG_REG	 REG32(ADC_BASE + 0x00)
-#define ADC_INTF_REG REG32(ADC_BASE + 0x04)
-#define ADC_DATA_REG REG32(ADC_BASE + 0x08)
+#include "phnx05.h"
 
 // register bits definitions
 // ADC_CFG
@@ -32,22 +27,22 @@
 #define ADC_CFG_SMP_CYCLE_8	 (2 << 8)
 #define ADC_CFG_SMP_CYCLE_4	 (3 << 8)
 
-#define ADC_CFG_CHSEL_VSS		 (15 << 4)
-#define ADC_CFG_CHSEL_VBG1P2	 (14 << 4)
-#define ADC_CFG_CHSEL_VBGS1P0	 (13 << 4)
-#define ADC_CFG_CHSEL_VREF_FLASH (12 << 4)
-#define ADC_CFG_CHSEL_AIN11		 (11 << 4)
-#define ADC_CFG_CHSEL_AIN10		 (10 << 4)
-#define ADC_CFG_CHSEL_AIN9		 (9 << 4)
-#define ADC_CFG_CHSEL_AIN8		 (8 << 4)
-#define ADC_CFG_CHSEL_AIN7		 (7 << 4)
-#define ADC_CFG_CHSEL_AIN6		 (6 << 4)
-#define ADC_CFG_CHSEL_AIN5		 (5 << 4)
-#define ADC_CFG_CHSEL_AIN4		 (4 << 4)
-#define ADC_CFG_CHSEL_AIN3		 (3 << 4)
-#define ADC_CFG_CHSEL_AIN2		 (2 << 4)
-#define ADC_CFG_CHSEL_AIN1		 (1 << 4)
-#define ADC_CFG_CHSEL_AIN0		 (0 << 4)
+#define ADC_CFG_CHSEL_VSS	(15 << 4)
+#define ADC_CFG_CHSEL_VSS1	(14 << 4)
+#define ADC_CFG_CHSEL_VCC	(13 << 4)
+#define ADC_CFG_CHSEL_VCC1	(12 << 4)
+#define ADC_CFG_CHSEL_AIN11 (11 << 4)
+#define ADC_CFG_CHSEL_AIN10 (10 << 4)
+#define ADC_CFG_CHSEL_AIN9	(9 << 4)
+#define ADC_CFG_CHSEL_AIN8	(8 << 4)
+#define ADC_CFG_CHSEL_AIN7	(7 << 4)
+#define ADC_CFG_CHSEL_AIN6	(6 << 4)
+#define ADC_CFG_CHSEL_AIN5	(5 << 4)
+#define ADC_CFG_CHSEL_AIN4	(4 << 4)
+#define ADC_CFG_CHSEL_AIN3	(3 << 4)
+#define ADC_CFG_CHSEL_AIN2	(2 << 4)
+#define ADC_CFG_CHSEL_AIN1	(1 << 4)
+#define ADC_CFG_CHSEL_AIN0	(0 << 4)
 
 #define ADC_CFG_VRSEL_VREF (0 << 3)
 #define ADC_CFG_VRSEL_VCC  (1 << 3)
@@ -93,7 +88,7 @@ typedef enum _ADC_VAL_NO
 	ADC_VAL_NO7,
 } ADC_VAL_NO;
 
-void ADC_Init(int chn, int buffEn, int verfSel, int smpCycle);
+void ADC_Init(int chn, int verfSel, int smpCycle);
 void ADC_Enable(void);
 void ADC_Disable(void);
 void ADC_EnableIRQ(void);

@@ -12,17 +12,7 @@
 #ifndef __SYSC_H__
 #define __SYSC_H__
 
-#include "../include/phnx05.h"
-
-/* registers definitions */
-#define SYSC_CLKCTRCFG_REG	REG32((SYSC_BASE) + 0x00U)
-#define SYSC_WRPROCFG_REG	REG32((SYSC_BASE) + 0x04U)
-#define SYSC_CLKENCFG_REG	REG32((SYSC_BASE) + 0x08U)
-#define SYSC_MSFTRSTCFG_REG REG32((SYSC_BASE) + 0x0cU)
-
-#define SYSC_TESTCKSEL_REG REG32((SYSC_BASE) + 0x10U)
-#define SYSC_ADCCLKDIV_REG REG32((SYSC_BASE) + 0x14U)
-#define SYSC_RSTSTS_REG	   REG32((SYSC_BASE) + 0x18U)
+#include "phnx05.h"
 
 // SYSC_CLKCTRCFG
 #define SYSC_CLKCTRCFG_DSW_WKUP_DLY BITS(23, 31)
@@ -42,10 +32,10 @@
 #define SYSC_CLKCTRCFG_SYS_CLK_SEL_LRC (1)
 
 // SYSC_WRPROCFG
-#define SYSC_WRPROCFG	 BITS(0, 7)
+#define SYSC_WRPROCFG BITS(0, 7)
+
 #define SYSC_WRPROCFG_V0 (0x5a)
 #define SYSC_WRPROCFG_V1 (0xa5)
-
 #define SYSC_WPT_UNLOCK()                                                                                              \
 	{                                                                                                                  \
 		SYSC->WRPROCFG = SYSC_WRPROCFG_V0;                                                                             \
@@ -83,13 +73,22 @@
 #define SYSC_MSFTRSTCFG_TIMER0_PSFT_RST BIT(0)
 
 // SYSC_TESTCKSEL
-#define SYSC_TEST_CLK_CKSEL		 BITS(7, 8)
-#define SYSC_TEST_HRCCLK_DIV	 BITS(0, 6)
+#define SYSC_TEST_CLK_CKSEL	 BITS(7, 8)
+#define SYSC_TEST_HRCCLK_DIV BITS(0, 6)
+
 #define SYSC_TEST_HRCCLK_DIV_pos (0) // div(x+1)*2
 
 // SYSC_ADCCLKDIV
-#define SYSC_ADC_SCLK_DIV	  BITS(0, 3)
+#define SYSC_ADC_SCLK_DIV BITS(0, 3)
+
 #define SYSC_ADC_SCLK_DIV_pos (0) // 0-0f:div(x+1)*2
+
+// SYSC_RSTSTS
+#define SYSC_RSTSTS_LVDRSTSTS	  BIT(4)
+#define SYSC_RSTSTS_SOFTDIGRSTSTS BIT(3)
+#define SYSC_RSTSTS_EXTRSTSTS	  BIT(2)
+#define SYSC_RSTSTS_WDTRSTSTS	  BIT(1)
+#define SYSC_RSTSTS_PORRSTSTS	  BIT(0)
 
 #define SRC_CLK_DIV2() ((SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_APB_CLK_DIV) >> SYSC_CLKCTRCFG_APB_CLK_DIV_pos) + 1
 
@@ -144,6 +143,5 @@ void SYSC_ResetPeripher(eRSTP_Type module);
 void SYSC_PCLKEnable(ePCLKEN_Type perp);
 void SYSC_PCLKDisable(ePCLKEN_Type perp);
 void SYSC_SetANAC_CLKDiv(int div, int m500kDiv);
-void SYSC_TestClkOutControl(int div, ControlStatus clt);
 void SYSC_SetADC_CLKDiv(int div);
 #endif /*__SYSC_H__*/

@@ -23,7 +23,7 @@ void LPT_Init(int iDel, int iMode)
 {
 	PARAM_CHECK((iMode != LPT_SIG_TIME_CNT) && (iMode != LPT_PIT_CNT));
 
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_LPTIM;
+	SYSC->CLKENCFG |= SYSC_CLKENCFG_LPTIM | SYSC_CLKENCFG_PMU;
 
 	LPTIM->CFG = (iDel >> 2) - 1;
 	if (iMode == LPT_SIG_TIME_CNT)

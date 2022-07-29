@@ -11,29 +11,20 @@
 
 #ifndef __UART_H__
 #define __UART_H__
-#include "../include/phnx05.h"
-
-/* registers definitions */
-#define UART1_SCON_REG	REG32(UART1_BASE + 0x00U)
-#define UART1_SBUF_REG	REG32(UART1_BASE + 0x04U)
-#define UART1_SADDR_REG REG32(UART1_BASE + 0x08U)
-#define UART1_SADEN_REG REG32(UART1_BASE + 0x0CU)
-#define UART1_ISR_REG	REG32(UART1_BASE + 0x10U)
-#define UART1_BDIV_REG	REG32(UART1_BASE + 0x14U)
+#include "phnx05.h"
 
 /*register bit definitions */
 // uart_scon
 #define UART_SCON_PACFG	 BIT(11)
-#define UART_SCON_LPMODE BIT(10)
 #define UART_SCON_SM01	 BITS(8, 9)
 #define UART_SCON_SM2	 BIT(7)
 #define UART_SCON_REN	 BIT(6)
 #define UART_SCON_RB8	 BIT(5)
 #define UART_SCON_TB8	 BIT(4)
-#define UART_SCON_RXSIEN BIT(3)
-#define UART_SCON_RIEN	 BIT(2)
-#define UART_SCON_TIEN	 BIT(1)
-#define UART_SCON_SFDEN	 BIT(0) // start bit detect enable
+#define UART_SCON_SFDEN	 BIT(3)
+#define UART_SCON_RXSIEN BIT(2)
+#define UART_SCON_RIEN	 BIT(1)
+#define UART_SCON_TIEN	 BIT(0) // start bit detect enable
 
 #define UART_SCON_SM01_pos (8)
 
@@ -47,9 +38,9 @@
 #define UART_SADEN_pos (0) // 0-0xff
 
 // UART_ISR
-#define UART_ISR_RXSF BIT(4)
-#define UART_ISR_PE	  BIT(3)
-#define UART_ISR_FE	  BIT(2)
+#define UART_ISR_PE	  BIT(4)
+#define UART_ISR_FE	  BIT(3)
+#define UART_ISR_RXSF BIT(2)
 #define UART_ISR_RI	  BIT(1)
 #define UART_ISR_TI	  BIT(0)
 

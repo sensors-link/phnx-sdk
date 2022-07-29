@@ -66,9 +66,8 @@
 #define SYSC_CLKENCFG_APB		  BIT(0)
 
 // SYSC_MSFTRSTCFG
-#define SYSC_MSFTRSTCFG_TWC	   BIT(10)
-#define SYSC_MSFTRSTCFG_LPUART BIT(9)
-#define SYSC_MSFTRSTCFG_EST	   BIT(8)
+#define SYSC_MSFTRSTCFG_TWC	   BIT(9)
+#define SYSC_MSFTRSTCFG_LPUART BIT(8)
 #define SYSC_MSFTRSTCFG_ANAC   BIT(7)
 #define SYSC_MSFTRSTCFG_HCLK   BIT(6)
 #define SYSC_MSFTRSTCFG_CRC	   BIT(5)
@@ -119,9 +118,8 @@ typedef enum _RST_M
 	PRST_CRC   = (1 << 5),
 	PRST_HCLK  = (1 << 6),
 	PRST_ANAC  = (1 << 7),
-	PRST_EST   = (1 << 8),
-	PRST_LPUAR = (1 << 9),
-	PRST_TWC   = (1 << 10),
+	PRST_LPUAR = (1 << 8),
+	PRST_TWC   = (1 << 9),
 } eRSTP_Type;
 
 typedef enum _CLK_EN

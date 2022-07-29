@@ -23,13 +23,14 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
 	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2))
 	PARAM_CHECK((mode != TIM_TM_AUTO_RUN) && (mode != TIM_TM_AUTO_LOAD));
 
-	SystemCoreClockUpdate();
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM_PCK;
+
+	SystemCoreClockUpdate();
 
 	if (pTim == TIM1)
 	{
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM1_CNT;
-		int pclk = SYSC_GetAPBCLK() / ((SYSC->TIMCLKDIV & 0xff) + 1);
+		int pclk = SYSC_GetAPBCLK() / ((SYSC->TIMCLKDIV & 0xFF) + 1);
 		int cnt	 = (long long)del * pclk / 1000000;
 		PARAM_CHECK(cnt < 1 || cnt > 0xffff);
 		if (mode == TIM_TM_AUTO_RUN)
@@ -47,7 +48,7 @@ void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
 	else if (pTim == TIM2)
 	{
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM2_CNT;
-		int pclk = SYSC_GetAPBCLK() / ((SYSC->TIMCLKDIV >> 8) + 1);
+		int pclk = SYSC_GetAPBCLK() / (((SYSC->TIMCLKDIV >> 8) & 0xFF) + 1);
 		int cnt	 = (long long)del * pclk / 1000000;
 		PARAM_CHECK(cnt < 1 || cnt > 0xffff);
 		if (mode == TIM_TM_AUTO_RUN)
@@ -127,26 +128,10 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty, int dtGap)
 		TIMERS->CON |= TIM_CON_TM_TIM1;
 		TIMERS->CON |= TIM_CON_PWM_TIM1;
 
-		int div = SYSC->TIMCLKDIV & 0xff;
-		int tcnt, pclk;
-		while (1)
-		{
-			pclk = SYSC_GetAPBCLK() / (div + 1);
-			tcnt = pclk / (freq);
-			if (tcnt > 0xffff)
-			{
-				++div;
-			}
-			else
-			{
-				if (tcnt < 1)
-					--div;
-				PARAM_CHECK(div < 0);
-				break;
-			}
-		}
-		SYSC->TIMCLKDIV &= ~SYSC_TIM1CLKDIV;
-		SYSC->TIMCLKDIV |= div;
+		int pclk = SYSC_GetAPBCLK() / ((SYSC->TIMCLKDIV & 0xFF) + 1);
+		int tcnt = pclk / (freq);
+		PARAM_CHECK(tcnt < 2);
+
 		TIM1->CTCG2 = tcnt * (duty) / 100;
 		TIM1->CTCG1 = tcnt - (TIM1->CTCG2);
 		TIM1->PWCON &= ~TIM_PWCON_PWMCPOL;
@@ -183,26 +168,10 @@ void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty, int dtGap)
 		TIMERS->CON |= TIM_CON_TM_TIM2;
 		TIMERS->CON |= TIM_CON_PWM_TIM2;
 
-		int div = SYSC->TIMCLKDIV >> 8;
-		int tcnt, pclk;
-		while (1)
-		{
-			pclk = SYSC_GetAPBCLK() / (div + 1);
-			tcnt = pclk / (freq);
-			if (tcnt > 0xffff)
-			{
-				++div;
-			}
-			else
-			{
-				if (tcnt < 1)
-					--div;
-				PARAM_CHECK(div < 0);
-				break;
-			}
-		}
-		SYSC->TIMCLKDIV &= ~SYSC_TIM2CLKDIV;
-		SYSC->TIMCLKDIV |= div << 8;
+		int pclk = SYSC_GetAPBCLK() / (((SYSC->TIMCLKDIV >> 8) & 0xFF) + 1);
+		int tcnt = pclk / (freq);
+		PARAM_CHECK(tcnt < 2);
+
 		TIM2->CTCG2 = tcnt * (duty) / 100;
 		TIM2->CTCG1 = tcnt - (TIM2->CTCG2);
 
@@ -245,17 +214,32 @@ void TIM_DeInit(TIM_Type *pTim)
 	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2));
 	if (pTim == TIM1)
 	{
-		TIMERS->CON &= ~(TIM_CON_TE_TIM1 | TIM_CON_TM_TIM1 | TIM_CON_PWM_TIM1 | TIM_CON_EXTEN_TIM1 |
-						 TIM_CON_EXTPOL_TIM1 | TIM_CON_PAUSE_TIM1);
+		TIMERS->CON &= ~TIM_CON_TE_TIM1;
+		TIMERS->CON &= ~TIM_CON_TM_TIM1;
+		TIMERS->CON &= ~TIM_CON_IE_TIM1;
+		TIMERS->CON &= ~TIM_CON_PWM_TIM1;
+		TIMERS->CON &= ~TIM_CON_EXTEN_TIM1;
+		TIMERS->CON &= ~TIM_CON_EXTPOL_TIM1;
+		TIMERS->CON &= ~TIM_CON_PAUSE_TIM1;
+		SYSC->CLKENCFG &= ~SYSC_CLKENCFG_TIM1_CNT;
 	}
 	else if (pTim == TIM2)
 	{
-		TIMERS->CON &= ~(TIM_CON_TE_TIM2 | TIM_CON_TM_TIM2 | TIM_CON_PWM_TIM1 | TIM_CON_EXTEN_TIM1 |
-						 TIM_CON_EXTPOL_TIM1 | TIM_CON_PAUSE_TIM1);
+		TIMERS->CON &= ~TIM_CON_TE_TIM2;
+		TIMERS->CON &= ~TIM_CON_TM_TIM2;
+		TIMERS->CON &= ~TIM_CON_IE_TIM2;
+		TIMERS->CON &= ~TIM_CON_PWM_TIM2;
+		TIMERS->CON &= ~TIM_CON_EXTEN_TIM2;
+		TIMERS->CON &= ~TIM_CON_EXTPOL_TIM2;
+		TIMERS->CON &= ~TIM_CON_PAUSE_TIM2;
+		SYSC->CLKENCFG &= ~SYSC_CLKENCFG_TIM2_CNT;
 	}
 	if ((TIMERS->CON & TIM_CON_TE) == 0)
 	{
 		SYSC->CLKENCFG &= ~SYSC_CLKENCFG_TIM_PCK;
+		SYSC->WRPROCFG = SYSC_WRPROCFG_V0;
+		SYSC->WRPROCFG = SYSC_WRPROCFG_V1;
+		SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_TIMER;
 	}
 }
 /**

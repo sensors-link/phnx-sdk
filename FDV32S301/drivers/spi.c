@@ -15,35 +15,19 @@
 
 /**
  * @brief  SPI init
- *
- * @param pin :SPI_PIN_0_1_2_3 , SPI_PIN_12_13_14_15 , SPI_PIN_19_18_16_17
  * @param mode:SPI_MASTER , SPI_SLAVE
  * @param pol:SPI_CPOL_HIGH , SPI_CPOL_LOW
  * @param phase:SPI_CPHA_FIST , SPI_CPHA_MIDD
- * @param freq :set N (kHz)
+ * @param freq :set N (Hz)
+ * @note 分频系数有限只能是最接近的频率设置
  */
-void SPI_Init(int pin, int mode, int pol, int phase, int freq)
+void SPI_Init(int mode, int pol, int phase, int freq)
 {
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_SPI | SYSC_CLKENCFG_IOM;
-	PARAM_CHECK((pin != SPI_PIN_0_1_2_3) && (pin != SPI_PIN_12_13_14_15) && (pin != SPI_PIN_19_18_16_17));
-	if (pin == SPI_PIN_0_1_2_3)
-	{
-		IOM->AF0 &= ~(IOM_AF0_P00_SEL | IOM_AF0_P01_SEL | IOM_AF0_P02_SEL | IOM_AF0_P03_SEL);
-		IOM->AF0 |=
-			(IOM_AF0_P00_SEL_SPI_CS | IOM_AF0_P01_SEL_SPI_SCK | IOM_AF0_P02_SEL_SPI_MOSI | IOM_AF0_P03_SEL_SPI_MISO);
-	}
-	else if (pin == SPI_PIN_12_13_14_15)
-	{
-		IOM->AF0 &= ~(IOM_AF0_P12_SEL | IOM_AF0_P13_SEL | IOM_AF0_P14_SEL | IOM_AF0_P15_SEL);
-		IOM->AF0 |=
-			(IOM_AF0_P12_SEL_SPI_CS | IOM_AF0_P13_SEL_SPI_SCK | IOM_AF0_P14_SEL_SPI_MOSI | IOM_AF0_P15_SEL_SPI_MISO);
-	}
-	else
-	{
-		IOM->AF1 &= ~(IOM_AF1_P19_SEL | IOM_AF1_P18_SEL | IOM_AF1_P16_SEL | IOM_AF1_P17_SEL);
-		IOM->AF1 |=
-			(IOM_AF1_P19_SEL_SPI_CS | IOM_AF1_P18_SEL_SPI_SCK | IOM_AF1_P16_SEL_SPI_MOSI | IOM_AF1_P17_SEL_SPI_MISO);
-	}
+	int div = 0;
+	int tmp = 0;
+
+	SYSC->CLKENCFG |= SYSC_CLKENCFG_SPI;
+
 	PARAM_CHECK((pol != SPI_CPOL_HIGH) && (pol != SPI_CPOL_LOW));
 	PARAM_CHECK((phase != SPI_CPHA_FIST) && (phase != SPI_CPHA_MIDD));
 	PARAM_CHECK((mode != SPI_SR_MSTCFSR) && (mode != SPI_SLAVE));
@@ -62,9 +46,9 @@ void SPI_Init(int pin, int mode, int pol, int phase, int freq)
 	{
 		SPI->CR0 |= SPI_CR0_MSMODE;
 		SystemCoreClockUpdate();
-		PARAM_CHECK((SystemCoreClock / (freq * 1000) < 2) || (SystemCoreClock / (freq * 1000) > 256));
-		int div = SystemCoreClock / (freq * 1000);
-		int tmp = 0;
+		PARAM_CHECK((SystemCoreClock / (freq) < 1) || (SystemCoreClock / (freq) > 256));
+		div = SystemCoreClock / (freq);
+
 		while (1)
 		{
 			if (div < 2)

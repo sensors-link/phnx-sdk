@@ -25,15 +25,13 @@ void TWC_Init(int pin)
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_IOM;
 	if (pin == TWC_PIN_18_19)
 	{
-		IOM->AF1 &= ~(IOM_AF1_P18_SEL_TWC_RX | IOM_AF1_P19_SEL_TWC_TX);
+		IOM->AF1 &= ~(IOM_AF1_P18_SEL | IOM_AF1_P19_SEL);
 		IOM->AF1 |= (IOM_AF1_P18_SEL_TWC_RX | IOM_AF1_P19_SEL_TWC_TX);
 	}
 	else
 	{
-		IOM->AF0 &= ~IOM_AF0_P04_SEL;
-		IOM->AF0 |= IOM_AF0_P04_SEL_TWC_RX;
-		IOM->AF0 &= ~IOM_AF0_P05_SEL;
-		IOM->AF0 |= IOM_AF0_P05_SEL_TWC_TX;
+		IOM->AF0 &= ~(IOM_AF0_P04_SEL | IOM_AF0_P05_SEL);
+		IOM->AF0 |= (IOM_AF0_P04_SEL_TWC_RX | IOM_AF0_P05_SEL_TWC_TX);
 	}
 	ANAC_WPT_UNLOCK();
 	ANAC->CLK_CFG |= ANAC_CLK_CFG_MRC_EN;
@@ -136,7 +134,6 @@ void TWC_SEBUSConfig(int mode, int txLelCfg, int rxDecCfg, int rxGlitchFiltCfg)
 		TWC->CR &= ~TWC_CR_RXDECCFG;
 	}
 	TWC->CR &= ~TWC_CR_RXGLITCHFILTCFG;
-	// TWC->CR |= rxGlitchFiltCfg | TWC_CR_SEBUSEN | TWC_CR_RXRECEN;
 	TWC->CR |= rxGlitchFiltCfg | TWC_CR_SEBUSEN;
 }
 /**
@@ -214,7 +211,6 @@ void TWC_SWANBusConfig(int txBaud, int rxBaud, sSwanBusCfgParam *pParam)
 	}
 	TWC->SWCR &= ~TWC_SWCR_TXBITCFG;
 	TWC->SWCR |= pParam->txBitCfg;
-	// TWC->CR |= TWC_CR_RXRECEN;
 }
 
 /**

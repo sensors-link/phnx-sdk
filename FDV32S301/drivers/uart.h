@@ -39,10 +39,11 @@
 #define UART_SADEN_pos (0) // 0-0xff
 
 // UART_ISR
-#define UART_ISR_PE BIT(3)
-#define UART_ISR_FE BIT(2)
-#define UART_ISR_RI BIT(1)
-#define UART_ISR_TI BIT(0)
+#define UART_ISR_RXSF BIT(4)
+#define UART_ISR_PE	  BIT(3)
+#define UART_ISR_FE	  BIT(2)
+#define UART_ISR_RI	  BIT(1)
+#define UART_ISR_TI	  BIT(0)
 
 // UART_DIV
 #define UART_BDIV_pos (0) // 0-0xffff
@@ -55,12 +56,12 @@
 #define UART2_PORT_P14_P15	4
 #define LPUART_PORT_P18_P19 5
 
-#define UART_MODE_8B_SYNC	0
-#define UART_MODE_10B_ASYNC 1
-#define UART_MODE_11B_ASYNC 2
+#define UART_MODE_8B_SYNC	(0)
+#define UART_MODE_10B_ASYNC (1)
+#define UART_MODE_11B_ASYNC (2)
 
-#define UART_VERIFY_SEL_EVEN 1
-#define UART_VERIFY_SEL_ODD	 0
+#define UART_VERIFY_SEL_EVEN (1)
+#define UART_VERIFY_SEL_ODD	 (0)
 
 #define UART_EN_TYPE_LPMODE (1 << 0)
 #define UART_EN_TYPE_SM2	(1 << 1)
@@ -82,8 +83,10 @@ void UART_Send(UART_Type *psUart, u8 u8Dat);
 u8	 UART_Receive(UART_Type *psUart);
 void UART_Send9BitData(UART_Type *psUart, u16 dat);
 u16	 UART_Receive9BitData(UART_Type *psUart);
+void UART_WriteData(UART_Type *psUart, u16 dat);
+u16	 UART_ReadData(UART_Type *psUart);
 void UART_SetAddrAndMask(UART_Type *psUart, u8 addr, u8 addrCMPBits);
 u32	 UART_GetIntFlag(UART_Type *psUart);
 void UART_ClrIntFlag(UART_Type *psUart, u32 val);
 
-#endif
+#endif /*__UART_H__*/

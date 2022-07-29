@@ -23,53 +23,90 @@ void Timer_timing_Init(Timer_t timer, int delay)
 {
 	PARAM_CHECK((timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
+	int iDiv, iTcks;
+
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER_PCKEN;
 
 	switch (timer)
 	{
+	case TIMER0:
+		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER0_PCKEN;
+		TIMERS->T0CR &= ~TIMER0_T0CR_T0EN;
+
+		TIMERS->T0CR |= TIMER0_T0CR_T0RLDEN;
+
+		iDiv = 4;
+		if (!(TIMERS->T0CR & TIMER0_T0CR_PSA))
+		{
+			iTcks = (TIMERS->T0CR & TIMER0_T0CR_PS) >> TIMER0_T0CR_PS_pos;
+			iDiv  = 2;
+			for (int i = 0; i < iTcks; i++)
+				iDiv *= 2;
+		}
+		TIMERS->T0RLD = 0x100 - delay * SYSC_GetAPBCLK() / (iDiv * 1000000);
+
+		TIMERS->T0 = TIMERS->T0RLD;
+		TIMERS->T0CR |= TIMER0_T0CR_T0EN;
+		break;
 	case TIMER1:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER1_PCKEN;
-		TIM1->TCR &= ~Timer_tCR_PWMON;
-		TIM1->TCR &= ~Timer_tCR_TGC;
-		TIM1->TCR &= ~Timer_tCR_TCS;
-		TIM1->TCR |= 0x01 << 2;
-		TIM1->TCR |= Timer_tCR_TON;
-		TIM1->TN = delay;
-		TIMERS->TIE |= TIMER1_TIE;
-		TIMERS->TIF |= TIMER1_TIF;
+		TIM1->TCR &= ~TIMER_TCR_PWMON;
+		TIM1->TCR &= ~TIMER_TCR_TGC;
+		TIM1->TCR &= ~TIMER_TCR_TCS;
+
+		iTcks = (TIM1->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
+		iDiv  = 1;
+		for (int i = 0; i < iTcks; i++)
+			iDiv *= 2;
+		TIM1->PWMPD = delay * SYSC_GetAPBCLK() / (iDiv * 1000000);
+
+		TIM1->TN = 0;
+		TIM1->TCR |= TIMER_TCR_TON;
 		break;
 	case TIMER2:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER2_PCKEN;
-		TIM2->TCR &= ~Timer_tCR_PWMON;
-		TIM2->TCR &= ~Timer_tCR_TGC;
-		TIM2->TCR &= ~Timer_tCR_TCS;
-		TIM2->TCR |= 0x01 << 2;
-		TIM2->TCR |= Timer_tCR_TON;
-		TIM2->TN = delay;
-		TIMERS->TIE |= TIMER2_TIE;
-		TIMERS->TIF |= TIMER2_TIF;
+		TIM2->TCR &= ~TIMER_TCR_PWMON;
+		TIM2->TCR &= ~TIMER_TCR_TGC;
+		TIM2->TCR &= ~TIMER_TCR_TCS;
+
+		iTcks = (TIM2->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
+		iDiv  = 1;
+		for (int i = 0; i < iTcks; i++)
+			iDiv *= 2;
+		TIM2->PWMPD = delay * SYSC_GetAPBCLK() / (iDiv * 1000000);
+
+		TIM2->TN = 0;
+		TIM2->TCR |= TIMER_TCR_TON;
 		break;
 	case TIMER3:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER3_PCKEN;
-		TIM3->TCR &= ~Timer_tCR_PWMON;
-		TIM3->TCR &= ~Timer_tCR_TGC;
-		TIM3->TCR &= ~Timer_tCR_TCS;
-		TIM3->TCR |= 0x01 << 2;
-		TIM3->TCR |= Timer_tCR_TON;
-		TIM3->TN = delay;
-		TIMERS->TIE |= TIMER3_TIE;
-		TIMERS->TIF |= TIMER3_TIF;
+		TIM3->TCR &= ~TIMER_TCR_PWMON;
+		TIM3->TCR &= ~TIMER_TCR_TGC;
+		TIM3->TCR &= ~TIMER_TCR_TCS;
+
+		iTcks = (TIM3->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
+		iDiv  = 1;
+		for (int i = 0; i < iTcks; i++)
+			iDiv *= 2;
+		TIM3->PWMPD = delay * SYSC_GetAPBCLK() / (iDiv * 1000000);
+
+		TIM3->TN = 0;
+		TIM3->TCR |= TIMER_TCR_TON;
 		break;
 	case TIMER4:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER4_PCKEN;
-		TIM4->TCR &= ~Timer_tCR_PWMON;
-		TIM4->TCR &= ~Timer_tCR_TGC;
-		TIM4->TCR &= ~Timer_tCR_TCS;
-		TIM4->TCR |= 0x11 << 2;
-		TIM4->TCR |= Timer_tCR_TON;
-		TIM4->TN = delay;
-		TIMERS->TIE |= TIMER4_TIE;
-		TIMERS->TIF |= TIMER4_TIF;
+		TIM4->TCR &= ~TIMER_TCR_PWMON;
+		TIM4->TCR &= ~TIMER_TCR_TGC;
+		TIM4->TCR &= ~TIMER_TCR_TCS;
+
+		iTcks = (TIM4->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
+		iDiv  = 1;
+		for (int i = 0; i < iTcks; i++)
+			iDiv *= 2;
+		TIM4->PWMPD = delay * SYSC_GetAPBCLK() / (iDiv * 1000000);
+
+		TIM4->TN = 0;
+		TIM4->TCR |= TIMER_TCR_TON;
 		break;
 	default:
 		break;
@@ -91,59 +128,54 @@ void Timer_Count_Init(Timer_t timer, int count)
 	switch (timer)
 	{
 	case TIMER0:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER0_PCKEN;
-		TIMERS->T0CR |= TIMER0_T0CR_T0EN;
-		TIMERS->T0CR |= TIMER0_T0CR_T0RLDEN;
-		TIMERS->T0CR &= ~TIMER0_T0CR_PSA;
-		TIMERS->T0CR |= 0x001;
-		TIMERS->T0RLD = count;
-		TIMERS->TIE |= TIMER1_TIE;
-		TIMERS->TIF |= TIMER1_TIF;
 		break;
 	case TIMER1:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER1_PCKEN;
-		TIM1->TCR &= ~Timer_tCR_PWMON;
-		TIM1->TCR &= ~Timer_tCR_TGC;
-		TIM1->TCR |= Timer_tCR_TCS;
-		TIM1->TCR |= 0x01 << 2;
-		TIM1->TCR |= Timer_tCR_TON;
-		TIM1->TN = count;
-		TIMERS->TIE |= TIMER1_TIE;
-		TIMERS->TIF |= TIMER1_TIF;
+		TIM1->TCR &= ~TIMER_TCR_PWMON;
+		TIM1->TCR &= ~TIMER_TCR_TGC;
+
+		TIM1->TCR |= TIMER_TCR_TCS;
+
+		TIM1->PWMPD = count;
+
+		TIM1->TN = 0;
+		TIM1->TCR |= TIMER_TCR_TON;
 		break;
 	case TIMER2:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER2_PCKEN;
-		TIM2->TCR &= ~Timer_tCR_PWMON;
-		TIM2->TCR &= ~Timer_tCR_TGC;
-		TIM2->TCR |= Timer_tCR_TCS;
-		TIM2->TCR |= 0x01 << 2;
-		TIM2->TCR |= Timer_tCR_TON;
-		TIM2->TN = count;
-		TIMERS->TIE |= TIMER2_TIE;
-		TIMERS->TIF |= TIMER2_TIF;
+		TIM2->TCR &= ~TIMER_TCR_PWMON;
+		TIM2->TCR &= ~TIMER_TCR_TGC;
+
+		TIM2->TCR |= TIMER_TCR_TCS;
+
+		TIM2->PWMPD = count;
+
+		TIM2->TN = 0;
+		TIM2->TCR |= TIMER_TCR_TON;
 		break;
 	case TIMER3:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER3_PCKEN;
-		TIM3->TCR &= ~Timer_tCR_PWMON;
-		TIM3->TCR &= ~Timer_tCR_TGC;
-		TIM3->TCR |= Timer_tCR_TCS;
-		TIM3->TCR |= 0x01 << 2;
-		TIM3->TCR |= Timer_tCR_TON;
-		TIM3->TN = count;
-		TIMERS->TIE |= TIMER3_TIE;
-		TIMERS->TIF |= TIMER3_TIF;
+		TIM3->TCR &= ~TIMER_TCR_PWMON;
+		TIM3->TCR &= ~TIMER_TCR_TGC;
+
+		TIM3->TCR |= TIMER_TCR_TCS;
+
+		TIM3->PWMPD = count;
+
+		TIM3->TN = 0;
+		TIM3->TCR |= TIMER_TCR_TON;
 		break;
 	case TIMER4:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER4_PCKEN;
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER4_PCKEN;
-		TIM4->TCR &= ~Timer_tCR_PWMON;
-		TIM4->TCR &= ~Timer_tCR_TGC;
-		TIM4->TCR |= Timer_tCR_TCS;
-		TIM4->TCR |= 0x01 << 2;
-		TIM4->TCR |= Timer_tCR_TON;
-		TIM4->TN = count;
-		TIMERS->TIE |= TIMER4_TIE;
-		TIMERS->TIF |= TIMER4_TIF;
+		TIM4->TCR &= ~TIMER_TCR_PWMON;
+		TIM4->TCR &= ~TIMER_TCR_TGC;
+
+		TIM4->TCR |= TIMER_TCR_TCS;
+
+		TIM4->PWMPD = count;
+
+		TIM4->TN = 0;
+		TIM4->TCR |= TIMER_TCR_TON;
 		break;
 	default:
 		break;
@@ -155,7 +187,7 @@ void Timer_Count_Init(Timer_t timer, int count)
  *
  * @param timer :timer 0-4
  * @param pwmPolarity :TIM_PMW_POL_xxxx;
- * @param freq : Hz
+ * @param freq : kHz
  * @param duty :exp:duty=50 (50%)
  * @param portSel :TIMN_PWM_PORT_xxxx;
  * @param dtGap :us
@@ -164,62 +196,81 @@ void Timer_PWMInit(Timer_t timer, int freq, int duty)
 {
 	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
 
+	int iDiv, iTcks;
+
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER_PCKEN;
 
 	switch (timer)
 	{
 	case TIMER0:
-
 		break;
 	case TIMER1:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER1_PCKEN;
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER0_PCKEN;
-		TIM1->TCR |= Timer_tCR_PWMON;
-		TIM1->TCR &= ~Timer_tCR_TGC;
-		TIM1->TCR |= Timer_tCR_TCS;
-		TIM1->TCR |= 0x01 << 2;
-		TIM1->TCR |= Timer_tCR_TON;
-		TIM1->PWMPD = freq;
-		TIM1->PWMDC = duty;
-		TIMERS->TIE |= TIMER1_TIE;
-		TIMERS->TIF |= TIMER1_TIF;
+		TIM1->TCR &= ~TIMER_TCR_TGC;
+		TIM1->TCR &= ~TIMER_TCR_TCS;
+
+		TIM1->TCR |= TIMER_TCR_PWMON;
+
+		iTcks = (TIM1->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
+		iDiv  = 1;
+		for (int i = 0; i < iTcks; i++)
+			iDiv *= 2;
+		TIM1->PWMPD = SYSC_GetAPBCLK() / (iDiv * freq * 1000);
+		TIM1->PWMDC = SYSC_GetAPBCLK() * duty / (iDiv * freq * 1000 * 100);
+
+		TIM1->TN = 0;
+		TIM1->TCR |= TIMER_TCR_TON;
 		break;
 	case TIMER2:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER2_PCKEN;
-		TIM2->TCR |= Timer_tCR_PWMON;
-		TIM2->TCR &= ~Timer_tCR_TGC;
-		TIM2->TCR |= Timer_tCR_TCS;
-		TIM2->TCR |= 0x01 << 2;
-		TIM2->TCR |= Timer_tCR_TON;
-		TIM2->PWMPD = freq;
-		TIM2->PWMDC = duty;
-		TIMERS->TIE |= TIMER2_TIE;
-		TIMERS->TIF |= TIMER2_TIF;
+		TIM2->TCR &= ~TIMER_TCR_TGC;
+		TIM2->TCR &= ~TIMER_TCR_TCS;
+
+		TIM2->TCR |= TIMER_TCR_PWMON;
+
+		iTcks = (TIM2->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
+		iDiv  = 1;
+		for (int i = 0; i < iTcks; i++)
+			iDiv *= 2;
+		TIM2->PWMPD = SYSC_GetAPBCLK() / (iDiv * freq * 1000);
+		TIM2->PWMDC = SYSC_GetAPBCLK() * duty / (iDiv * freq * 1000 * 100);
+
+		TIM2->TN = 0;
+		TIM2->TCR |= TIMER_TCR_TON;
 		break;
 	case TIMER3:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER3_PCKEN;
-		TIM3->TCR |= Timer_tCR_PWMON;
-		TIM3->TCR &= ~Timer_tCR_TGC;
-		TIM3->TCR |= Timer_tCR_TCS;
-		TIM3->TCR |= 0x01 << 2;
-		TIM3->TCR |= Timer_tCR_TON;
-		TIM3->PWMPD = freq;
-		TIM3->PWMDC = duty;
-		TIMERS->TIE |= TIMER3_TIE;
-		TIMERS->TIF |= TIMER3_TIF;
+		TIM3->TCR &= ~TIMER_TCR_TGC;
+		TIM3->TCR &= ~TIMER_TCR_TCS;
+
+		TIM3->TCR |= TIMER_TCR_PWMON;
+
+		iTcks = (TIM3->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
+		iDiv  = 1;
+		for (int i = 0; i < iTcks; i++)
+			iDiv *= 2;
+		TIM3->PWMPD = SYSC_GetAPBCLK() / (iDiv * freq * 1000);
+		TIM3->PWMDC = SYSC_GetAPBCLK() * duty / (iDiv * freq * 1000 * 100);
+
+		TIM3->TN = 0;
+		TIM3->TCR |= TIMER_TCR_TON;
 		break;
 	case TIMER4:
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER4_PCKEN;
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER4_PCKEN;
-		TIM4->TCR |= Timer_tCR_PWMON;
-		TIM4->TCR &= ~Timer_tCR_TGC;
-		TIM4->TCR |= Timer_tCR_TCS;
-		TIM4->TCR |= 0x01 << 2;
-		TIM4->TCR |= Timer_tCR_TON;
-		TIM4->PWMPD = freq;
-		TIM4->PWMDC = duty;
-		TIMERS->TIE |= TIMER4_TIE;
-		TIMERS->TIF |= TIMER4_TIF;
+		TIM4->TCR &= ~TIMER_TCR_TGC;
+		TIM4->TCR &= ~TIMER_TCR_TCS;
+
+		TIM4->TCR |= TIMER_TCR_PWMON;
+
+		iTcks = (TIM4->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
+		iDiv  = 1;
+		for (int i = 0; i < iTcks; i++)
+			iDiv *= 2;
+		TIM4->PWMPD = SYSC_GetAPBCLK() / (iDiv * freq * 1000);
+		TIM4->PWMDC = SYSC_GetAPBCLK() * duty / (iDiv * freq * 1000 * 100);
+
+		TIM4->TN = 0;
+		TIM4->TCR |= TIMER_TCR_TON;
 		break;
 	default:
 		break;
@@ -237,19 +288,24 @@ void Timer_DeInit(Timer_t timer)
 	switch (timer)
 	{
 	case TIMER0:
-		// TODO
+		TIMERS->T0CR &= ~TIMER0_T0CR_T0EN;
+		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER0_PCKEN;
 		break;
 	case TIMER1:
-		// TODO
+		TIM1->TCR &= ~TIMER_TCR_TON;
+		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER1_PCKEN;
 		break;
 	case TIMER2:
-		// TODO
+		TIM2->TCR &= ~TIMER_TCR_TON;
+		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER2_PCKEN;
 		break;
 	case TIMER3:
-		// TODO
+		TIM3->TCR &= ~TIMER_TCR_TON;
+		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER3_PCKEN;
 		break;
 	case TIMER4:
-		// TODO
+		TIM4->TCR &= ~TIMER_TCR_TON;
+		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER4_PCKEN;
 		break;
 	default:
 		break;

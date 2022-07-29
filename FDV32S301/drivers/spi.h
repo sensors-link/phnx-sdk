@@ -45,12 +45,8 @@
 		int tmp = SPI->SR;                                                                                             \
 	}
 
-#define SPI_PIN_0_1_2_3		0
-#define SPI_PIN_12_13_14_15 1
-#define SPI_PIN_19_18_16_17 2
-
 // extern function declare
-void SPI_Init(int pin, int mode, int pol, int phase, int freq);
+void SPI_Init(int mode, int pol, int phase, int freq);
 void SPI_DeInit(void);
 void SPI_MasterConflictIRQControl(ControlStatus ctl);
 void SPI_EnableIRQ(void);

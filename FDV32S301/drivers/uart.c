@@ -45,24 +45,26 @@ void UART_Init(UART_Type *psUart, int port, int mode, int iBaud)
 			IOM->AF1 |= IOM_AF1_P16_SEL_UART1_RX | IOM_AF1_P17_SEL_UART1_TX;
 		}
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_UART1;
-		psUart->SCON = 0;
 		if (mode == UART_MODE_8B_SYNC)
 		{
 			PARAM_CHECK(pclk / (2 * iBaud) < 1);
 			psUart->BDIV = (pclk + iBaud) / (2 * iBaud) - 1;
-			psUart->SCON = ((UART_MODE_8B_SYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
+			psUart->SCON &= ~UART_SCON_SM01;
+			psUart->SCON |= ((UART_MODE_8B_SYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
 		}
 		else if (mode == UART_MODE_10B_ASYNC)
 		{
 			PARAM_CHECK(pclk / (16 * iBaud) < 1);
 			psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
-			psUart->SCON = ((UART_MODE_10B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
+			psUart->SCON &= ~UART_SCON_SM01;
+			psUart->SCON |= ((UART_MODE_10B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
 		}
 		else
 		{
 			PARAM_CHECK(pclk / (16 * iBaud) < 1);
 			psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
-			psUart->SCON = ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
+			psUart->SCON &= ~UART_SCON_SM01;
+			psUart->SCON |= ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
 		}
 	}
 	else if (psUart == UART2)
@@ -84,24 +86,26 @@ void UART_Init(UART_Type *psUart, int port, int mode, int iBaud)
 			IOM->AF0 |= IOM_AF0_P14_SEL_UART2_RX | IOM_AF0_P15_SEL_UART2_TX;
 		}
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_UART2;
-		psUart->SCON = 0;
 		if (mode == UART_MODE_8B_SYNC)
 		{
 			PARAM_CHECK(pclk / (2 * iBaud) < 1);
 			psUart->BDIV = (pclk + iBaud) / (2 * iBaud);
-			psUart->SCON = ((UART_MODE_8B_SYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
+			psUart->SCON &= ~UART_SCON_SM01;
+			psUart->SCON |= ((UART_MODE_8B_SYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
 		}
 		else if (mode == UART_MODE_10B_ASYNC)
 		{
 			PARAM_CHECK(pclk / (16 * iBaud) < 1);
 			psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
-			psUart->SCON = ((UART_MODE_10B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
+			psUart->SCON &= ~UART_SCON_SM01;
+			psUart->SCON |= ((UART_MODE_10B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
 		}
 		else
 		{
 			PARAM_CHECK(pclk / (16 * iBaud) < 1);
 			psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
-			psUart->SCON = ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
+			psUart->SCON &= ~UART_SCON_SM01;
+			psUart->SCON |= ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
 		}
 	}
 	else if (psUart == LPUART)
@@ -109,24 +113,26 @@ void UART_Init(UART_Type *psUart, int port, int mode, int iBaud)
 		IOM->AF1 &= ~(IOM_AF1_P18_SEL | IOM_AF1_P19_SEL);
 		IOM->AF1 |= IOM_AF1_P18_SEL_LPUART_RX | IOM_AF1_P19_SEL_LPUART_TX;
 		SYSC->CLKENCFG |= SYSC_CLKENCFG_LPUART | SYSC_CLKENCFG_LPUART_MRCK;
-		psUart->SCON = 0;
 		if (mode == UART_MODE_8B_SYNC)
 		{
 			PARAM_CHECK(600000 / (2 * iBaud) < 1);
 			psUart->BDIV = (600000 + iBaud) / (2 * iBaud) - 1;
-			psUart->SCON = ((UART_MODE_8B_SYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
+			psUart->SCON &= ~UART_SCON_SM01;
+			psUart->SCON |= ((UART_MODE_8B_SYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
 		}
 		else if (mode == UART_MODE_10B_ASYNC)
 		{
 			PARAM_CHECK(600000 / (16 * iBaud) < 1);
 			psUart->BDIV = (600000 + iBaud) / (16 * iBaud) - 1;
-			psUart->SCON = ((UART_MODE_10B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
+			psUart->SCON &= ~UART_SCON_SM01;
+			psUart->SCON |= ((UART_MODE_10B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
 		}
 		else
 		{
 			PARAM_CHECK(pclk / (16 * iBaud) < 1);
 			psUart->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
-			psUart->SCON = ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
+			psUart->SCON &= ~UART_SCON_SM01;
+			psUart->SCON |= ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
 		}
 		psUart->SCON |= (1 << 10);
 	}
@@ -208,11 +214,11 @@ void UART_RcvVerifyCfg(UART_Type *psUart, int chk)
 	PARAM_CHECK((chk != UART_VERIFY_SEL_EVEN) && (chk != UART_VERIFY_SEL_ODD));
 	if (chk == UART_VERIFY_SEL_EVEN)
 	{
-		psUart->SCON |= (1 << 11);
+		psUart->SCON |= UART_SCON_PACFG;
 	}
 	else
 	{
-		psUart->SCON &= ~(1 << 11);
+		psUart->SCON &= ~UART_SCON_PACFG;
 	}
 }
 /**
@@ -230,17 +236,17 @@ void UART_EnableControl(UART_Type *psUart, int enType)
 	else
 		psUart->SCON &= ~(1 << 10);
 	if (enType & UART_EN_TYPE_SM2)
-		psUart->SCON |= (1 << 7);
+		psUart->SCON |= UART_SCON_SM2;
 	else
-		psUart->SCON &= ~(1 << 7);
+		psUart->SCON &= ~UART_SCON_SM2;
 	if (enType & UART_EN_TYPE_REN)
-		psUart->SCON |= (1 << 6);
+		psUart->SCON |= UART_SCON_REN;
 	else
-		psUart->SCON &= ~(1 << 6);
+		psUart->SCON &= ~UART_SCON_REN;
 	if (enType & UART_EN_TYPE_SFD)
-		psUart->SCON |= (1 << 0);
+		psUart->SCON |= UART_SCON_SFDEN;
 	else
-		psUart->SCON &= ~(1 << 0);
+		psUart->SCON &= ~UART_SCON_SFDEN;
 }
 /**
  * @brief enable interrupt
@@ -252,11 +258,11 @@ void UART_EnableIRQ(UART_Type *psUart, int type)
 {
 	PARAM_CHECK((psUart != UART1) && (psUart != UART2) && (psUart != LPUART));
 	if (type & UART_IRQ_TYPE_RXST)
-		psUart->SCON |= (1 << 3);
+		psUart->SCON |= UART_SCON_RXSIEN;
 	if (type & UART_IRQ_TYPE_RX)
-		psUart->SCON |= (1 << 2);
+		psUart->SCON |= UART_SCON_RIEN;
 	if (type & UART_IRQ_TYPE_TX)
-		psUart->SCON |= (1 << 1);
+		psUart->SCON |= UART_SCON_TIEN;
 }
 /**
  * @brief disable interrupt
@@ -268,11 +274,11 @@ void UART_DisableIRQ(UART_Type *psUart, int type)
 {
 	PARAM_CHECK((psUart != UART1) && (psUart != UART2) && (psUart != LPUART));
 	if (type & UART_IRQ_TYPE_RXST)
-		psUart->SCON &= ~(1 << 3);
+		psUart->SCON &= ~UART_SCON_RXSIEN;
 	if (type & UART_IRQ_TYPE_RX)
-		psUart->SCON &= ~(1 << 2);
+		psUart->SCON &= ~UART_SCON_RIEN;
 	if (type & UART_IRQ_TYPE_TX)
-		psUart->SCON &= ~(1 << 1);
+		psUart->SCON &= ~UART_SCON_TIEN;
 }
 /**
  * @brief uart send one data
@@ -335,6 +341,37 @@ u16 UART_Receive9BitData(UART_Type *psUart)
 	while ((psUart->ISR & UART_ISR_RI) != UART_ISR_RI)
 		;
 	psUart->ISR = UART_ISR_RI;
+	if (psUart->SCON & UART_SCON_RB8)
+		return psUart->SBUF | (1ul << 8);
+	else
+		return psUart->SBUF;
+}
+/**
+ * @brief 写数据到发送寄存器包括bit8
+ *
+ * @param psUart:UART1,UART2
+ * @param dat send data
+ * @note 不查询发送完成标?? */
+void UART_WriteData(UART_Type *psUart, u16 dat)
+{
+	if (dat & (1 << 8))
+	{
+		psUart->SCON |= UART_SCON_TB8;
+	}
+	else
+	{
+		psUart->SCON &= ~UART_SCON_TB8;
+	}
+	psUart->SBUF = dat;
+}
+/**
+ * @brief 读接收寄存器数据包括bit8
+ *
+ * @param psUart UART1,UART2
+ * @return u16 rcv data
+ */
+u16 UART_ReadData(UART_Type *psUart)
+{
 	if (psUart->SCON & UART_SCON_RB8)
 		return psUart->SBUF | (1ul << 8);
 	else

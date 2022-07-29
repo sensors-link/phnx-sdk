@@ -78,7 +78,7 @@
 
 // twc_cmd
 #define TWC_CMD_CMD BITS(16, 31)
-#define TWC_CMD_MSK BITS(0, 16)
+#define TWC_CMD_MSK BITS(0, 15)
 
 // twc_txs
 #define TWC_TXS_TXSTART	 BIT(1)
@@ -89,8 +89,6 @@
 #define TWC_INTEN_TXDATAENDINTEN BIT(0)
 
 // twc_sts
-// #define TWC_STS_RXSTATE         BITS(22,23)
-// #define TWC_STS_TXSTATE         BITS(20,21)
 #define TWC_STS_HANMCHKPAR BITS(14, 19)
 #define TWC_STS_RXPARITY   BITS(8, 13)
 #define TWC_STS_RXPARERR   BIT(7)
@@ -111,16 +109,16 @@ typedef enum _FARM_END
 	TWC_TX_FRAME_END = (1 << 0),
 } eTansferEnd_Type;
 
-#define TWC_MODE_9000 0
-#define TWC_MODE_EPC  1
+#define TWC_MODE_9000 (0)
+#define TWC_MODE_EPC  (1)
 
-#define TWC_TX_LEVEL_HIGH_EN 1
-#define TWC_TX_LEVEL_LOW_EN	 0
+#define TWC_TX_LEVEL_HIGH_EN (1)
+#define TWC_TX_LEVEL_LOW_EN	 (0)
 
-#define TWC_RX_DEC_MATCH_CMD_INT 0
-#define TWC_RX_DEC_NO_MT_CMD_INT 1
+#define TWC_RX_DEC_MATCH_CMD_INT (0)
+#define TWC_RX_DEC_NO_MT_CMD_INT (1)
 
-#define TWC_RX_FILT_NO			0
+#define TWC_RX_FILT_NO			(0)
 #define TWC_RX_FILT_2N_CYCLE(n) (n) // 1<x<15, 1-30cycle
 
 typedef struct _SWAN
@@ -136,29 +134,30 @@ typedef struct _SWAN
 					 // TWC_TX_BIT_32BIT
 } sSwanBusCfgParam;
 
-#define TWC_RX_PARITY_HMM  1
-#define TWC_RX_PARITY_EVEN 0
+#define TWC_RX_PARITY_HMM  (1)
+#define TWC_RX_PARITY_EVEN (0)
 
-#define TWC_TX_CODE_MCT 1
-#define TWC_TX_CODE_NRZ 0
+#define TWC_TX_CODE_MCT (1)
+#define TWC_TX_CODE_NRZ (0)
 
-#define TWC_TX_PARITY_ODD  1
-#define TWC_TX_PARITY_EVEN 0
+#define TWC_TX_PARITY_ODD  (1)
+#define TWC_TX_PARITY_EVEN (0)
 
-#define TWC_TX_BIT_8BIT	 0
-#define TWC_TX_BIT_16BIT 1
-#define TWC_TX_BIT_24BIT 2
-#define TWC_TX_BIT_32BIT 3
+#define TWC_TX_BIT_8BIT	 (0)
+#define TWC_TX_BIT_16BIT (1)
+#define TWC_TX_BIT_24BIT (2)
+#define TWC_TX_BIT_32BIT (3)
 
-#define TWC_CMD_1 1
-#define TWC_CMD_2 2
-#define TWC_CMD_3 3
-#define TWC_CMD_4 4
+#define TWC_CMD_1 (1)
+#define TWC_CMD_2 (2)
+#define TWC_CMD_3 (3)
+#define TWC_CMD_4 (4)
 
 // extern function declare
 void TWC_Init(int pin);
 void TWC_DeInit(void);
 void TWC_RecieveControl(ControlStatus clt);
+void TWC_RecieveEncodeControl(ControlStatus ctl);
 void TWC_SEBUSConfig(int mode, int txLelCfg, int rxDecCfg, int rxGlitchFiltCfg);
 void TWC_SetGapAndGapComp(int gap, int gapComp);
 void TWC_SWANBusConfig(int txBaud, int rxBaud, sSwanBusCfgParam *pParam);
@@ -166,10 +165,11 @@ void TWC_SetCMDAndMask(int cmdRegNo, u16 cmd, u16 msk);
 u32	 TWC_ReadData(void);
 void TWC_WriteData(u32 dat);
 
-void TWC_SendEnable(void);	// gcc inline
-void TWC_SendDisable(void); // gcc inline
-void TWC_SwanBusSendStart(void);
-void TWC_EnableIRQ(eTansferEnd_Type val);
-void TWC_ClrIRQFlag(eTansferEnd_Type val);
+void TWC_SendEnable(void);
+void TWC_SendDisable(void);
+void TWC_SwanBusSendStartConfig(ControlStatus clt);
+void TWC_EnableIRQControl(eTansferEnd_Type val);
+void TWC_ClrIntFlag(eTansferEnd_Type val);
+u32	 TWC_GetStatusRegData(void);
 
-#endif
+#endif /*__TWC_H__*/

@@ -11,26 +11,9 @@
 
 #ifndef __IOM_H__
 #define __IOM_H__
-#include "../include/phnx05.h"
-
-/*register defines*/
-#define IOM_DATA_REG		 REG32(IOM_BASE + 0x00)
-#define IOM_OE_REG			 REG32(IOM_BASE + 0x04)
-#define IOM_PU_REG			 REG32(IOM_BASE + 0x08)
-#define IOM_PD_REG			 REG32(IOM_BASE + 0x0c)
-#define IOM_OTYPE_REG		 REG32(IOM_BASE + 0x10)
-#define IOM_AINCTRL_REG		 REG32(IOM_BASE + 0x14)
-#define IOM_DRS_REG			 REG32(IOM_BASE + 0x18)
-#define IOM_AF0_REG			 REG32(IOM_BASE + 0x1c)
-#define IOM_AF1_REG			 REG32(IOM_BASE + 0x20)
-#define IOM_INT_TYPE_REG	 REG32(IOM_BASE + 0x24)
-#define IOM_INT_POLARITY_REG REG32(IOM_BASE + 0x28)
-#define IOM_EXT_INTE_REG	 REG32(IOM_BASE + 0x2c)
-#define IOM_INTF_REG		 REG32(IOM_BASE + 0x30)
-#define IOM_CTL_REG			 REG32(IOM_BASE + 0x34)
+#include "phnx05.h"
 
 /*register bit defines*/
-
 // IOM_AF0
 #define IOM_AF0_P15_SEL BITS(30, 31)
 #define IOM_AF0_P14_SEL BITS(28, 29)

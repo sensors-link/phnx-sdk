@@ -23,18 +23,10 @@
  * @param smpCycle ADC_SMP_CYCLE_xx
  * @note ：调用此函数后要进行AD通道的IO口设置为模拟口与选择模拟功能为AD输入
  */
-void ADC_Init(int chn, int buffEn, int verfSel, int smpCycle)
+void ADC_Init(int chn, int verfSel, int smpCycle)
 {
+	SYSC->CLKENCFG |= SYSC_CLKENCFG_ADC_PCKEN;
 	ADC->CFG = (chn << 4) | (verfSel << 3);
-	if (buffEn == ENABLE)
-	{
-		ANAC->EST_CFG |= 0x1 << 8;
-		ANAC->ANAC_REV0 |= 0x1;
-	}
-	else
-	{
-		ADC->CFG &= ~(1 << 6);
-	}
 
 	ADC->CFG |= (smpCycle << 8);
 }

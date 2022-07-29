@@ -99,18 +99,21 @@ void UART_EnableControl(int enType)
 		UART1->SCON |= (1 << 10);
 	else
 		UART1->SCON &= ~(1 << 10);
+
 	if (enType & UART_EN_TYPE_SM2)
 		UART1->SCON |= (1 << 7);
 	else
 		UART1->SCON &= ~(1 << 7);
+
 	if (enType & UART_EN_TYPE_REN)
 		UART1->SCON |= (1 << 6);
 	else
 		UART1->SCON &= ~(1 << 6);
+
 	if (enType & UART_EN_TYPE_SFD)
-		UART1->SCON |= (1 << 0);
+		UART1->SCON |= (1 << 3);
 	else
-		UART1->SCON &= ~(1 << 0);
+		UART1->SCON &= ~(1 << 3);
 }
 /**
  * @brief enable interrupt
@@ -121,11 +124,11 @@ void UART_EnableIRQ(int type)
 {
 	PARAM_CHECK(UART1 != UART1);
 	if (type & UART_IRQ_TYPE_RXST)
-		UART1->SCON |= (1 << 3);
-	if (type & UART_IRQ_TYPE_RX)
 		UART1->SCON |= (1 << 2);
-	if (type & UART_IRQ_TYPE_TX)
+	if (type & UART_IRQ_TYPE_RX)
 		UART1->SCON |= (1 << 1);
+	if (type & UART_IRQ_TYPE_TX)
+		UART1->SCON |= (1 << 0);
 }
 /**
  * @brief disable interrupt
@@ -135,11 +138,11 @@ void UART_EnableIRQ(int type)
 void UART_DisableIRQ(int type)
 {
 	if (type & UART_IRQ_TYPE_RXST)
-		UART1->SCON &= ~(1 << 3);
-	if (type & UART_IRQ_TYPE_RX)
 		UART1->SCON &= ~(1 << 2);
-	if (type & UART_IRQ_TYPE_TX)
+	if (type & UART_IRQ_TYPE_RX)
 		UART1->SCON &= ~(1 << 1);
+	if (type & UART_IRQ_TYPE_TX)
+		UART1->SCON &= ~(1 << 0);
 }
 /**
  * @brief uart send one data

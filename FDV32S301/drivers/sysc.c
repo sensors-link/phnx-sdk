@@ -118,7 +118,7 @@ void SYSC_SetANAC_CLKDiv(int div, int m500kDiv)
  */
 void SYSC_SetTimer1_3ClkDiv(int div)
 {
-	PARAM_CHECK((div < DIV1) || (div > DIV128));
+	PARAM_CHECK((div < DIV1) || (div > DIV256));
 	SYSC->TIMCLKDIV = div;
 }
 /**

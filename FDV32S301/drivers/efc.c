@@ -335,11 +335,11 @@ eReturnType EFC_FlashPageWrite(u32 u32Addr, u32 *pu32Dat, u32 u32Len, u32 u32Prg
  * @brief :eeprom write one data
  *
  * @param addr:addr
- * @param iPrgType :EFC_PRG_BYTE , EFC_PRG_HWORD , EFC_PRG_WORD
  * @param data :data
+ * @param iPrgType :EFC_PRG_BYTE , EFC_PRG_HWORD , EFC_PRG_WORD
  * @return BOOL:TRUE , FALSE
  */
-BOOL EFC_EEPROMWrite(u32 addr, int iPrgType, u32 data)
+BOOL EFC_EEPROMWrite(u32 addr, u32 data, int iPrgType)
 {
 	PARAM_CHECK((addr < 0x10180000) || (addr > 0x101803ff));
 	if (EFC_PageErase(addr) != EFC_SUCCESS)

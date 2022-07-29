@@ -117,7 +117,7 @@ void SYSC_SetANAC_CLKDiv(int div, int m500kDiv)
  */
 void SYSC_SetTimer1ClkDiv(int div)
 {
-	PARAM_CHECK((div < DIV1) || (div > 256));
+	PARAM_CHECK((div < DIV1) || (div > DIV256));
 	SYSC->TIMCLKDIV &= ~SYSC_TIM1CLKDIV;
 	SYSC->TIMCLKDIV = div << SYSC_TIM1CLKDIV_pos;
 }
@@ -129,7 +129,7 @@ void SYSC_SetTimer1ClkDiv(int div)
  */
 void SYSC_SetTimer2ClkDiv(int div)
 {
-	PARAM_CHECK((div < DIV1) || (div > 256));
+	PARAM_CHECK((div < DIV1) || (div > DIV256));
 	SYSC->TIMCLKDIV &= ~SYSC_TIM2CLKDIV;
 	SYSC->TIMCLKDIV = div << SYSC_TIM2CLKDIV_pos;
 }

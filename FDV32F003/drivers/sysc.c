@@ -22,7 +22,7 @@ void SYSC_SelectClockSource(int clkSrc)
 	SYSC_WPT_UNLOCK();
 	SYSC->CLKCTRCFG &= ~SYSC_CLKCTRCFG_SYS_CLK_SEL;
 	SYSC_WPT_UNLOCK();
-	SYSC->CLKCTRCFG |= (clkSrc << 4);
+	SYSC->CLKCTRCFG |= (clkSrc << 0);
 }
 
 /**
@@ -88,18 +88,6 @@ void SYSC_PCLKEnable(ePCLKEN_Type perp)
 void SYSC_PCLKDisable(ePCLKEN_Type perp)
 {
 	SYSC->CLKENCFG &= ~perp;
-}
-
-/**
- * @brief 测试时钟输出控制
- *
- * @param div 分频（div�?0-127�?+1�?*2
- * @param clt
- */
-void SYSC_TestClkOutControl(int div, ControlStatus clt)
-{
-	PARAM_CHECK((div < 0) || (div > 127));
-	SYSC->TESTCKSEL = (clt << 7) | div;
 }
 
 /**

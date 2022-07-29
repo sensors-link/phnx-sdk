@@ -56,15 +56,14 @@
 	}
 
 // EFC_OPR
-#define EFC_OPR_WE	 BIT(7)
-#define EFC_OPR_OPRF BITS(4, 6)
+#define EFC_OPR_WE		BIT(7)
+#define EFC_OPR_OPRF	BITS(4, 6)
+#define EFC_OPR_OPRMODE BITS(0, 3)
 
 #define EFC_OPR_PPRF_V0 (0x00 << 4)
 #define EFC_OPR_PPRF_V1 (0x07 << 4)
 #define EFC_OPR_PPRF_V2 (0x09 << 4)
 #define EFC_OPR_PPRF_V3 (0x0c << 4)
-
-#define EFC_OPR_OPRMODE BITS(0, 3)
 
 #define EFC_OPR_OPRMODE_SIG_PRG	   0
 #define EFC_OPR_OPRMODE_ROW_PRG	   1
@@ -120,6 +119,6 @@ eReturnType EFC_PageLoad(u32 u32Addr);
 eReturnType EFC_PageEraseVerify(u32 u32Addr);
 eReturnType EFC_ProgramVerify(u32 u32Addr);
 eReturnType EFC_FlashPageWrite(u32 u32Addr, u32 *pu32Dat, u32 u32Len, u32 u32PrgType);
-BOOL		EFC_EEPROMWrite(u32 addr, int iPrgType, u32 data);
+BOOL		EFC_EEPROMWrite(u32 addr, u32 data, int iPrgType);
 
 #endif /*__EFC_H__*/

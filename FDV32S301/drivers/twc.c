@@ -25,12 +25,12 @@ void TWC_Init(int pin)
 	SYSC->CLKENCFG |= SYSC_CLKENCFG_IOM;
 	if (pin == TWC_PIN_18_19)
 	{
-		IOM->AF1 &= ~(IOM_AF1_P18_SEL_TWC_RX | IOM_AF1_P19_SEL_TWC_TX);
+		IOM->AF1 &= ~(IOM_AF1_P18_SEL | IOM_AF1_P19_SEL);
 		IOM->AF1 |= (IOM_AF1_P18_SEL_TWC_RX | IOM_AF1_P19_SEL_TWC_TX);
 	}
 	else
 	{
-		IOM->AF0 &= ~(IOM_AF0_P10_SEL_TWC_RX | IOM_AF0_P11_SEL_TWC_TX);
+		IOM->AF0 &= ~(IOM_AF0_P10_SEL | IOM_AF0_P11_SEL);
 		IOM->AF0 |= (IOM_AF0_P10_SEL_TWC_RX | IOM_AF0_P11_SEL_TWC_TX);
 	}
 	ANAC_WPT_UNLOCK();
@@ -117,7 +117,7 @@ void TWC_SEBUSConfig(int mode, int txLelCfg, int rxDecCfg, int rxGlitchFiltCfg)
 		TWC->CR &= ~TWC_CR_RXDECCFG;
 	}
 	TWC->CR &= ~TWC_CR_RXGLITCHFILTCFG;
-	TWC->CR |= rxGlitchFiltCfg | TWC_CR_SEBUSEN | TWC_CR_RXRECEN;
+	TWC->CR |= rxGlitchFiltCfg | TWC_CR_SEBUSEN;
 }
 /**
  * @brief set gap and gap comp time
@@ -194,7 +194,23 @@ void TWC_SWANBusConfig(int txBaud, int rxBaud, sSwanBusCfgParam *pParam)
 	}
 	TWC->SWCR &= ~TWC_SWCR_TXBITCFG;
 	TWC->SWCR |= pParam->txBitCfg;
-	TWC->CR |= TWC_CR_RXRECEN;
+}
+
+/**
+ * @brief 硬件接收解码使能控制
+ *
+ * @param ctl:ENABLE or DISABLE
+ */
+void TWC_RecieveEncodeControl(ControlStatus ctl)
+{
+	if (ctl == ENABLE)
+	{
+		TWC->CR |= TWC_CR_RXRECEN;
+	}
+	else
+	{
+		TWC->CR &= ~TWC_CR_RXRECEN;
+	}
 }
 
 /**
@@ -224,6 +240,7 @@ void TWC_SetCMDAndMask(int cmdRegNo, u16 cmd, u16 msk)
 		break;
 	}
 }
+
 /**
  * @brief: recieve data
  *
@@ -233,6 +250,7 @@ u32 TWC_ReadData(void)
 {
 	return TWC->RXD;
 }
+
 /**
  * @brief send data
  *
@@ -247,35 +265,38 @@ void TWC_WriteData(u32 dat)
  * @brief send data enalbe
  *
  */
-void TWC_SendEnable(void) // gcc inline
+void TWC_SendEnable(void)
 {
-	TWC->TXS = TWC_TXS_DATATXEN; // Important speed
+	TWC->TXS |= TWC_TXS_DATATXEN;
 }
 
 /**
  * @brief send data disable
  *
  */
-void TWC_SendDisable(void) // gcc inline
+void TWC_SendDisable(void)
 {
-	TWC->TXS = 0; // Important speed
+	TWC->TXS &= ~TWC_TXS_DATATXEN;
 }
 
 /**
  * @brief :swan bus send start
- *
+ *@param clt : ENABLE, DISABLE
  */
-void TWC_SwanBusSendStart(void) // gcc inline
+void TWC_SwanBusSendStartConfig(ControlStatus clt)
 {
-	TWC->TXS = TWC_TXS_TXSTART | TWC_TXS_DATATXEN; // Important speed
+	if (clt == ENABLE)
+		TWC->TXS |= TWC_TXS_TXSTART;
+	else
+		TWC->TXS &= ~TWC_TXS_TXSTART;
 }
 
 /**
  * @brief:enable interrupt
  *
- * @param :val TWC_RX_FRAME_END | TWC_TX_FRAME_END surpor '|' combine
+ * @param :val TWC_RX_FRAME_END | TWC_TX_FRAME_END ,支持或操作一次设置多个
  */
-void TWC_EnableIRQ(eTansferEnd_Type val)
+void TWC_EnableIRQControl(eTansferEnd_Type val)
 {
 	TWC->INTEN = val;
 }
@@ -283,9 +304,19 @@ void TWC_EnableIRQ(eTansferEnd_Type val)
 /**
  * @brief:Clear interrupt flag
  *
- * @param :val TWC_RX_FRAME_END | TWC_TX_FRAME_END surpor '|' combine
+ * @param :val TWC_RX_FRAME_END | TWC_TX_FRAME_END ,支持或操作一次设置多个
  */
-void TWC_ClrIRQFlag(eTansferEnd_Type val)
+void TWC_ClrIntFlag(eTansferEnd_Type val)
 {
-	TWC->STS |= val;
+	TWC->STS = val;
+}
+
+/**
+ * @brief 获得状态寄存器数据
+ *
+ * @return u32
+ */
+u32 TWC_GetStatusRegData(void)
+{
+	return TWC->STS;
 }

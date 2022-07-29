@@ -72,20 +72,25 @@
 #define TWC_SWBR_RXBR_60K (15 << 0)
 
 // twc_gapw
-#define TWC_GAPW_GAPCOMP	 BITS(8, 14)
-#define TWC_GAPW_GAPCYC		 BITS(0, 7)
+#define TWC_GAPW_GAPCOMP BITS(8, 14)
+#define TWC_GAPW_GAPCYC	 BITS(0, 7)
+
 #define TWC_GAPW_GAPCOMP_pos (8)
 #define TWC_GAPW_GAPCYC_pos	 (0)
+
 // twc_cmd
 #define TWC_CMD_CMD BITS(16, 31)
 #define TWC_CMD_MSK BITS(0, 15)
+
 // twc_txs
 #define TWC_TXS_TX_GAP	 BITS(4, 11)
 #define TWC_TXS_TXSTART	 BIT(1)
 #define TWC_TXS_DATATXEN BIT(0)
+
 // twc_inten
 #define TWC_INTEN_RXFRAMENDINTEN BIT(1)
 #define TWC_INTEN_TXDATAENDINTEN BIT(0)
+
 // twc_sts
 #define TWC_STS_HANMCHKPAR BITS(14, 19)
 #define TWC_STS_RXPARITY   BITS(8, 13)
@@ -96,6 +101,7 @@
 #define TWC_STS_RXDATLEV   BIT(2)
 #define TWC_STS_RXFRMEEND  BIT(1)
 #define TWC_STS_TXDATAEND  BIT(0)
+
 // extend define
 #define TWC_PIN_18_19 (0)
 #define TWC_PIN_04_05 (1)

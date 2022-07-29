@@ -180,7 +180,7 @@ eReturnType EFC_ChipErase(u32 u32Addr)
  * @param iPrgType :EFC_PRG_BYTE , EFC_PRG_HWORD , EFC_PRG_WORD
  * @return BOOL:TRUE , FALSE
  */
-BOOL EFC_EEPROMWrite(u32 addr, int iPrgType, u32 data)
+BOOL EFC_EEPROMWrite(u32 addr, u32 data, int iPrgType)
 {
 	PARAM_CHECK((addr < 0x10180000) || (addr > 0x101807ff));
 	if (EFC_PageErase(addr) != EFC_SUCCESS)
