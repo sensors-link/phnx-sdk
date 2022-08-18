@@ -63,9 +63,10 @@ extern "C"
 		__IO unsigned int TPGS;	 /*!< WEb low to PROG2 high Setup time */
 		__IO unsigned int TRCV;	 /*!< Program Recovery Time */
 		__IO unsigned int TERS;	 /*!< Erase time */
-		__O unsigned int  WPT;	 /*!< Write Protect Register     */
+		__O  unsigned int WPT;	 /*!< Write Protect Register     */
 		__IO unsigned int OPR;	 /*!< OPR Flow Register    */
-		__IO unsigned int STS;	 /*!< Verify Register    */
+		__I  unsigned int RSV;	 /*!< Reserved    */
+		__IO unsigned int STS;	 /*!< Status Register    */
 	} EFC_Type;
 
 	/**
