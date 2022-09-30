@@ -190,7 +190,7 @@ and is available athttp://www.eclipse.org/legal/epl-v10.html" id="SLink.exe.c.pr
 				</element>
 				<element>
 					<simple name="id" value="ilg.gnumcueclipse.managedbuild.cross.riscv.option.target.tune" />
-					<simple name="value" value="ilg.gnumcueclipse.managedbuild.cross.riscv.option.target.tune.size" />
+					<simple name="value" value="ilg.gnumcueclipse.managedbuild.cross.riscv.option.target.tune.default" />
 					<simple name="path" value="" />
 				</element>
 				<element>
