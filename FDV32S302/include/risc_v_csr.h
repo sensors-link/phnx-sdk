@@ -1,20 +1,38 @@
 /**
- * @file risc_v_csr.h
- * @author bifei.tang
- * @brief
- * @version 0.1
- * @date 2020-04-23
- *
- * @copyright Fanhai Data Tech. (c) 2020
- *
- */
+  ******************************************************************************
+  * @file    risc_v_csr.h
+  * @author  yongda.wang
+  * @version 0.2
+  * @date    2022-08-23
+  * @brief   RISC_V CSR register related header files.
+  ******************************************************************************
+  * @attention
+  *
+  * @copyright Fanhai Data Tech. (c) 2022
+  ******************************************************************************
+  */
 
-#ifndef _RISCV_CSR_H
-#define _RISCV_CSR_H
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __RISCV_CSR_H__
+#define __RISCV_CSR_H__
 
-//#ifdef __GNUC__
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-// csr register define
+/** @addtogroup FDV32S302_StdPeriph_Driver
+  * @{
+  */
+
+/** @defgroup RISC_V_CSR_Header
+  * @{
+  */
+
+/** @defgroup RISC_V_CSR_Register_define
+  * @{
+  */
+
 #define MSTATUS	 0x300
 #define MISA	 0x301
 #define MIE		 0x304
@@ -29,11 +47,17 @@
 #define MARCH_ID   0xf12
 #define MIMP_ID	   0xf13
 #define MHARD_ID   0xf14
-// ext def
-#define CUSTOMCSR0 0xbff
 
-// csr bits define
-// mstatus
+#define CUSTOMCSR0 0xbff
+/**
+  * @}
+  */
+
+/** @defgroup RISC_V_CSR_register_bit_definition
+  * @{
+  */
+
+/* mstatus */
 #define MSTATUS_MIE 0x00000008
 
 #define MSTATUS_MPIE 0x00000080
@@ -44,15 +68,14 @@
 
 #define MSTATUS32_SD 0x80000000
 
-// mtvec
+/* mtvec */
 #define MTVEC_BASE_ADDR 0xfffffffc
 #define MTVEC_MODE		0x00000003
-#define MTVEC_MODE_0	0 // def: base
-#define MTVEC_MODE_1	1 // base+4*cause  cause=exception code
+#define MTVEC_MODE_0	0 /*!< def: base */
+#define MTVEC_MODE_1	1 /*!< base+4*cause  cause=exception code */
 
-// mcause
-#define MCAUSE_INT 0x80000000
-// exception code
+/* mcause */
+#define MCAUSE_INT	   0x80000000
 #define EXP_M_SOFT_INT 3
 #define EXP_M_TIM_INT  7
 #define EXP_M_EXT_INT  11
@@ -61,20 +84,29 @@
 #define EXP_INST_ADDR_MIS 0
 #define EXP_BREAK		  3
 #define EXP_ECALL		  11
+#define EXP_NMI			  30
 
-// mie
-#define MIE_MEIE (1 << 11) // ext int en
-#define MIE_MTIE (1 << 7)  // tim int en
-#define MIE_MSIE (1 << 3)  // soft int en
+/* mie */
+#define MIE_MEIE (1 << 11) /*!<  ext int en */
+#define MIE_MTIE (1 << 7)  /*!<  tim int en */
+#define MIE_MSIE (1 << 3)  /*!<  soft int en */
 
-// mip  (only read)
-#define MIP_MEIP (1 << 11) // ext int pend flag
-#define MIP_MTIP (1 << 7)  // tim int pend flag
-#define MIP_MSIP (1 << 3)  // soft intpend flag
+/* mip  (only read) */
+#define MIP_MEIP (1 << 11) /*!<  ext int pend flag */
+#define MIP_MTIP (1 << 7)  /*!<  tim int pend flag */
+#define MIP_MSIP (1 << 3)  /*!<  soft intpend flag */
 
-// CUSTOMCSR0
+/* CUSTOMCSR0 */
 #define CUSTOMCSR0_SYSRESETREQ (1 << 4)
 #define CUSTOMCSR0_SLEEPDEEPEN (1 << 3)
+
+/**
+  * @}
+  */
+
+/** @defgroup RISC_V_CSR_Exported_Constants
+  * @{
+  */
 
 #define READ_CSR(reg)                                                                                                  \
 	({                                                                                                                 \
@@ -133,13 +165,13 @@
 #define EnableSoftIRQ()	 SET_CSR(mie, MIE_MSIE)
 #define DisableSoftIRQ() CLEAR_CSR(mie, MIE_MSIE)
 
-// core plic
+/* core plic */
 #define PLIC_BASE_ADDR 0xe0010000
 
 #define PLIC_SetPriority(src, val)                                                                                     \
 	{                                                                                                                  \
 		*((volatile unsigned int *)(PLIC_BASE_ADDR + (src << 2))) = val;                                               \
-	} // note:val>=1; =0 mask int
+	} /*!< note:val>=1; =0 mask int */
 
 #define PLIC_GetPending() *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x100))
 
@@ -147,15 +179,35 @@
 
 #define PLIC_DisableIRQ(src) *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x200)) &= ~(1 << src)
 
-#define PLIC_SetThreshold(val) *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x300)) = val // val:0-8
+#define PLIC_SetThreshold(val)                                                                                         \
+	*((volatile unsigned int *)(PLIC_BASE_ADDR + 0x300)) = val /*!< val:0-8                                            \
+																*/
 
-#define PLIC_GetCLAIM()	   *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x304))		  // int ack
-#define PLIC_SetCLAIM(src) *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x304)) = src // int completion
+#define PLIC_GetCLAIM()	   *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x304))		  /*!< int ack */
+#define PLIC_SetCLAIM(src) *((volatile unsigned int *)(PLIC_BASE_ADDR + 0x304)) = src /*!< int completion */
 
-//#endif
-// soft interrupt
+/* soft interrupt */
 #define CLINT_BASE_ADDR 0xe0000000
 #define SoftTrigIRQ()	(REG32(CLINT_BASE_ADDR) = 1)
 #define SoftClrIRQ()	(REG32(CLINT_BASE_ADDR) = 0)
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif /* __RISCV_CSR_H__ */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/******************* (C) COPYRIGHT 2022 Fanhai Data Tech *****END OF FILE****/
+

@@ -1,20 +1,42 @@
 /**
- * @file uart.h
- * @author David Lin
- * @brief
- * @version 0.1
- * @date 2021-05-17
- *
- * @copyright Fanhai Data Tech. (c) 2021
- *
- */
+  ******************************************************************************
+  * @file    uart.h
+  * @author  yongda.wang
+  * @version 0.2
+  * @date    2022-09-27
+  * @brief   This file contains all functional prototypes of the UART firmware library.
+  ******************************************************************************
+  * @attention
+  *
+  * @copyright Fanhai Data Tech. (c) 2022
+  ******************************************************************************
+  */
 
+/* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __UART_H__
 #define __UART_H__
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* Includes ------------------------------------------------------------------*/
 #include "phnx05.h"
 
-/*register bit definitions */
-// uart_scon
+/** @addtogroup FDV32F003_StdPeriph_Driver
+  * @{
+  */
+
+/** @addtogroup UART
+  * @{
+  */
+
+/** @defgroup UART_module_register_bit_definition
+  * @{
+  */
+
+/* UART_SCON */
 #define UART_SCON_PACFG	 BIT(11)
 #define UART_SCON_SM01	 BITS(8, 9)
 #define UART_SCON_SM2	 BIT(7)
@@ -24,61 +46,172 @@
 #define UART_SCON_SFDEN	 BIT(3)
 #define UART_SCON_RXSIEN BIT(2)
 #define UART_SCON_RIEN	 BIT(1)
-#define UART_SCON_TIEN	 BIT(0) // start bit detect enable
+#define UART_SCON_TIEN	 BIT(0)
 
 #define UART_SCON_SM01_pos (8)
 
-// UART_SBUF
-#define UART_SBUF_pos (0) // 0-0xff
-
-// UART_SADDR
-#define UART_SADDR_pos (0) // 0-0xff
-
-// UART_SADEN
-#define UART_SADEN_pos (0) // 0-0xff
-
-// UART_ISR
+/* UART_ISR */
 #define UART_ISR_PE	  BIT(4)
 #define UART_ISR_FE	  BIT(3)
 #define UART_ISR_RXSF BIT(2)
 #define UART_ISR_RI	  BIT(1)
 #define UART_ISR_TI	  BIT(0)
 
-// UART_DIV
-#define UART_BDIV_pos (0) // 0-0xffff
+/**
+  * @}
+  */
 
-// ext def
-#define UART_MODE_8B_SYNC	(0)
-#define UART_MODE_10B_ASYNC (1)
-#define UART_MODE_11B_ASYNC (2)
+/** @defgroup UART_Exported_Types
+  * @{
+  */
 
-#define UART_VERIFY_SEL_EVEN (1)
-#define UART_VERIFY_SEL_ODD	 (0)
+/**
+  * @brief UART Init structure definition
+  */
 
-#define UART_EN_TYPE_LPMODE (1 << 0)
-#define UART_EN_TYPE_SM2	(1 << 1)
-#define UART_EN_TYPE_REN	(1 << 2)
-#define UART_EN_TYPE_SFD	(1 << 3) // start bit detect
+typedef struct
+{
+	u16 UART_Parity; 						/*!< Specifies the parity mode.
+                                           		 This parameter can be a value of @ref UART_parity. */
 
-#define UART_IRQ_TYPE_RXST (1 << 0) // rcv start int en
-#define UART_IRQ_TYPE_TX   (1 << 1)
-#define UART_IRQ_TYPE_RX   (1 << 2)
+	u16 UART_StopBits; 						/*!< Specifies the number of stop bits transmitted.
+												 This parameter can be a value of @ref UART_stop_bits. */
 
-/* function declarations */
-void UART_Init(int mode, int iBaud);
-void UART_DeInit(void);
-void UART_RcvVerifyCfg(int chk);
-void UART_EnableControl(int enType);
-void UART_EnableIRQ(int type);
-void UART_DisableIRQ(int type);
-void UART_Send(u8 u8Dat);
-u8	 UART_Receive(void);
-void UART_Send9BitData(u16 dat);
-u16	 UART_Receive9BitData(void);
-void UART_WriteData(u16 dat);
-u16	 UART_ReadData(void);
-void UART_SetAddrAndMask(u8 addr, u8 addrCMPBits);
-u32	 UART_GetIntFlag(void);
-void UART_ClrIntFlag(u32 val);
+	u32 UART_BaudRate; 						/*!< Specify the UART communication baud rate.
+												 The baud rate is computed using the following formula:
+												  - MODE0:  UART_BaudRate = UART_CLK/(2*(BDIV+1))
+												  - MODE1/2/3:  UART_BaudRate = UART_CLK/(16*(BDIV+1)) */
+} UART_InitTypeDef;
 
-#endif /*__UART_H__*/
+/**
+  * @}
+  */
+
+/** @defgroup UART_Exported_Constants
+  * @{
+  */
+
+/** @defgroup UART_parity
+  * @{
+  */ 
+
+#define UART_PARITY_NO	 ((u16)0x0000)
+#define UART_PARITY_ODD	 ((u16)0x0200)
+#define UART_PARITY_EVEN ((u16)0x0A00)
+#define IS_UART_PARITY(PARITY)                                                                                         \
+	(((PARITY) == UART_PARITY_NO) || ((PARITY) == UART_PARITY_ODD) || ((PARITY) == UART_PARITY_EVEN))
+/**
+  * @}
+  */
+
+/** @defgroup UART_stop_bits
+  * @{
+  */ 
+
+#define UART_STOPBITS_0			   ((u16)0x0000)
+#define UART_STOPBITS_1			   ((u16)0x0100)
+#define IS_UART_STOPBITS(STOPBITS) (((STOPBITS) == UART_STOPBITS_0) || ((STOPBITS) == UART_STOPBITS_1))
+/**
+  * @}
+  */
+
+/** @defgroup UART_baud_rate
+  * @{
+  */
+
+#define IS_UART_BAUDRATE(BAUDRATE) ((BAUDRATE) > 0)
+/**
+  * @}
+  */
+
+/** @defgroup UART_baud_divide
+  * @{
+  */
+
+#define IS_UART_BAUDDIV(BAUDDIV) (((BAUDDIV) > 1) && ((BAUDDIV) <= 0xFFFF))
+/**
+  * @}
+  */
+
+/** @defgroup UART_interrupts_definition
+  * @{
+  */
+
+#define UART_IT_RXSIEN BIT(2)
+#define UART_IT_RIEN   BIT(1)
+#define UART_IT_TIEN   BIT(0)
+
+#define UART_IT_ALL (UART_IT_RXSIEN | UART_IT_RIEN | UART_IT_TIEN)
+
+#define IS_UART_CONFIG_IT(IT) (((IT)&UART_IT_ALL) && (!((IT) & (~(UART_IT_ALL)))))
+
+#define IS_UART_GET_IT(IT) (((IT) == UART_IT_RXSIEN) || ((IT) == UART_IT_RIEN) || ((IT) == UART_IT_TIEN))
+
+/**
+  * @}
+  */
+
+/** @defgroup UART_flags_definition
+  * @{
+  */
+
+#define UART_FLAG_PE   BIT(4)
+#define UART_FLAG_FE   BIT(3)
+#define UART_FLAG_RXSF BIT(2)
+#define UART_FLAG_RI   BIT(1)
+#define UART_FLAG_TI   BIT(0)
+
+#define UART_FLAG_ALL (UART_FLAG_PE | UART_FLAG_FE | UART_FLAG_RXSF | UART_FLAG_RI | UART_FLAG_TI)
+
+#define IS_UART_GET_FLAG(FLAG)                                                                                         \
+	(((FLAG) == UART_FLAG_PE) || ((FLAG) == UART_FLAG_FE) || ((FLAG) == UART_FLAG_RXSF) || ((FLAG) == UART_FLAG_RI) || \
+	 ((FLAG) == UART_FLAG_TI))
+
+#define IS_UART_CLEAR_FLAG(FLAG) (((FLAG) & UART_FLAG_ALL) && (!((FLAG) & (~(UART_FLAG_ALL)))))
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/** @defgroup UART_Exported_Functions
+  * @{
+  */
+
+void	   UART_DeInit(void);
+void	   UART_Init(UART_InitTypeDef *UART_InitStruct);
+void	   UART_SetAddrAndMask(u8 Addr, u8 Mask);
+void	   UART_SM2Cmd(FunctionalState NewState);
+void	   UART_StartDetectCmd(FunctionalState NewState);
+void	   UART_ITConfig(u8 UART_IT, FunctionalState NewState);
+FlagStatus UART_GetFlagStatus(u8 UART_FLAG);
+ITStatus   UART_GetITStatus(u8 UART_IT);
+void	   UART_ClearFlag(u8 UART_FLAG);
+FlagStatus UART_GetRxBit8(void);
+void	   UART_SetTxBit8(void);
+void	   UART_ClrTxBit8(void);
+void	   UART_SendData(u8 Data);
+u8		   UART_ReceiveData(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __UART_H__ */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/******************* (C) COPYRIGHT 2022 Fanhai Data Tech *****END OF FILE****/
+

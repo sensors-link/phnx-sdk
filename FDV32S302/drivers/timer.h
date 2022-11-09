@@ -1,90 +1,239 @@
 /**
- * @file timer.h
- * @author wyd
- * @brief
- * @version 0.1
- * @date 2021-07-16
- *
- * @copyright Fanhai Data Tech. (c) 2021
- *
- */
+  ******************************************************************************
+  * @file    timer.h
+  * @author  yongda.wang
+  * @version 0.2
+  * @date    2022-09-23
+  * @brief   This file contains all functional prototypes of the TIM firmware library.
+  ******************************************************************************
+  * @attention
+  *
+  * @copyright Fanhai Data Tech. (c) 2022
+  ******************************************************************************
+  */
+
+/* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __TIM_H__
 #define __TIM_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* Includes ------------------------------------------------------------------*/
 #include "phnx04.h"
 
-// reg bit definitions
-// TIM PWCON
+/** @addtogroup FDV32S302_StdPeriph_Driver
+  * @{
+  */
+
+/** @addtogroup TIM
+  * @{
+  */
+
+/** @defgroup TIM_module_register_bit_definition
+  * @{
+  */
+
+/* TIM_PWCON */
 #define TIM_PWCON_PWMCPOL BITS(17, 18)
-#define TIM_PWCON_DTEN	  BITS(16)
+#define TIM_PWCON_DTEN	  BIT(16)
 #define TIM_PWCON_DTUGAP  BITS(0, 15)
 
-#define TIM_PWCON_PWMCPOL_pos (17) // 0-3
-#define TIM_PWCON_DTUGAP_pos  (0)  // 0-0xffff
+#define TIM_PWCON_PWMCPOL_pos (17) /* 0-3 */
+#define TIM_PWCON_DTUGAP_pos  (0)  /* 0-0xffff */
 
-// TIM CON
+/* TIM_CON */
 #define TIM_CON_PAUSE	   BITS(24, 25)
-#define TIM_CON_PAUSE_TIM1 BIT(24)
 #define TIM_CON_PAUSE_TIM2 BIT(25)
+#define TIM_CON_PAUSE_TIM1 BIT(24)
 
 #define TIM_CON_EXTPOL		BITS(20, 21)
-#define TIM_CON_EXTPOL_TIM1 BIT(20)
 #define TIM_CON_EXTPOL_TIM2 BIT(21)
+#define TIM_CON_EXTPOL_TIM1 BIT(20)
 
 #define TIM_CON_EXTEN	   BITS(16, 17)
-#define TIM_CON_EXTEN_TIM1 BIT(16)
 #define TIM_CON_EXTEN_TIM2 BIT(17)
+#define TIM_CON_EXTEN_TIM1 BIT(16)
 
 #define TIM_CON_PWM		 BITS(12, 13)
-#define TIM_CON_PWM_TIM1 BIT(12)
 #define TIM_CON_PWM_TIM2 BIT(13)
+#define TIM_CON_PWM_TIM1 BIT(12)
 
 #define TIM_CON_IE		BITS(8, 9)
-#define TIM_CON_IE_TIM1 BIT(8)
 #define TIM_CON_IE_TIM2 BIT(9)
+#define TIM_CON_IE_TIM1 BIT(8)
 
 #define TIM_CON_TM		BITS(4, 5)
-#define TIM_CON_TM_TIM1 BIT(4)
 #define TIM_CON_TM_TIM2 BIT(5)
+#define TIM_CON_TM_TIM1 BIT(4)
 
 #define TIM_CON_TE		BITS(0, 1)
-#define TIM_CON_TE_TIM1 BIT(0)
 #define TIM_CON_TE_TIM2 BIT(1)
+#define TIM_CON_TE_TIM1 BIT(0)
 
-// TIM INTFLAG
+/* TIM_INTFLAG */
 #define TIM_INTFLAG		 BITS(0, 1)
-#define TIM_INTFLAG_TIM1 BIT(0)
 #define TIM_INTFLAG_TIM2 BIT(1)
+#define TIM_INTFLAG_TIM1 BIT(0)
 
-// TIM INTCLR
+/* TIM_INTCLR */
 #define TIM_INTCLR		BITS(0, 1)
-#define TIM_INTCLR_TIM1 BIT(0)
 #define TIM_INTCLR_TIM2 BIT(1)
+#define TIM_INTCLR_TIM1 BIT(0)
 
-// extend define
-#define TIM_TM_AUTO_RUN	 0
-#define TIM_TM_AUTO_LOAD 1
+/**
+  * @}
+  */
 
-#define TIM_CNT_POLARITY_HIGH 1
-#define TIM_CNT_POLARITY_LOW  0
+/** @defgroup TIM_Exported_Types
+  * @{
+  */
 
-#define TIM_PWM_POL_PWM0_PWM1	0
-#define TIM_PWM_POL_NPWM0_PWM1	1
-#define TIM_PWM_POL_PWM0_NPWM1	2
-#define TIM_PWM_POL_NPWM0_NPWM1 3
+/**
+  * @brief TIM Base Init structure definition
+  */
 
-// extern function declare
+typedef struct
+{
+	u32 TIM_PresetValue; 					/*!< Specify Timer count preset value.
+												 This parameter must obey the following rules:
+											 	    - When the running mode is free running, this parameter is a 32-bit value.
+											 	    - When the run mode is User Defined, this parameter is a 16-bit value. */
 
-void	   TIM_TimerInit(TIM_Type *pTim, int mode, int del);
-void	   TIM_CounterInit(TIM_Type *pTim, int cntPolarity);
-void	   TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty, int dtGap);
-void	   TIM_DeInit(TIM_Type *pTim);
-void	   TIM_EnableControl(TIM_Type *pTim, int iCtrl);
-void	   TIM_EnableIRQ(TIM_Type *pTim);
-void	   TIM_DisableIRQ(TIM_Type *pTim);
-void	   TIM_PauseCntControl(TIM_Type *pTim, ControlStatus ctl);
-FlagStatus TIM_GetIntFlag(TIM_Type *pTim);
-void	   TIM_ClrIntFlag(TIM_Type *pTim);
-u32		   TIM_GetCurentCounter(TIM_Type *pTim);
+	u8 TIM_RunMode; 						/*!< Specifies the running mode of the timer.
+											 	 This parameter can be a value of @ref TIM_run_mode. */
+} TIM_BaseInitTypeDef;
 
-#endif /*__TIM_H__*/
+/**
+  * @brief TIM PWM Init structure definition
+  */
+
+typedef struct
+{
+	u16 TIM_PWMLow; 						/*!< Specifies the low level count value of the PWM.
+												 This parameter can be a number between 0x0000 and 0xFFFF. */
+											
+	u16 TIM_PWMHigh; 						/*!< Specifies the high level count value of the PWM.
+												 This parameter can be a number between 0x0000 and 0xFFFF. */
+
+	u8 TIM_PWMPolarity; 					/*!< Specifies the PMM polarity control state.
+											 	 This parameter can be a value of @ref TIM_PWM_polarity. */
+
+	FunctionalState TIM_DTCmd; 				/*!< Specifies the new state of the deadband control function.
+											  	 This parameter can be set either to ENABLE or DISABLE. */
+
+	u16 TIM_DTUGap; 						/*!< Specify PWM Dead Time Width.
+												 This parameter can be a number between 0x0000 and 0xFFFF. */
+} TIM_PWMInitTypeDef;
+
+/**
+  * @brief TIM count Init structure definition
+  */
+
+typedef struct
+{
+	u32 TIM_OverValue; 						/*!< Specifies the timer external pulse count overflow value. */
+
+	u8 TIM_ExternPolarity; 					/*!< Specify the external pulse count polarity.
+											 	 This parameter can be a value of @ref TIM_external_pulse_polarity. */
+} TIM_CountInitTypeDef;
+
+/**
+  * @}
+  */
+
+/** @defgroup TIM_Exported_Constants
+  * @{
+  */
+
+/** @defgroup TIM_run_mode
+  * @{
+  */
+
+#define TIM_RUN_MODE_FREE_RUN	 (0)
+#define TIM_RUN_MODE_USER_DEFINE (1)
+
+#define IS_TIM_RUN_MODE(MODE) (((MODE) == TIM_RUN_MODE_FREE_RUN) || ((MODE) == TIM_RUN_MODE_USER_DEFINE))
+/**
+  * @}
+  */
+
+/** @defgroup TIM_all_timer_peripheral
+  * @{
+  */
+
+#define IS_TIM_ALL_PERIPH(PERIPH) (((PERIPH) == TIM1) || ((PERIPH) == TIM2))
+/**
+  * @}
+  */
+
+/** @defgroup TIM_PWM_polarity
+  * @{
+  */
+
+#define TIM_PWM_POL_TOG_TOGN   (0)
+#define TIM_PWM_POL_NTOG_TOGN  (1)
+#define TIM_PWM_POL_TOG_NTOGN  (2)
+#define TIM_PWM_POL_NTOG_NTOGN (3)
+
+#define IS_TIM_PWM_POL(POL)                                                                                            \
+	(((POL) == TIM_PWM_POL_TOG_TOGN) || ((POL) == TIM_PWM_POL_NTOG_TOGN) || ((POL) == TIM_PWM_POL_TOG_NTOGN) ||        \
+	 ((POL) == TIM_PWM_POL_NTOG_NTOGN))
+/**
+  * @}
+  */
+
+/** @defgroup TIM_external_pulse_polarity
+  * @{
+  */
+
+#define TIM_EXTERN_POL_HIGH (0)
+#define TIM_EXTERN_POL_LOW	(1)
+
+#define IS_TIM_EXTERN_POL(POL) (((POL) == TIM_EXTERN_POL_HIGH) || ((POL) == TIM_EXTERN_POL_LOW))
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/** @defgroup TIM_Exported_Functions
+  * @{
+  */
+
+void	   TIM_DeInit(TIM_TypeDef *TIMx);
+void	   TIM_BaseInit(TIM_TypeDef *TIMx, TIM_BaseInitTypeDef *TIM_BaseInitStruct);
+void	   TIM_PWMInit(TIM_TypeDef *TIMx, TIM_PWMInitTypeDef *TIM_PWMInitStruct);
+void	   TIM_CountInit(TIM_TypeDef *TIMx, TIM_CountInitTypeDef *TIM_CountInitStruct);
+void	   TIM_PauseCmd(TIM_TypeDef *TIMx, FunctionalState NewState);
+void	   TIM_Cmd(TIM_TypeDef *TIMx, FunctionalState NewState);
+void	   TIM_ITConfig(TIM_TypeDef *TIMx, FunctionalState NewState);
+FlagStatus TIM_GetFlagStatus(TIM_TypeDef *TIMx);
+ITStatus   TIM_GetITStatus(TIM_TypeDef *TIMx);
+void	   TIM_ClearFlag(TIM_TypeDef *TIMx);
+u32		   TIM_GetCounter(TIM_TypeDef *TIMx);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __TIM_H__ */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/******************* (C) COPYRIGHT 2022 Fanhai Data Tech *****END OF FILE****/
+

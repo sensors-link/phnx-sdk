@@ -1,369 +1,47 @@
 /**
- * @file timer.c
- * @author bifei.tang
- * @brief
- * @version 0.1
- * @date 2020-05-12
- *
- * @copyright Fanhai Data Tech. (c) 2020
- *
- */
+  ******************************************************************************
+  * @file    timer.c
+  * @author  yongda.wang
+  * @version 0.2
+  * @date    2022-09-23
+  * @brief   This file provides all the TIM firmware functions.
+  ******************************************************************************
+  * @attention
+  *
+  * @copyright Fanhai Data Tech. (c) 2022
+  ******************************************************************************
+  */
 
-#include "sysc.h"
+/* Includes ------------------------------------------------------------------*/
 #include "timer.h"
-#include "iom.h"
+#include "sysc.h"
+
+/** @addtogroup FDV32S301_StdPeriph_Driver
+  * @{
+  */
+
+/** @defgroup TIM
+  * @brief TIM driver modules
+  * @{
+  */
+
+/** @defgroup TIM_Private_Functions
+  * @{
+  */
 
 /**
- * @brief  timer init
- *
- * @param pTim :TIM1-4
- * @param mode :TIM_TM_AUTO_RUN , TIM_TM_AUTO_LOAD
- * @param del :us
- */
-void TIM_TimerInit(TIM_Type *pTim, int mode, int del)
+  * @brief  Deinitializes the TIMx peripheral registers to their default reset values.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @retval None
+  */
+void TIM_DeInit(TIM_TypeDef *TIMx)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
-	PARAM_CHECK((mode != TIM_TM_AUTO_RUN) && (mode != TIM_TM_AUTO_LOAD));
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
 
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM_PCK;
-
-	SystemCoreClockUpdate();
-
-	if (pTim == TIM1)
+	if (TIMx == TIM1)
 	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM1_CNT;
-		int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-		int cnt	 = (long long)del * pclk / 1000000;
-		PARAM_CHECK(cnt < 1 || cnt > 0xffff);
-		if (mode == TIM_TM_AUTO_RUN)
-		{
-			TIMERS->CON &= ~TIM_CON_TM_TIM1;
-			TIM1->CTCG1 = cnt & 0xffff;
-			TIM1->CTCG2 = cnt >> 16;
-		}
-		else
-		{
-			TIMERS->CON |= TIM_CON_TM_TIM1;
-			TIM1->CTCG1 = cnt;
-		}
-	}
-	else if (pTim == TIM2)
-	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM2_CNT;
-		int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-		int cnt	 = (long long)del * pclk / 1000000;
-		PARAM_CHECK(cnt < 1 || cnt > 0xffff);
-		if (mode == TIM_TM_AUTO_RUN)
-		{
-			TIMERS->CON &= ~TIM_CON_TM_TIM2;
-			TIM2->CTCG1 = cnt & 0xffff;
-			TIM2->CTCG2 = cnt >> 16;
-		}
-		else
-		{
-			TIMERS->CON |= TIM_CON_TM_TIM2;
-			TIM2->CTCG1 = cnt;
-		}
-	}
-	else if (pTim == TIM3)
-	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM3_CNT;
-		int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-		int cnt	 = (long long)del * pclk / 1000000;
-		PARAM_CHECK(cnt < 1 || cnt > 0xffff);
-		if (mode == TIM_TM_AUTO_RUN)
-		{
-			TIMERS->CON &= ~TIM_CON_TM_TIM3;
-			TIM3->CTCG1 = cnt & 0xffff;
-			TIM3->CTCG2 = cnt >> 16;
-		}
-		else
-		{
-			TIMERS->CON |= TIM_CON_TM_TIM3;
-			TIM3->CTCG1 = cnt;
-		}
-	}
-	else
-	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM4_CNT;
-		int pclk = SYSC_GetAHBCLK() / (SYSC->BZTIMCLKDIV + 1);
-		int cnt	 = (long long)del * pclk / 1000000;
-		PARAM_CHECK(cnt < 1 || cnt > 0xffff);
-		if (mode == TIM_TM_AUTO_RUN)
-		{
-			TIMERS->CON &= ~TIM_CON_TM_TIM4;
-			TIM4->CTCG1 = cnt & 0xffff;
-			TIM4->CTCG2 = cnt >> 16;
-		}
-		else
-		{
-			TIMERS->CON |= TIM_CON_TM_TIM4;
-			TIM4->CTCG1 = cnt;
-		}
-	}
-}
-
-/**
- * @brief counter init
- *
- * @param pTim :TIM1-4
- * @param cntPolarity :TIM_CNT_POLARITY_HIGH , TIM_CNT_POLARITY_LOW
- * @param portSel :TIM1_CNT_PORT_P8_P9 , TIM2_CNT_PORT_P10_P11 ,
- * TIM3_CNT_PORT_P6_P7
- */
-void TIM_CounterInit(TIM_Type *pTim, int cntPolarity)
-{
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM_PCK;
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
-	if (pTim == TIM1)
-	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM1_CNT;
-		TIMERS->CON &= ~TIM_CON_TM_TIM1;
-		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) && (cntPolarity != TIM_CNT_POLARITY_LOW));
-		if (cntPolarity == TIM_CNT_POLARITY_HIGH)
-		{
-			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM1;
-		}
-		else
-		{
-			TIMERS->CON |= TIM_CON_EXTPOL_TIM1;
-		}
-		TIMERS->CON |= TIM_CON_EXTEN_TIM1;
-	}
-	else if (pTim == TIM2)
-	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM2_CNT;
-		TIMERS->CON &= ~TIM_CON_TM_TIM2;
-		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) && (cntPolarity != TIM_CNT_POLARITY_LOW));
-		if (cntPolarity == TIM_CNT_POLARITY_HIGH)
-		{
-			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM2;
-		}
-		else
-		{
-			TIMERS->CON |= TIM_CON_EXTPOL_TIM2;
-		}
-
-		TIMERS->CON |= TIM_CON_EXTEN_TIM2;
-	}
-	else if (pTim == TIM3)
-	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM3_CNT;
-		TIMERS->CON &= ~TIM_CON_TM_TIM3;
-		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) && (cntPolarity != TIM_CNT_POLARITY_LOW));
-		if (cntPolarity == TIM_CNT_POLARITY_HIGH)
-		{
-			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM3;
-		}
-		else
-		{
-			TIMERS->CON |= TIM_CON_EXTPOL_TIM3;
-		}
-		TIMERS->CON |= TIM_CON_EXTEN_TIM3;
-	}
-	else
-	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM4_CNT;
-		TIMERS->CON &= ~TIM_CON_TM_TIM4;
-		PARAM_CHECK((cntPolarity != TIM_CNT_POLARITY_HIGH) && (cntPolarity != TIM_CNT_POLARITY_LOW));
-		if (cntPolarity == TIM_CNT_POLARITY_HIGH)
-		{
-			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM4;
-		}
-		else
-		{
-			TIMERS->CON |= TIM_CON_EXTPOL_TIM4;
-		}
-		TIMERS->CON |= TIM_CON_EXTEN_TIM4;
-	}
-}
-
-/**
- * @brief pwm init
- *
- * @param pTim :TIM1-4
- * @param pwmPolarity :TIM_PMW_POL_xxxx;
- * @param freq : Hz
- * @param duty :exp:duty=50 (50%)
- * @param dtGap :us
- */
-void TIM_PWMInit(TIM_Type *pTim, int pwmPolarity, int freq, int duty, int dtGap)
-{
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
-	SystemCoreClockUpdate();
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM_PCK;
-	if (pTim == TIM1)
-	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM1_CNT;
-		TIMERS->CON |= TIM_CON_TM_TIM1;
-		TIMERS->CON |= TIM_CON_PWM_TIM1;
-
-		int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-		int tcnt = pclk / (freq);
-		PARAM_CHECK(tcnt < 2);
-
-		TIM1->CTCG2 = tcnt * (duty) / 100;
-		TIM1->CTCG1 = tcnt - (TIM1->CTCG2);
-		TIM1->PWCON &= ~TIM_PWCON_PWMCPOL;
-		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
-					(pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
-		if (pwmPolarity == TIM_PWM_POL_NPWM0_PWM1)
-		{
-			TIM1->PWCON |= (1 << 17);
-		}
-		else if (pwmPolarity == TIM_PWM_POL_PWM0_NPWM1)
-		{
-			TIM1->PWCON |= (2 << 17);
-		}
-		else if (pwmPolarity == TIM_PWM_POL_NPWM0_NPWM1)
-		{
-			TIM1->PWCON |= (3 << 17);
-		}
-		if (dtGap > 0)
-		{
-			TIM1->PWCON |= (1 << 16);
-			tcnt = (long long)pclk * dtGap / 1000000;
-			PARAM_CHECK(tcnt > 0xffff);
-			TIM1->PWCON &= ~0xffff;
-			TIM1->PWCON |= tcnt;
-		}
-		else
-		{
-			TIM1->PWCON &= ~(1 << 16);
-		}
-	}
-	else if (pTim == TIM2)
-	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM2_CNT;
-		TIMERS->CON |= TIM_CON_TM_TIM2;
-		TIMERS->CON |= TIM_CON_PWM_TIM2;
-
-		int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-		int tcnt = pclk / (freq);
-		PARAM_CHECK(tcnt < 2);
-
-		TIM2->CTCG2 = tcnt * (duty) / 100;
-		TIM2->CTCG1 = tcnt - (TIM2->CTCG2);
-
-		TIM2->PWCON &= ~TIM_PWCON_PWMCPOL;
-		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
-					(pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
-		if (pwmPolarity == TIM_PWM_POL_NPWM0_PWM1)
-		{
-			TIM2->PWCON |= (1 << 17);
-		}
-		else if (pwmPolarity == TIM_PWM_POL_PWM0_NPWM1)
-		{
-			TIM2->PWCON |= (2 << 17);
-		}
-		else if (pwmPolarity == TIM_PWM_POL_NPWM0_NPWM1)
-		{
-			TIM2->PWCON |= (3 << 17);
-		}
-		if (dtGap > 0)
-		{
-			TIM2->PWCON |= (1 << 16);
-			tcnt = (long long)pclk * dtGap / 1000000;
-			PARAM_CHECK(tcnt > 0xffff);
-			TIM2->PWCON &= ~0xffff;
-			TIM2->PWCON |= tcnt;
-		}
-		else
-		{
-			TIM2->PWCON &= ~(1 << 16);
-		}
-	}
-	else if (pTim == TIM3)
-	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM3_CNT;
-		TIMERS->CON |= TIM_CON_TM_TIM3;
-		TIMERS->CON |= TIM_CON_PWM_TIM3;
-
-		int pclk = SYSC_GetAPBCLK() / (SYSC->TIMCLKDIV + 1);
-		int tcnt = pclk / (freq);
-		PARAM_CHECK(tcnt < 2);
-
-		TIM3->CTCG2 = tcnt * (duty) / 100;
-		TIM3->CTCG1 = tcnt - (TIM3->CTCG2);
-		TIM3->PWCON &= ~TIM_PWCON_PWMCPOL;
-		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
-					(pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
-		if (pwmPolarity == TIM_PWM_POL_NPWM0_PWM1)
-		{
-			TIM3->PWCON |= (1 << 17);
-		}
-		else if (pwmPolarity == TIM_PWM_POL_PWM0_NPWM1)
-		{
-			TIM3->PWCON |= (2 << 17);
-		}
-		else if (pwmPolarity == TIM_PWM_POL_NPWM0_NPWM1)
-		{
-			TIM3->PWCON |= (3 << 17);
-		}
-		if (dtGap > 0)
-		{
-			TIM3->PWCON |= (1 << 16);
-			tcnt = pclk / 1000000 * dtGap;
-			PARAM_CHECK(tcnt > 0xffff);
-			TIM3->PWCON &= ~0xffff;
-			TIM3->PWCON |= tcnt;
-		}
-		else
-		{
-			TIM3->PWCON &= ~(1 << 16);
-		}
-	}
-	else
-	{
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIM4_CNT;
-		TIMERS->CON |= TIM_CON_TM_TIM4;
-		TIMERS->CON |= TIM_CON_PWM_TIM4;
-
-		int pclk = SYSC_GetAHBCLK() / (SYSC->BZTIMCLKDIV + 1);
-		int tcnt = pclk / (freq);
-		PARAM_CHECK(tcnt < 2);
-		TIM4->CTCG2 = tcnt * (duty) / 100; //
-		TIM4->CTCG1 = tcnt - (TIM4->CTCG2);
-
-		TIM4->PWCON &= ~TIM_PWCON_PWMCPOL;
-		PARAM_CHECK((pwmPolarity != TIM_PWM_POL_PWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_PWM0_NPWM1) &&
-					(pwmPolarity != TIM_PWM_POL_NPWM0_PWM1) && (pwmPolarity != TIM_PWM_POL_NPWM0_NPWM1));
-		if (pwmPolarity == TIM_PWM_POL_NPWM0_PWM1)
-		{
-			TIM4->PWCON |= (1 << 17);
-		}
-		else if (pwmPolarity == TIM_PWM_POL_PWM0_NPWM1)
-		{
-			TIM4->PWCON |= (2 << 17);
-		}
-		else if (pwmPolarity == TIM_PWM_POL_NPWM0_NPWM1)
-		{
-			TIM4->PWCON |= (4 << 17);
-		}
-		if (dtGap > 0)
-		{
-			TIM4->PWCON |= (1 << 16);
-			tcnt = pclk / 1000000 * dtGap;
-			PARAM_CHECK(tcnt > 0xffff);
-			TIM4->PWCON &= ~0xffff;
-			TIM4->PWCON |= tcnt;
-		}
-		else
-		{
-			TIM4->PWCON &= ~(1 << 16);
-		}
-	}
-}
-/**
- * @brief Timer deinit
- *
- * @param pTim:TIM1-4
- */
-void TIM_DeInit(TIM_Type *pTim)
-{
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
-	if (pTim == TIM1)
-	{
+		/* Clear the state of the control register (CON) TIM1 */
 		TIMERS->CON &= ~TIM_CON_TE_TIM1;
 		TIMERS->CON &= ~TIM_CON_TM_TIM1;
 		TIMERS->CON &= ~TIM_CON_IE_TIM1;
@@ -371,10 +49,10 @@ void TIM_DeInit(TIM_Type *pTim)
 		TIMERS->CON &= ~TIM_CON_EXTEN_TIM1;
 		TIMERS->CON &= ~TIM_CON_EXTPOL_TIM1;
 		TIMERS->CON &= ~TIM_CON_PAUSE_TIM1;
-		SYSC->CLKENCFG &= ~SYSC_CLKENCFG_TIM1_CNT;
 	}
-	else if (pTim == TIM2)
+	else if (TIMx == TIM2)
 	{
+		/* Clear the state of the control register (CON) TIM2 */
 		TIMERS->CON &= ~TIM_CON_TE_TIM2;
 		TIMERS->CON &= ~TIM_CON_TM_TIM2;
 		TIMERS->CON &= ~TIM_CON_IE_TIM2;
@@ -382,10 +60,10 @@ void TIM_DeInit(TIM_Type *pTim)
 		TIMERS->CON &= ~TIM_CON_EXTEN_TIM2;
 		TIMERS->CON &= ~TIM_CON_EXTPOL_TIM2;
 		TIMERS->CON &= ~TIM_CON_PAUSE_TIM2;
-		SYSC->CLKENCFG &= ~SYSC_CLKENCFG_TIM2_CNT;
 	}
-	else if (pTim == TIM3)
+	else if (TIMx == TIM3)
 	{
+		/* Clear the state of the control register (CON) TIM3 */
 		TIMERS->CON &= ~TIM_CON_TE_TIM3;
 		TIMERS->CON &= ~TIM_CON_TM_TIM3;
 		TIMERS->CON &= ~TIM_CON_IE_TIM3;
@@ -393,10 +71,10 @@ void TIM_DeInit(TIM_Type *pTim)
 		TIMERS->CON &= ~TIM_CON_EXTEN_TIM3;
 		TIMERS->CON &= ~TIM_CON_EXTPOL_TIM3;
 		TIMERS->CON &= ~TIM_CON_PAUSE_TIM3;
-		SYSC->CLKENCFG &= ~SYSC_CLKENCFG_TIM3_CNT;
 	}
-	else
+	else if (TIMx == TIM4)
 	{
+		/* Clear the state of the control register (CON) TIM4 */
 		TIMERS->CON &= ~TIM_CON_TE_TIM4;
 		TIMERS->CON &= ~TIM_CON_TM_TIM4;
 		TIMERS->CON &= ~TIM_CON_IE_TIM4;
@@ -404,164 +82,308 @@ void TIM_DeInit(TIM_Type *pTim)
 		TIMERS->CON &= ~TIM_CON_EXTEN_TIM4;
 		TIMERS->CON &= ~TIM_CON_EXTPOL_TIM4;
 		TIMERS->CON &= ~TIM_CON_PAUSE_TIM4;
-		SYSC->CLKENCFG &= ~SYSC_CLKENCFG_TIM4_CNT;
 	}
+
+	/* Check all timers are enabled */
 	if ((TIMERS->CON & TIM_CON_TE) == 0)
 	{
-		SYSC->CLKENCFG &= ~SYSC_CLKENCFG_TIM_PCK;
-		SYSC->WRPROCFG = SYSC_WRPROCFG_V0;
-		SYSC->WRPROCFG = SYSC_WRPROCFG_V1;
-		SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_TIMER;
-	}
-}
-/**
- * @brief 使能控制
- *
- * @param pTim : TIM1-4
- * @param iCtrl ：ENABLE or DISABLE
- */
-void TIM_EnableControl(TIM_Type *pTim, int iCtrl)
-{
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
-	if (iCtrl == ENABLE)
-	{
-		switch ((int)pTim)
-		{
-		case (int)TIM1:
-			TIMERS->CON |= TIM_CON_TE_TIM1;
-			break;
-		case (int)TIM2:
-			TIMERS->CON |= TIM_CON_TE_TIM2;
-			break;
-		case (int)TIM3:
-			TIMERS->CON |= TIM_CON_TE_TIM3;
-			break;
-		case (int)TIM4:
-			TIMERS->CON |= TIM_CON_TE_TIM4;
-			break;
-		}
-	}
-	else
-	{
-		switch ((int)pTim)
-		{
-		case (int)TIM1:
-			TIMERS->CON &= ~TIM_CON_TE_TIM1;
-			break;
-		case (int)TIM2:
-			TIMERS->CON &= ~TIM_CON_TE_TIM2;
-			break;
-		case (int)TIM3:
-			TIMERS->CON &= ~TIM_CON_TE_TIM3;
-			break;
-		case (int)TIM4:
-			TIMERS->CON &= ~TIM_CON_TE_TIM4;
-			break;
-		}
-	}
-}
-/**
- * @brief Timer interrupt enable
- *
- * @param pTim :TIM1-4
- */
-void TIM_EnableIRQ(TIM_Type *pTim)
-{
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
-	if (pTim == TIM1)
-	{
-		TIMERS->CON |= TIM_CON_IE_TIM1;
-	}
-	else if (pTim == TIM2)
-	{
-		TIMERS->CON |= TIM_CON_IE_TIM2;
-	}
-	else if (pTim == TIM3)
-	{
-		TIMERS->CON |= TIM_CON_IE_TIM3;
-	}
-	else
-	{
-		TIMERS->CON |= TIM_CON_IE_TIM4;
+		/* Reset the TIMER module settings */
+		SYSC_ResetPeripher(SYSC_RESET_MOUDLE_TIMER);
 	}
 }
 
 /**
- * @brief Timer interrupt disable
- *
- * @param pTim:TIM1-4
- */
-void TIM_DisableIRQ(TIM_Type *pTim)
+  * @brief  Initializes the TIMx Time Base Unit peripheral according to 
+  *         the specified parameters in the TIM_BaseInitStruct.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @param  TIM_BaseInitStruct: pointer to a TIM_BaseInitTypeDef structure
+  *         that contains the configuration information for the specified TIM peripheral.
+  * @retval None
+  */
+void TIM_BaseInit(TIM_TypeDef *TIMx, TIM_BaseInitTypeDef *TIM_BaseInitStruct)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
-	if (pTim == TIM1)
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	PARAM_CHECK(IS_TIM_RUN_MODE(TIM_BaseInitStruct->TIM_RunMode));
+
+	if (TIMx == TIM1)
 	{
-		TIMERS->CON &= ~TIM_CON_IE_TIM1;
+		if (TIM_BaseInitStruct->TIM_RunMode == TIM_RUN_MODE_FREE_RUN)
+		{
+			/* Set TIM1 to free running mode */
+			TIMERS->CON &= ~TIM_CON_TM_TIM1;
+		}
+		else
+		{
+			/* Set TIM1 to User Defined Mode */
+			TIMERS->CON |= TIM_CON_TM_TIM1;
+		}
 	}
-	else if (pTim == TIM2)
+	else if (TIMx == TIM2)
 	{
-		TIMERS->CON &= ~TIM_CON_IE_TIM2;
+		/* Set the running mode of the TIMx */
+		if (TIM_BaseInitStruct->TIM_RunMode == TIM_RUN_MODE_FREE_RUN)
+		{
+			/* Set TIM2 to free running mode */
+			TIMERS->CON &= ~TIM_CON_TM_TIM2;
+		}
+		else
+		{
+			/* Set TIM2 to User Defined Mode */
+			TIMERS->CON |= TIM_CON_TM_TIM2;
+		}
 	}
-	else if (pTim == TIM3)
+	else if (TIMx == TIM3)
 	{
-		TIMERS->CON &= ~TIM_CON_IE_TIM3;
+		/* Set the running mode of the TIMx */
+		if (TIM_BaseInitStruct->TIM_RunMode == TIM_RUN_MODE_FREE_RUN)
+		{
+			/* Set TIM3 to free running mode */
+			TIMERS->CON &= ~TIM_CON_TM_TIM3;
+		}
+		else
+		{
+			/* Set TIM3 to User Defined Mode */
+			TIMERS->CON |= TIM_CON_TM_TIM3;
+		}
 	}
-	else
+	else if (TIMx == TIM4)
 	{
-		TIMERS->CON &= ~TIM_CON_IE_TIM4;
+		/* Set the running mode of the TIMx */
+		if (TIM_BaseInitStruct->TIM_RunMode == TIM_RUN_MODE_FREE_RUN)
+		{
+			/* Set TIM4 to free running mode */
+			TIMERS->CON &= ~TIM_CON_TM_TIM4;
+		}
+		else
+		{
+			/* Set TIM4 to User Defined Mode */
+			TIMERS->CON |= TIM_CON_TM_TIM4;
+		}
 	}
+
+	/* Set preset values for TIMx peripherals */
+	TIMx->CTCG1 = TIM_BaseInitStruct->TIM_PresetValue & 0xFFFF;
+	TIMx->CTCG2 = TIM_BaseInitStruct->TIM_PresetValue >> 16;
 }
 
 /**
- * @brief Timer stop counter
- *
- * @param pTim :TIM1-4
- * @param ctr :ENABLE , DISABLE
- */
-void TIM_PauseCntControl(TIM_Type *pTim, ControlStatus ctl)
+  * @brief  Initialize the TIMx PWM function according to the 
+  *	        parameters specified in TIM_PWMInitStruct.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @param  TIM_PWMInitStruct: Pointer to a TIM_PWMInitTypeDef structure 
+  *         containing configuration information for the specified TIM PWM.
+  * @retval None
+  */
+void TIM_PWMInit(TIM_TypeDef *TIMx, TIM_PWMInitTypeDef *TIM_PWMInitStruct)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
-	PARAM_CHECK((ctl != ENABLE) && (ctl != DISABLE));
-	if (pTim == TIM1)
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	PARAM_CHECK(IS_TIM_PWM_POL(TIM_PWMInitStruct->TIM_PWMPolarity));
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(TIM_PWMInitStruct->TIM_DTCmd));
+
+	if (TIMx == TIM1)
 	{
-		if (ctl == ENABLE)
+		/* Set TIM1 to User Defined Mode */
+		TIMERS->CON |= TIM_CON_TM_TIM1;
+
+		/* Enable PWM pulse width modulation */
+		TIMERS->CON |= TIM_CON_PWM_TIM1;
+	}
+	else if (TIMx == TIM2)
+	{
+		/* Set TIM2 to User Defined Mode */
+		TIMERS->CON |= TIM_CON_TM_TIM2;
+
+		/* Enable PWM pulse width modulation */
+		TIMERS->CON |= TIM_CON_PWM_TIM2;
+	}
+	else if (TIMx == TIM3)
+	{
+		/* Set TIM3 to User Defined Mode */
+		TIMERS->CON |= TIM_CON_TM_TIM3;
+
+		/* Enable PWM pulse width modulation */
+		TIMERS->CON |= TIM_CON_PWM_TIM3;
+	}
+	else if (TIMx == TIM4)
+	{
+		/* Set TIM4 to User Defined Mode */
+		TIMERS->CON |= TIM_CON_TM_TIM4;
+
+		/* Enable PWM pulse width modulation */
+		TIMERS->CON |= TIM_CON_PWM_TIM4;
+	}
+
+	/* Set PWM pulse high and low level width */
+	TIMx->CTCG1 = TIM_PWMInitStruct->TIM_PWMLow;
+	TIMx->CTCG2 = TIM_PWMInitStruct->TIM_PWMHigh;
+
+	/* Set complementary TMR_TOG and TMR_TOGN polarity control */
+	TIMx->PWCON &= ~TIM_PWCON_PWMCPOL;
+	TIMx->PWCON |= TIM_PWMInitStruct->TIM_PWMPolarity << TIM_PWCON_PWMCPOL_pos;
+
+	if (TIM_PWMInitStruct->TIM_DTCmd == ENABLE)
+	{
+		/* Enable dead time control function */
+		TIMx->PWCON |= TIM_PWCON_DTEN;
+	}
+	else
+	{
+		/* Disable dead time control function */
+		TIMx->PWCON &= ~TIM_PWCON_DTEN;
+	}
+
+	/* Configure PWM dead time width */
+	TIMx->PWCON &= ~TIM_PWCON_DTUGAP;
+	TIMx->PWCON |= TIM_PWMInitStruct->TIM_DTUGap << TIM_PWCON_DTUGAP_pos;
+}
+
+/**
+  * @brief  Initialize the TIMx external pulse count according to the 
+  *         parameters specified in TIM_CountInitStruct.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @param  TIM_CountInitStruct: Pointer to a TIM_CountInitTypeDef structure containing 
+  *         external pulse count configuration information for the specified TIM peripheral.
+  * @retval None
+  */
+void TIM_CountInit(TIM_TypeDef *TIMx, TIM_CountInitTypeDef *TIM_CountInitStruct)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	PARAM_CHECK(IS_TIM_EXTERN_POL(TIM_CountInitStruct->TIM_ExternPolarity));
+
+	if (TIMx == TIM1)
+	{
+		/* Set TIM1 to free-running mode */
+		TIMERS->CON &= ~TIM_CON_TM_TIM1;
+
+		/* Enable external pulse counting */
+		TIMERS->CON |= TIM_CON_EXTEN_TIM1;
+
+		if (TIM_CountInitStruct->TIM_ExternPolarity == TIM_EXTERN_POL_HIGH)
+		{
+			/* Set the external pulse enable port to count when high */
+			TIMERS->CON &= ~TIM_CON_EXTPOL;
+		}
+		else
+		{
+			/* Set the external pulse enable port to count when low */
+			TIMERS->CON |= TIM_CON_EXTPOL;
+		}
+	}
+	else if (TIMx == TIM2)
+	{
+		/* Set TIM2 to free-running mode */
+		TIMERS->CON &= ~TIM_CON_TM_TIM2;
+
+		/* Enable external pulse counting */
+		TIMERS->CON |= TIM_CON_EXTEN_TIM2;
+
+		if (TIM_CountInitStruct->TIM_ExternPolarity == TIM_EXTERN_POL_HIGH)
+		{
+			/* Set the external pulse enable port to count when high */
+			TIMERS->CON &= ~TIM_CON_EXTPOL;
+		}
+		else
+		{
+			/* Set the external pulse enable port to count when low */
+			TIMERS->CON |= TIM_CON_EXTPOL;
+		}
+	}
+	else if (TIMx == TIM3)
+	{
+		/* Set TIM3 to free-running mode */
+		TIMERS->CON &= ~TIM_CON_TM_TIM3;
+
+		/* Enable external pulse counting */
+		TIMERS->CON |= TIM_CON_EXTEN_TIM3;
+
+		if (TIM_CountInitStruct->TIM_ExternPolarity == TIM_EXTERN_POL_HIGH)
+		{
+			/* Set the external pulse enable port to count when high */
+			TIMERS->CON &= ~TIM_CON_EXTPOL;
+		}
+		else
+		{
+			/* Set the external pulse enable port to count when low */
+			TIMERS->CON |= TIM_CON_EXTPOL;
+		}
+	}
+	else if (TIMx == TIM4)
+	{
+		/* Set TIM4 to free-running mode */
+		TIMERS->CON &= ~TIM_CON_TM_TIM4;
+
+		/* Enable external pulse counting */
+		TIMERS->CON |= TIM_CON_EXTEN_TIM4;
+
+		if (TIM_CountInitStruct->TIM_ExternPolarity == TIM_EXTERN_POL_HIGH)
+		{
+			/* Set the external pulse enable port to count when high */
+			TIMERS->CON &= ~TIM_CON_EXTPOL;
+		}
+		else
+		{
+			/* Set the external pulse enable port to count when low */
+			TIMERS->CON |= TIM_CON_EXTPOL;
+		}
+	}
+
+	/* Set overflow values for TIMx peripherals */
+	TIMx->CTCG1 = TIM_CountInitStruct->TIM_OverValue & 0xFFFF;
+	TIMx->CTCG2 = TIM_CountInitStruct->TIM_OverValue >> 16;
+}
+
+/**
+  * @brief  Enable or disable the pause function of the specified TIM peripheral.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @param  NewState: New state of pause function for specified TIM peripherals.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void TIM_PauseCmd(TIM_TypeDef *TIMx, FunctionalState NewState)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
+	{
+		/* Enable the pause function of the specified TIM peripheral */
+		if (TIMx == TIM1)
 		{
 			TIMERS->CON |= TIM_CON_PAUSE_TIM1;
 		}
-		else
-		{
-			TIMERS->CON &= ~TIM_CON_PAUSE_TIM1;
-		}
-	}
-	else if (pTim == TIM2)
-	{
-		if (ctl == ENABLE)
+		else if (TIMx == TIM2)
 		{
 			TIMERS->CON |= TIM_CON_PAUSE_TIM2;
 		}
-		else
-		{
-			TIMERS->CON &= ~TIM_CON_PAUSE_TIM2;
-		}
-	}
-	else if (pTim == TIM3)
-	{
-		if (ctl == ENABLE)
+		else if (TIMx == TIM3)
 		{
 			TIMERS->CON |= TIM_CON_PAUSE_TIM3;
 		}
-		else
+		else if (TIMx == TIM4)
 		{
-			TIMERS->CON &= ~TIM_CON_PAUSE_TIM3;
+			TIMERS->CON |= TIM_CON_PAUSE_TIM4;
 		}
 	}
 	else
 	{
-		if (ctl == ENABLE)
+		/* Disable the pause function of the specified TIM peripheral */
+		if (TIMx == TIM1)
 		{
-			TIMERS->CON |= TIM_CON_PAUSE_TIM4;
+			TIMERS->CON &= ~TIM_CON_PAUSE_TIM1;
 		}
-		else
+		else if (TIMx == TIM2)
+		{
+			TIMERS->CON &= ~TIM_CON_PAUSE_TIM2;
+		}
+		else if (TIMx == TIM3)
+		{
+			TIMERS->CON &= ~TIM_CON_PAUSE_TIM3;
+		}
+		else if (TIMx == TIM4)
 		{
 			TIMERS->CON &= ~TIM_CON_PAUSE_TIM4;
 		}
@@ -569,92 +391,254 @@ void TIM_PauseCntControl(TIM_Type *pTim, ControlStatus ctl)
 }
 
 /**
- * @brief get timer interrupt flag
- *
- * @param pTim :TIM1-4
- * @return FlagStatus : SET , RESET
- */
-FlagStatus TIM_GetIntFlag(TIM_Type *pTim)
+  * @brief  Enables or disables the specified TIM peripheral.
+  * @param  TIMx: where x can be 1 to 4 to select the TIMx peripheral.
+  * @param  NewState: new state of the TIMx peripheral.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void TIM_Cmd(TIM_TypeDef *TIMx, FunctionalState NewState)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
-	if (pTim == TIM1)
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
 	{
-		return (TIMERS->INTFLAG & TIM_INTFLAG_TIM1) ? SET : RESET;
+		/* Enable the specified TIM peripheral */
+		if (TIMx == TIM1)
+		{
+			TIMERS->CON |= TIM_CON_TE_TIM1;
+		}
+		else if (TIMx == TIM2)
+		{
+			TIMERS->CON |= TIM_CON_TE_TIM2;
+		}
+		else if (TIMx == TIM3)
+		{
+			TIMERS->CON |= TIM_CON_TE_TIM3;
+		}
+		else if (TIMx == TIM4)
+		{
+			TIMERS->CON |= TIM_CON_TE_TIM4;
+		}
 	}
-	else if (pTim == TIM2)
+	else
 	{
-		return (TIMERS->INTFLAG & TIM_INTFLAG_TIM2) ? SET : RESET;
+		/* Disable the specified TIM peripheral */
+		if (TIMx == TIM1)
+		{
+			TIMERS->CON &= ~TIM_CON_TE_TIM1;
+		}
+		else if (TIMx == TIM2)
+		{
+			TIMERS->CON &= ~TIM_CON_TE_TIM2;
+		}
+		else if (TIMx == TIM3)
+		{
+			TIMERS->CON &= ~TIM_CON_TE_TIM3;
+		}
+		else if (TIMx == TIM4)
+		{
+			TIMERS->CON &= ~TIM_CON_TE_TIM4;
+		}
 	}
-	else if (pTim == TIM3)
+}
+
+/**
+  * @brief  Enables or disables the specified TIM interrupts.
+  * @param  TIMx: where x can be 1 to 4 to select the TIMx peripheral.   
+  * @param  NewState: new state of the TIM interrupts.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void TIM_ITConfig(TIM_TypeDef *TIMx, FunctionalState NewState)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
 	{
-		return (TIMERS->INTFLAG & TIM_INTFLAG_TIM3) ? SET : RESET;
+		/* Enable the specified TIM interrupts */
+		if (TIMx == TIM1)
+		{
+			TIMERS->CON |= TIM_CON_IE_TIM1;
+		}
+		else if (TIMx == TIM2)
+		{
+			TIMERS->CON |= TIM_CON_IE_TIM2;
+		}
+		else if (TIMx == TIM3)
+		{
+			TIMERS->CON |= TIM_CON_IE_TIM3;
+		}
+		else if (TIMx == TIM4)
+		{
+			TIMERS->CON |= TIM_CON_IE_TIM4;
+		}
 	}
-	else if (pTim == TIM4)
+	else
 	{
-		return (TIMERS->INTFLAG & TIM_INTFLAG_TIM4) ? SET : RESET;
+		/* Disable the specified TIM interrupts */
+		if (TIMx == TIM1)
+		{
+			TIMERS->CON &= ~TIM_CON_IE_TIM1;
+		}
+		else if (TIMx == TIM2)
+		{
+			TIMERS->CON &= ~TIM_CON_IE_TIM2;
+		}
+		else if (TIMx == TIM3)
+		{
+			TIMERS->CON &= ~TIM_CON_IE_TIM3;
+		}
+		else if (TIMx == TIM4)
+		{
+			TIMERS->CON &= ~TIM_CON_IE_TIM4;
+		}
+	}
+}
+
+/**
+  * @brief  Checks whether the specified TIM flag is set or not.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral. 
+  * @retval The new state of specified TIM flag (SET or RESET).
+  */
+FlagStatus TIM_GetFlagStatus(TIM_TypeDef *TIMx)
+{
+	FlagStatus bitstatus = RESET;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+
+	/* Check the specified TIM flag */
+	if ((TIMx == TIM1) && (TIMERS->INTFLAG & TIM_INTFLAG_TIM1))
+	{
+		/* the specified TIM flag is set */
+		bitstatus = SET;
+	}
+	else if ((TIMx == TIM2) && (TIMERS->INTFLAG & TIM_INTFLAG_TIM2))
+	{
+		/* the specified TIM flag is set */
+		bitstatus = SET;
+	}
+	else if ((TIMx == TIM3) && (TIMERS->INTFLAG & TIM_INTFLAG_TIM3))
+	{
+		/* the specified TIM flag is set */
+		bitstatus = SET;
+	}
+	else if ((TIMx == TIM4) && (TIMERS->INTFLAG & TIM_INTFLAG_TIM4))
+	{
+		/* the specified TIM flag is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* the specified TIM flag is reset */
+		bitstatus = RESET;
 	}
 
-	return RESET;
+	/* Return the specified TIM flag status */
+	return bitstatus;
+}
+
+/**
+  * @brief  Checks whether the TIM interrupt has occurred or not.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral. 
+  * @retval The new state of specified TIM interrupt (SET or RESET).
+  */
+ITStatus TIM_GetITStatus(TIM_TypeDef *TIMx)
+{
+	ITStatus bitstatus = RESET;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+
+	/* Check the specified TIM interrupt */
+	if ((TIMx == TIM1) && (TIMERS->INTFLAG & TIM_INTFLAG_TIM1) && (TIMERS->CON & TIM_CON_IE_TIM1))
+	{
+		/* the specified TIM interrupt is set */
+		bitstatus = SET;
+	}
+	else if ((TIMx == TIM2) && (TIMERS->INTFLAG & TIM_INTFLAG_TIM2) && (TIMERS->CON & TIM_CON_IE_TIM2))
+	{
+		/* the specified TIM interrupt is set */
+		bitstatus = SET;
+	}
+	else if ((TIMx == TIM3) && (TIMERS->INTFLAG & TIM_INTFLAG_TIM3) && (TIMERS->CON & TIM_CON_IE_TIM3))
+	{
+		/* the specified TIM interrupt is set */
+		bitstatus = SET;
+	}
+	else if ((TIMx == TIM4) && (TIMERS->INTFLAG & TIM_INTFLAG_TIM4) && (TIMERS->CON & TIM_CON_IE_TIM4))
+	{
+		/* the specified TIM interrupt is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* the specified TIM interrupt is reset */
+		bitstatus = RESET;
+	}
+
+	/* Return the specified TIM interrupt status */
+	return bitstatus;
 }
 /**
- * @brief clear timer interrupt flag
- *
- * @param pTim :TIM1-4
- */
-void TIM_ClrIntFlag(TIM_Type *pTim)
+  * @brief  Clears the TIMx's pending flags.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral. 
+  * @retval None
+  */
+void TIM_ClearFlag(TIM_TypeDef *TIMx)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
-	if (pTim == TIM1)
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+
+	/* Clear the selected TIMx's flags */
+	if (TIMx == TIM1)
 	{
 		TIMERS->INTCLR = TIM_INTCLR_TIM1;
-		while (TIMERS->INTFLAG & TIM_INTFLAG_TIM1)
-			;
 	}
-	else if (pTim == TIM2)
+	else if (TIMx == TIM2)
 	{
 		TIMERS->INTCLR = TIM_INTCLR_TIM2;
-		while (TIMERS->INTFLAG & TIM_INTFLAG_TIM2)
-			;
 	}
-	else if (pTim == TIM3)
+	else if (TIMx == TIM3)
 	{
 		TIMERS->INTCLR = TIM_INTCLR_TIM3;
-		while (TIMERS->INTFLAG & TIM_INTFLAG_TIM3)
-			;
 	}
-	else if (pTim == TIM4)
+	else if (TIMx == TIM4)
 	{
 		TIMERS->INTCLR = TIM_INTCLR_TIM4;
-		while (TIMERS->INTFLAG & TIM_INTFLAG_TIM4)
-			;
 	}
 }
 
 /**
- * @brief 获得当前计数值
- *
- * @param pTim TIM1、TIM2
- * @return u32 计数结果
- */
-u32 TIM_GetCurentCounter(TIM_Type *pTim)
+  * @brief  Gets the TIMx Counter value.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @retval Counter Register value.
+  */
+u32 TIM_GetCounter(TIM_TypeDef *TIMx)
 {
-	PARAM_CHECK((pTim != TIM1) && (pTim != TIM2) && (pTim != TIM3) && (pTim != TIM4));
-	if (pTim == TIM1)
-	{
-		return TIM1->CTVAL;
-	}
-	else if (pTim == TIM2)
-	{
-		return TIM2->CTVAL;
-	}
-	else if (pTim == TIM3)
-	{
-		return TIM3->CTVAL;
-	}
-	else if (pTim == TIM4)
-	{
-		return TIM4->CTVAL;
-	}
-
-	return 0;
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	
+	/* Get the Counter Register value */
+	return TIMx->CTVAL;
 }
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/******************* (C) COPYRIGHT 2022 Fanhai Data Tech *****END OF FILE****/
+

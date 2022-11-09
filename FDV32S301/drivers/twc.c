@@ -1,322 +1,502 @@
 /**
- * @file twc.c
- * @author bifei.tang
- * @brief
- * @version 0.1
- * @date 2020-05-12
- *
- * @copyright Fanhai Data Tech. (c) 2020
- *
- */
+  ******************************************************************************
+  * @file    twc.c
+  * @author  yongda.wang
+  * @version 0.2
+  * @date    2022-09-26
+  * @brief   This file provides all the TWC firmware functions.
+  ******************************************************************************
+  * @attention
+  *
+  * @copyright Fanhai Data Tech. (c) 2022
+  ******************************************************************************
+  */
+
+/* Includes ------------------------------------------------------------------*/
 #include "twc.h"
 #include "sysc.h"
-#include "anac.h"
-#include "iom.h"
+
+/** @addtogroup FDV32S301_StdPeriph_Driver
+  * @{
+  */
+
+/** @defgroup TWC
+  * @brief TWC driver modules
+  * @{
+  */
+
+/** @defgroup TWC_Private_Functions
+  * @{
+  */
 
 /**
- * @brief twc init
- *
- * @param pin:TWC_PIN_18_19 , TWC_PIN_10_11
- */
-void TWC_Init(int pin)
-{
-	int i;
-	PARAM_CHECK((pin != TWC_PIN_18_19) && (pin != TWC_PIN_10_11));
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_IOM;
-	if (pin == TWC_PIN_18_19)
-	{
-		IOM->AF1 &= ~(IOM_AF1_P18_SEL | IOM_AF1_P19_SEL);
-		IOM->AF1 |= (IOM_AF1_P18_SEL_TWC_RX | IOM_AF1_P19_SEL_TWC_TX);
-	}
-	else
-	{
-		IOM->AF0 &= ~(IOM_AF0_P10_SEL | IOM_AF0_P11_SEL);
-		IOM->AF0 |= (IOM_AF0_P10_SEL_TWC_RX | IOM_AF0_P11_SEL_TWC_TX);
-	}
-	ANAC_WPT_UNLOCK();
-	ANAC->CLK_CFG |= ANAC_CLK_CFG_MRC_EN;
-	for (i = 1000; i > 0; --i)
-		;
-
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_TWC;
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_TWC_MRCK;
-}
-
-/**
- * @brief twc deinit
- *
- */
+  * @brief  Deinitialize the TWC peripheral registers to their default reset values.
+  * @param  None
+  * @retval None
+  */ 
 void TWC_DeInit(void)
 {
-	int i;
-	SYSC_WPT_UNLOCK();
-	SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_TWC;
-	for (i = 10; i > 0; --i)
-		;
-
-	ANAC_WPT_UNLOCK();
-	ANAC->CLK_CFG &= ~ANAC_CLK_CFG_MRC_EN;
-	SYSC->CLKENCFG &= ~SYSC_CLKENCFG_TWC;
-	SYSC->CLKENCFG &= ~SYSC_CLKENCFG_TWC_MRCK;
+	/* Reset the TWC module settings */
+	SYSC_ResetPeripher(SYSC_RESET_MOUDLE_TWC);
 }
 
 /**
- * @brief recieve data enable control
- *
- * @param clt :ENABLE , DISABLE
- */
-void TWC_RecieveControl(ControlStatus clt)
+  * @brief  Initializes the TWC SEBUS peripheral according to the parameters
+  *         specified in TWC_SEBUSInitStruct.
+  * @param  TWC_SEBUSInitStruct: Pointer to an TWC_SEBUSInitTypeDef structure
+  *         containing configuration information for the TWC SEBUS peripheral.
+  * @retval None
+  */
+void TWC_SEBUSInit(TWC_SEBUSInitTypeDef *TWC_SEBUSInitStruct)
 {
-	if (clt == ENABLE)
+	u32 tempreg = 0;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_TWC_SEBUS_MODE(TWC_SEBUSInitStruct->TWC_SEBUSMode));
+	PARAM_CHECK(IS_TWC_TX_LEVEL(TWC_SEBUSInitStruct->TWC_TxLevel));
+	PARAM_CHECK(IS_TWC_RX_DECODE(TWC_SEBUSInitStruct->TWC_RXDecode));
+	PARAM_CHECK(IS_TWC_GLITCH_FILT(TWC_SEBUSInitStruct->TWC_GlitchFilt));
+
+	/*---------------------------- TWC CR Configuration -----------------------*/
+	tempreg = TWC->CR;
+
+	/* Set up to use the SE_BUS protocol */
+	tempreg |= TWC_CR_SEBUSEN;
+
+	if (TWC_SEBUSInitStruct->TWC_SEBUSMode == TWC_SEBUS_MODE_9000)
 	{
-		TWC->CR |= TWC_CR_RXRECEN;
+		/* Set SE_BUS mode to 9000 mode */
+		tempreg &= ~TWC_CR_SEBUSMODE;
 	}
 	else
 	{
-		TWC->CR &= ~TWC_CR_RXRECEN;
+		/* Set SE_BUS mode to EPC mode */
+		tempreg |= TWC_CR_SEBUSMODE;
 	}
+
+	if (TWC_SEBUSInitStruct->TWC_TxLevel == TWC_TX_LEVEL_LOW)
+	{
+		/* Set send data low level pull code */
+		tempreg &= ~TWC_CR_TXLELCFG;
+	}
+	else
+	{
+		/* Set send data high level pull code */
+		tempreg |= TWC_CR_TXLELCFG;
+	}
+
+	if (TWC_SEBUSInitStruct->TWC_RXDecode == TWC_RX_DEC_MATCH_CMD)
+	{
+		/* Set only the instructions in TWC_CMDx can generate the flag */
+		tempreg &= ~TWC_CR_RXDECCFG;
+	}
+	else
+	{
+		/* Set only instructions other than TWC_CMDx can generate the flag */
+		tempreg |= TWC_CR_RXDECCFG;
+	}
+
+	/* Set receive data digital glitch filtering */
+	tempreg &= ~TWC_CR_RXGLITCHFILTCFG;
+	tempreg |= TWC_SEBUSInitStruct->TWC_GlitchFilt << TWC_CR_RXGLITCHFILTCFG_pos;
+
+	/* Write to TWC_CR */
+	TWC->CR = tempreg;
+
+	/* Set the level width in SE_BUS mode */
+	TWC->GAPW &= ~TWC_GAPW_GAPCYC;
+	TWC->GAPW |= TWC_SEBUSInitStruct->TWC_SEBUSLevelGap << TWC_GAPW_GAPCYC_pos;
 }
 
 /**
- * @brief sebus configure
- *
- * @param mode :TWC_MODE_9000 , TWC_MODE_EPC
- * @param txLelCfg :TWC_TX_LEVEL_HIGH_EN , TWC_TX_LEVEL_LOW_EN
- * @param rxDecCfg :TWC_RX_DEC_MATCH_CMD_INT , TWC_RX_DEC_NO_MT_CMD_INT
- * @param rxGlitchFiltCfg:TWC_RX_FILT_NO , TWC_RX_FILT_2N_CYCLE(n)
- * @note :sebus verify check even
- */
-void TWC_SEBUSConfig(int mode, int txLelCfg, int rxDecCfg, int rxGlitchFiltCfg)
+  * @brief  Initializes the TWC SWANBUS peripheral according to the parameters
+  *         specified in TWC_SWANBUSInitStruct.
+  * @param  TWC_SWANBUSInitStruct: Pointer to an TWC_SWANBUSInitTypeDef structure
+  *         containing configuration information for the TWC SWANBUS peripheral.
+  * @retval None
+  */
+void TWC_SWANBUSInit(TWC_SWANBUSInitTypeDef *TWC_SWANBUSInitStruct)
 {
-	PARAM_CHECK((mode != TWC_MODE_9000) && (mode != TWC_MODE_EPC));
-	PARAM_CHECK((txLelCfg != TWC_TX_LEVEL_HIGH_EN) && (txLelCfg != TWC_TX_LEVEL_LOW_EN));
-	PARAM_CHECK((rxDecCfg != TWC_RX_DEC_MATCH_CMD_INT) && (rxDecCfg != TWC_RX_DEC_NO_MT_CMD_INT));
-	PARAM_CHECK(rxGlitchFiltCfg > 15);
-	if (mode == TWC_MODE_9000)
-	{
-		TWC->CR &= ~TWC_CR_SEBUSMODE;
-	}
-	else
-	{
-		TWC->CR |= TWC_CR_SEBUSMODE;
-	}
-	if (txLelCfg == TWC_TX_LEVEL_HIGH_EN)
-	{
-		TWC->CR |= TWC_CR_TXLELCFG;
-	}
-	else
-	{
-		TWC->CR &= ~TWC_CR_TXLELCFG;
-	}
-	if (rxDecCfg == TWC_RX_DEC_NO_MT_CMD_INT)
-	{
-		TWC->CR |= TWC_CR_RXDECCFG;
-	}
-	else
-	{
-		TWC->CR &= ~TWC_CR_RXDECCFG;
-	}
-	TWC->CR &= ~TWC_CR_RXGLITCHFILTCFG;
-	TWC->CR |= rxGlitchFiltCfg | TWC_CR_SEBUSEN;
-}
-/**
- * @brief set gap and gap comp time
- *
- * @param gap : 0<gap<256
- * @param gapComp:: 0<gapComp<128
- * @note:unit us,(val*10/6)us
- */
-void TWC_SetGapAndGapComp(int gap, int gapComp)
-{
-	PARAM_CHECK((gap < 1) || (gap > 255));
-	PARAM_CHECK((gapComp < 1) || (gapComp > 127));
-	TWC->GAPW = (gapComp << TWC_GAPW_GAPCOMP_pos) | gap;
-}
-/**
- * @brief swanbus configure
- *
- * @param txBaud :TWC_SWBR_TXBR_xxK
- * @param rxBaud :TWC_SWBR_RXBR_xxK
- * @param pParam :sSwanBusCfgParam
- */
-void TWC_SWANBusConfig(int txBaud, int rxBaud, sSwanBusCfgParam *pParam)
-{
-	TWC->SWBR = txBaud | rxBaud;
-	PARAM_CHECK((pParam->txLelCfg != TWC_TX_LEVEL_HIGH_EN) && (pParam->txLelCfg != TWC_TX_LEVEL_LOW_EN));
-	PARAM_CHECK((pParam->rxDecCfg != TWC_RX_DEC_MATCH_CMD_INT) && (pParam->rxDecCfg != TWC_RX_DEC_NO_MT_CMD_INT));
-	PARAM_CHECK(pParam->rxGlitchFiltCfg > 15);
-	if (pParam->txLelCfg == TWC_TX_LEVEL_HIGH_EN)
-	{
-		TWC->CR |= TWC_CR_TXLELCFG;
-	}
-	else
-	{
-		TWC->CR &= ~TWC_CR_TXLELCFG;
-	}
-	if (pParam->rxDecCfg == TWC_RX_DEC_NO_MT_CMD_INT)
-	{
-		TWC->CR |= TWC_CR_RXDECCFG;
-	}
-	else
-	{
-		TWC->CR &= ~TWC_CR_RXDECCFG;
-	}
-	TWC->CR &= ~(TWC_CR_RXGLITCHFILTCFG | TWC_CR_SEBUSEN);
-	TWC->CR |= pParam->rxGlitchFiltCfg;
+	u32 tempreg = 0;
 
-	PARAM_CHECK((pParam->rxParityCfg != TWC_RX_PARITY_HMM) && (pParam->rxParityCfg != TWC_RX_PARITY_EVEN));
-	PARAM_CHECK((pParam->txCodeCfg != TWC_TX_CODE_MCT) && (pParam->txCodeCfg != TWC_TX_CODE_NRZ));
-	PARAM_CHECK((pParam->txParityCfg != TWC_TX_PARITY_EVEN) && (pParam->txParityCfg != TWC_TX_PARITY_ODD));
-	PARAM_CHECK(pParam->txBitCfg > 3);
-	if (pParam->rxParityCfg == TWC_RX_PARITY_HMM)
-	{
-		TWC->SWCR |= TWC_SWCR_RXPARITYCFG;
-	}
-	else
-	{
-		TWC->SWCR &= ~TWC_SWCR_RXPARITYCFG;
-	}
-	if (pParam->txCodeCfg == TWC_TX_CODE_MCT)
-	{
-		TWC->SWCR |= TWC_SWCR_TXCODECFG;
-	}
-	else
-	{
-		TWC->SWCR &= ~TWC_SWCR_TXCODECFG;
-	}
-	if (pParam->txParityCfg == TWC_TX_PARITY_ODD)
-	{
-		TWC->SWCR |= TWC_SWCR_TXPARITYCFG;
-	}
-	else
-	{
-		TWC->SWCR &= ~TWC_SWCR_TXPARITYCFG;
-	}
-	TWC->SWCR &= ~TWC_SWCR_TXBITCFG;
-	TWC->SWCR |= pParam->txBitCfg;
-}
+	/* Check the parameters */
+	PARAM_CHECK(IS_TWC_TX_LEVEL(TWC_SWANBUSInitStruct->TWC_TxLevel));
+	PARAM_CHECK(IS_TWC_RX_DECODE(TWC_SWANBUSInitStruct->TWC_RXDecode));
+	PARAM_CHECK(IS_TWC_GLITCH_FILT(TWC_SWANBUSInitStruct->TWC_GlitchFilt));
+	PARAM_CHECK(IS_TWC_RX_CHECK(TWC_SWANBUSInitStruct->TWC_RxCheck));
+	PARAM_CHECK(IS_TWC_TX_CODE(TWC_SWANBUSInitStruct->TWC_TxCode));
+	PARAM_CHECK(IS_TWC_TX_PARITY(TWC_SWANBUSInitStruct->TWC_TxParity));
+	PARAM_CHECK(IS_TWC_TX_BIT(TWC_SWANBUSInitStruct->TWC_TxBit));
+	PARAM_CHECK(IS_TWC_TX_BAUDRATE(TWC_SWANBUSInitStruct->TWC_TxBaudRate));
+	PARAM_CHECK(IS_TWC_RX_BAUDRATE(TWC_SWANBUSInitStruct->TWC_RxBaudRate));
+	PARAM_CHECK(IS_TWC_GAP_COMP(TWC_SWANBUSInitStruct->TWC_GapCompensate));
 
-/**
- * @brief 硬件接收解码使能控制
- *
- * @param ctl:ENABLE or DISABLE
- */
-void TWC_RecieveEncodeControl(ControlStatus ctl)
-{
-	if (ctl == ENABLE)
+	/*---------------------------- TWC CR Configuration -----------------------*/
+	tempreg = TWC->CR;
+
+	/* Set up to use the SWAN_BUS protocol */
+	tempreg &= ~TWC_CR_SEBUSEN;
+
+	if (TWC_SWANBUSInitStruct->TWC_TxLevel == TWC_TX_LEVEL_LOW)
 	{
-		TWC->CR |= TWC_CR_RXRECEN;
+		/* Set send data low level pull code */
+		tempreg &= ~TWC_CR_TXLELCFG;
 	}
 	else
 	{
-		TWC->CR &= ~TWC_CR_RXRECEN;
+		/* Set send data high level pull code */
+		tempreg |= TWC_CR_TXLELCFG;
 	}
+
+	if (TWC_SWANBUSInitStruct->TWC_RXDecode == TWC_RX_DEC_MATCH_CMD)
+	{
+		/* Set only the instructions in TWC_CMDx can generate the flag */
+		tempreg &= ~TWC_CR_RXDECCFG;
+	}
+	else
+	{
+		/* Set only instructions other than TWC_CMDx can generate the flag */
+		tempreg |= TWC_CR_RXDECCFG;
+	}
+
+	/* Set receive data digital glitch filtering */
+	tempreg &= ~TWC_CR_RXGLITCHFILTCFG;
+	tempreg |= TWC_SWANBUSInitStruct->TWC_GlitchFilt << TWC_CR_RXGLITCHFILTCFG_pos;
+
+	/* Write to TWC_CR */
+	TWC->CR = tempreg;
+
+	/*---------------------------- TWC SWCR Configuration -----------------------*/
+	tempreg = TWC->SWCR;
+
+	if (TWC_SWANBUSInitStruct->TWC_RxCheck == TWC_RX_CHECK_PARITY)
+	{
+		/* Set the received data to parity */
+		tempreg &= ~TWC_SWCR_RXPARITYCFG;
+	}
+	else
+	{
+		/* Set the received data as Hamming code encoding */
+		tempreg |= TWC_SWCR_RXPARITYCFG;
+	}
+
+	if (TWC_SWANBUSInitStruct->TWC_TxCode == TWC_TX_CODE_NRZ)
+	{
+		/* Set the send data to NRZ encoding */
+		tempreg &= ~TWC_SWCR_TXCODECFG;
+	}
+	else
+	{
+		/* Set send data to Manchester encoding */
+		tempreg |= TWC_SWCR_TXCODECFG;
+	}
+
+	if (TWC_SWANBUSInitStruct->TWC_TxParity == TWC_TX_PARITY_EVEN)
+	{
+		/* Set send data to even parity */
+		tempreg &= ~TWC_SWCR_TXPARITYCFG;
+	}
+	else
+	{
+		/* Set send data to odd parity */
+		tempreg |= TWC_SWCR_TXPARITYCFG;
+	}
+
+	/* Set the 32-bit data valid bit in the TWC_TXD register */
+	tempreg &= ~TWC_SWCR_TXBITCFG;
+	tempreg |= TWC_SWANBUSInitStruct->TWC_TxBit << TWC_SWCR_TXBITCFG_pos;
+
+	/* Write to TWC_SWCR */
+	TWC->SWCR = tempreg;
+
+	/* Set the send data baud rate */
+	TWC->SWBR &= ~TWC_SWBR_TXBR;
+	TWC->SWBR |= TWC_SWANBUSInitStruct->TWC_TxBaudRate << TWC_SWBR_TXBR_pos;
+
+	/* Set the receive data baud rate */
+	TWC->SWBR &= ~TWC_SWBR_RXBR;
+	TWC->SWBR |= TWC_SWANBUSInitStruct->TWC_RxBaudRate << TWC_SWBR_RXBR_pos;
+
+	/* Set the width compensation of the transmit start bit */
+	TWC->GAPW &= ~TWC_GAPW_GAPCOMP;
+	TWC->GAPW |= TWC_SWANBUSInitStruct->TWC_GapCompensate << TWC_GAPW_GAPCOMP_pos;
+
+	/* Set the boundary between the RX and TX start bits */
+	TWC->GAPW &= ~TWC_GAPW_GAPCYC;
+	TWC->GAPW |= TWC_SWANBUSInitStruct->TWC_SWANBUSStartGap << TWC_GAPW_GAPCYC_pos;
 }
 
 /**
- * @brief set cmd1-3 register  cmd and mask
- *
- * @param cmdRegNo :TWC_CMD_1  , TWC_CMD_2 , TWC_CMD_3 , TWC_CMD_4
- * @param cmd :cmd value
- * @param msk :mask value
- * @note :mask set all 1 , cmd novalid
- */
-void TWC_SetCMDAndMask(int cmdRegNo, u16 cmd, u16 msk)
+  * @brief  Set hardware decode commands and masks for selected CMDx registers.
+  * @param  CMDx: Specifies the selected hardware decode instruction register.
+  *   This parameter can be one of the following values:
+  *     @arg TWC_CMD_1: Hardware decode instruction 1 register
+  *     @arg TWC_CMD_2: Hardware decode instruction 2 register
+  *     @arg TWC_CMD_3: Hardware decode instruction 3 register
+  *     @arg TWC_CMD_4: Hardware decode instruction 4 register
+  * @param  Cmd: Specifies the hardware decode command for the selected register.
+  *   This parameter must be a 16bit value.
+  * @param  Mask: Specifies the hardware decode mask for the selected register.
+  *   This parameter must be a 16bit value.
+  * @retval None
+  */
+void TWC_SetCMDAndMask(u8 CMDx, u16 Cmd, u16 Mask)
 {
-	PARAM_CHECK(cmdRegNo > 3);
-	switch (cmdRegNo)
+	/* Check the parameters */
+	PARAM_CHECK(IS_TWC_CMD(CMDx));
+
+	/* Set hardware decode commands and masks for selected registers */
+	switch (CMDx)
 	{
 	case TWC_CMD_1:
-		TWC->CMD1 = (cmd << 16) | msk;
+		TWC->CMD1 = (Cmd << 16) | Mask;
 		break;
 	case TWC_CMD_2:
-		TWC->CMD2 = (cmd << 16) | msk;
+		TWC->CMD2 = (Cmd << 16) | Mask;
 		break;
 	case TWC_CMD_3:
-		TWC->CMD3 = (cmd << 16) | msk;
+		TWC->CMD3 = (Cmd << 16) | Mask;
 		break;
 	case TWC_CMD_4:
-		TWC->CMD4 = (cmd << 16) | msk;
+		TWC->CMD4 = (Cmd << 16) | Mask;
 		break;
 	}
 }
 
 /**
- * @brief: recieve data
- *
- * @return u32:data
- */
-u32 TWC_ReadData(void)
+  * @brief  Returns the Hamming code check value.
+  * @param  None
+  * @retval The Hamming code check value.
+  */
+u8 TWC_GetHanmCheckValue(void)
 {
+	/* Return the Hamming code check value */
+	return ((TWC->STS & TWC_STS_HANMCHKPAR) >> TWC_STS_HANMCHKPAR_pos);
+}
+
+/**
+  * @brief  Returns the original value of the received checksum.
+  * @param  None
+  * @retval Check result.
+  */
+u8 TWC_GetCheckValue(void)
+{
+	/* Returns the original value of the received checksum */
+	return ((TWC->STS & TWC_STS_RXPARITY) >> TWC_STS_RXPARITY_pos);
+}
+
+/**
+  * @brief  Enable or disable TWC peripheral data hardware reception.
+  * @param  NewState: The new state of data hardware reception.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void TWC_RecieveCmd(FunctionalState NewState)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
+	{
+		/* Enable TWC peripheral data hardware reception */
+		TWC->CR |= TWC_CR_RXRECEN;
+	}
+	else
+	{
+		/* Disable TWC peripheral data hardware reception */
+		TWC->CR &= ~TWC_CR_RXRECEN;
+	}
+}
+
+/**
+  * @brief  Enable or disable TWC peripheral software TX start.
+  * @param  NewState: The new state of software TX start.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void TWC_SoftTxStartCmd(FunctionalState NewState)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
+	{
+		/* Enable TWC peripheral software TX start */
+		TWC->TXS |= TWC_TXS_TXSTART;
+	}
+	else
+	{
+		/* Disable TWC peripheral software TX start */
+		TWC->TXS &= ~TWC_TXS_TXSTART;
+	}
+}
+
+/**
+  * @brief  Enable or disable the TWC peripheral to send data.
+  * @param  NewState: The new state of the sent data.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void TWC_SendCmd(FunctionalState NewState)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
+	{
+		/* Enable TWC peripheral to send data */
+		TWC->TXS |= TWC_TXS_DATATXEN;
+	}
+	else
+	{
+		/* Disable TWC peripheral to send data */
+		TWC->TXS &= ~TWC_TXS_DATATXEN;
+	}
+}
+
+/**
+  * @brief  Enables or disables the specified TWC interrupts.
+  * @param  TWC_IT: specifies the TWC interrupt sources to be enabled or disabled.
+  *   This parameter can be any combination of the following values:
+  *     @arg TWC_IT_RXFRMEEND: Normal receive data completion interrupt
+  *     @arg TWC_IT_TXDATAEND: Send data complete interrupt
+  * @param  NewState: new state of the specified TWC interrupts.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void TWC_ITConfig(u8 TWC_IT, FunctionalState NewState)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TWC_CONFIG_IT(TWC_IT));
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
+	{
+		/* Enable the selected TWC interrupts */
+		TWC->INTEN |= TWC_IT;
+	}
+	else
+	{
+		/* Disable the selected TWC interrupts */
+		TWC->INTEN &= ~TWC_IT;
+	}
+}
+
+/**
+  * @brief  Checks whether the specified TWC flag is set or not.
+  * @param  TWC_FLAG: specifies the flag to check.
+  *   This parameter can be one of the following values:
+  *     @arg TWC_FLAG_RXPARERR: Receive parity check error flag
+  *     @arg TWC_FLAG_RXBITERR: Receive data bit error flag
+  *     @arg TWC_FLAG_RXFRMEERR: Receive data frame error flag
+  *     @arg TWC_FLAG_RXMUTEFRME: Correctly receive a frame silent frame flag
+  *     @arg TWC_FLAG_RXDATLEV: rxd signal level flag
+  *     @arg TWC_FLAG_RXFRMEEND: Normal receive data completion flag
+  *     @arg TWC_FLAG_TXDATAEND: Send data completion flag
+  * @retval The new state of TWC_FLAG (SET or RESET).
+  */
+FlagStatus TWC_GetFlagStatus(u8 TWC_FLAG)
+{
+	FlagStatus bitstatus = RESET;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_TWC_GET_FLAG(TWC_FLAG));
+
+	/* Check the status of the TWC flag */
+	if (TWC->STS & TWC_FLAG)
+	{
+		/* TWC_FLAG is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* TWC_FLAG is reset */
+		bitstatus = RESET;
+	}
+	/* Return the TWC_FLAG status */
+	return bitstatus;
+}
+
+/**
+  * @brief  Checks whether the specified TWC interrupt has occurred or not.
+  * @param  TWC_IT: specifies the TWC interrupt source to check.
+  *   This parameter can be one of the following values:
+  *     @arg TWC_IT_RXFRMEEND: Normal receive data completion interrupt
+  *     @arg TWC_IT_TXDATAEND: Send data complete interrupt
+  * @retval The new state of TWC_IT (SET or RESET).
+  */
+ITStatus TWC_GetITStatus(u8 TWC_IT)
+{
+	ITStatus bitstatus = RESET;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_TWC_GET_IT(TWC_IT));
+
+	/* Check the status of the specified TWC interrupt */
+	if ((TWC->INTEN & TWC_IT) && (TWC->STS & TWC_IT))
+	{
+		/* TWC_IT is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* TWC_IT is reset */
+		bitstatus = RESET;
+	}
+	/* Return the TWC_IT status */
+	return bitstatus;
+}
+
+/**
+  * @brief  Clear the pending flag for TWC.
+  * @param  TWC_FLAG: specifies the flag to clear.
+  *   This parameter can be any combination of the following values:
+  *     @arg TWC_FLAG_RXFRMEEND: Normal receive data completion flag
+  *     @arg TWC_FLAG_TXDATAEND: Send data completion flag
+  * @retval None
+  */
+void TWC_ClearFlag(u8 TWC_FLAG)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TWC_CLEAR_FLAG(TWC_FLAG));
+
+	/* Clear the selected TWC flags */
+	TWC->STS = TWC_FLAG;
+}
+
+/**
+  * @brief  Send a data through the TWC peripheral.
+  * @param  Data: Data to be transmitted.
+  * @retval None
+  */
+void TWC_SendData(u32 Data)
+{
+	/* Write in the TXD register the data to be sent */
+	TWC->TXD = Data;
+}
+
+/**
+  * @brief  Returns the most recent received data by the TWC peripheral.
+  * @param  None
+  * @retval The value of the received data.
+  */
+u32 TWC_ReceiveData(void)
+{
+	/* Return the data in the RXD register */
 	return TWC->RXD;
 }
 
 /**
- * @brief send data
- *
- * @param dat :data
- */
-void TWC_WriteData(u32 dat)
-{
-	TWC->TXD = dat;
-}
+  * @}
+  */
 
 /**
- * @brief send data enalbe
- *
- */
-void TWC_SendEnable(void)
-{
-	TWC->TXS |= TWC_TXS_DATATXEN;
-}
+  * @}
+  */
 
 /**
- * @brief send data disable
- *
- */
-void TWC_SendDisable(void)
-{
-	TWC->TXS &= ~TWC_TXS_DATATXEN;
-}
+  * @}
+  */
 
-/**
- * @brief :swan bus send start
- *@param clt : ENABLE, DISABLE
- */
-void TWC_SwanBusSendStartConfig(ControlStatus clt)
-{
-	if (clt == ENABLE)
-		TWC->TXS |= TWC_TXS_TXSTART;
-	else
-		TWC->TXS &= ~TWC_TXS_TXSTART;
-}
+/******************* (C) COPYRIGHT 2022 Fanhai Data Tech *****END OF FILE****/
 
-/**
- * @brief:enable interrupt
- *
- * @param :val TWC_RX_FRAME_END | TWC_TX_FRAME_END ,支持或操作一次设置多个
- */
-void TWC_EnableIRQControl(eTansferEnd_Type val)
-{
-	TWC->INTEN = val;
-}
-
-/**
- * @brief:Clear interrupt flag
- *
- * @param :val TWC_RX_FRAME_END | TWC_TX_FRAME_END ,支持或操作一次设置多个
- */
-void TWC_ClrIntFlag(eTansferEnd_Type val)
-{
-	TWC->STS = val;
-}
-
-/**
- * @brief 获得状态寄存器数据
- *
- * @return u32
- */
-u32 TWC_GetStatusRegData(void)
-{
-	return TWC->STS;
-}

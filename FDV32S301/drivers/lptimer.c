@@ -1,117 +1,202 @@
 /**
- * @file lptimer.c
- * @author bifei.tang
- * @brief
- * @version 0.1
- * @date 2020-05-12
- *
- * @copyright Fanhai Data Tech. (c) 2020
- *
- */
+  ******************************************************************************
+  * @file    lptimer.c
+  * @author  yongda.wang
+  * @version 0.2
+  * @date    2022-09-09
+  * @brief   This file provides all the LPTIMER firmware functions.
+  ******************************************************************************
+  * @attention
+  *
+  * @copyright Fanhai Data Tech. (c) 2022
+  ******************************************************************************
+  */
 
+/* Includes ------------------------------------------------------------------*/
 #include "lptimer.h"
-#include "pmu.h"
 #include "sysc.h"
+
+/** @addtogroup FDV32S301_StdPeriph_Driver
+  * @{
+  */
+
+/** @defgroup LPTIMER
+  * @brief LPTIMER driver modules
+  * @{
+  */
+
+/** @defgroup LPTIMER_Private_Functions
+  * @{
+  */
+
 /**
- * @brief LPtimer init
- *
- * @param iClkSrc: PMU_CR_LPTCLKSEL_LRC , PMU_CR_LPTCLKSEL_XTL
- * @param iDel:  delay ms (lrc 262s,xtl max65s)
- * @param iMode :LPT_SIG_TIME_CNT , LPT_PIT_CNT
- * note:clk source = lrc  at least 4ms err,
- */
-void LPT_Init(int iClkSrc, int iDel, int iMode)
+  * @brief  Initializes the LPT peripheral according to the specified parameters
+  *         in the LPT_InitStruct.
+  * @param  LPT_InitStruct: pointer to an LPT_InitTypeDef structure that
+  *         contains the configuration information for the LPT peripheral.
+  * @retval None
+  */
+void LPT_Init(LPT_InitTypeDef *LPT_InitStruct)
 {
-	int iTmp = 1;
-	PARAM_CHECK((iClkSrc != PMU_CR_LPTCLKSEL_LRC) && (iClkSrc != PMU_CR_LPTCLKSEL_XTL));
-	PARAM_CHECK((iMode != LPT_SIG_TIME_CNT) && (iMode != LPT_PIT_CNT));
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_LPTIM | SYSC_CLKENCFG_PMU;
-	PMU->WPT = PMU_WPT_V0;
-	PMU->WPT = PMU_WPT_V1;
-	PMU->CR &= ~PMU_CR_LPTCLKSEL;
-	if (iClkSrc == PMU_CR_LPTCLKSEL_LRC)
+	/* Check the parameters */
+	PARAM_CHECK(IS_LPT_COUNT_MODE(LPT_InitStruct->LPT_CntMode));
+
+	/* Set LPTIMER count mode */
+	if (LPT_InitStruct->LPT_CntMode == LPT_CNT_MODE_SING)
 	{
-		PMU->WPT = PMU_WPT_V0;
-		PMU->WPT = PMU_WPT_V1;
-		PMU->CR |= PMU_CR_LPTCLKSEL_LRC;
-		iTmp = iDel >> 2;
-	}
-	else
-	{
-		PMU->WPT = PMU_WPT_V0;
-		PMU->WPT = PMU_WPT_V1;
-		PMU->CR |= PMU_CR_LPTCLKSEL_XTL;
-		iTmp = iDel;
-	}
-	PARAM_CHECK((iTmp > 0xffff) || (iTmp < 1));
-	LPTIM->CFG = iTmp - 1;
-	if (iMode == LPT_SIG_TIME_CNT)
+		/* Set LPT to normal count mode */
 		LPTIM->CR &= ~LPTIM_CR_PITE;
+	}
 	else
+	{
+		/* Set LPT to PIT cycle count mode */
 		LPTIM->CR |= LPTIM_CR_PITE;
+	}
 
-	PMU->WPT = PMU_WPT_V0;
-	PMU->WPT = PMU_WPT_V1;
-	PMU->CR |= PMU_CR_LPTCLKEN;
-	LPTIM->CR |= LPTIM_CR_EN;
+	/* Configure count/timing value configuration register CFG */
+	LPTIM->CFG = LPT_InitStruct->LPT_Period;
 }
 
 /**
- * @brief LPT 使能控制
- *
- * @param iCtrl:ENABLE or DISABLE
- */
-void LPT_EnableControl(int iCtrl)
-{
-	if (iCtrl == ENABLE)
-		LPTIM->CR |= LPTIM_CR_EN;
-	else
-		LPTIM->CR &= ~LPTIM_CR_EN;
-}
-/**
- * @brief Lptime deinit
- *
- */
-void LPT_DeInit(void)
-{
-	PMU->WPT = PMU_WPT_V0;
-	PMU->WPT = PMU_WPT_V1;
-	PMU->CR &= ~PMU_CR_LPTCLKEN;
-	SYSC->CLKENCFG &= ~SYSC_CLKENCFG_LPTIM;
-}
-
-/**
- * @brief enable interrupt
- *
- */
-void LPT_EnableIRQ(void)
-{
-	LPTIM->CR |= LPTIM_CR_IE;
-}
-
-/**
- * @brief disable interrupt
- *
- */
-void LPT_DisableIRQ(void)
-{
-	LPTIM->CR &= ~LPTIM_CR_IE;
-}
-
-/**
- * @brief get current count value
- *
- * @return u16 :16bit count
- */
+  * @brief  Get the current count value of LPTIMER.
+  * @param  None
+  * @retval Counter Register value.
+  */
 u16 LPT_GetCount(void)
 {
-	u16 tmp0, tmp1;
+	u16 tempreg1 = 0, tempreg2 = 0;
+
 	while (1)
 	{
-		tmp0 = LPTIM->CNT & LPTIM_CNT;
-		tmp1 = LPTIM->CNT & LPTIM_CNT;
-		if (tmp0 == tmp1)
+		/* Get the count value from the count value register CNT */
+		tempreg1 = LPTIM->CNT & LPTIM_CNT_CNT;
+		tempreg2 = LPTIM->CNT & LPTIM_CNT_CNT;
+
+		/* Exit after reading the same value twice in a row */
+		if (tempreg1 == tempreg2)
 			break;
 	}
-	return tmp0;
+
+	/* Return current count value */
+	return tempreg1;
 }
+
+/**
+  * @brief  Enables or disables the specified LPT peripheral.
+  * @param  NewState: New state of the LPT peripheral.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void LPT_Cmd(FunctionalState NewState)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
+	{
+		/* Enable LPTIMER Counter */
+		LPTIM->CR |= LPTIM_CR_EN;
+	}
+	else
+	{
+		/* Disable LPTIMER Counter */
+		LPTIM->CR &= ~LPTIM_CR_EN;
+	}
+}
+
+/**
+  * @brief  Enables or disables the specified LPT interrupt.
+  * @param  NewState: new state of the specified LPT interrupt.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void LPT_ITConfig(FunctionalState NewState)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
+	{
+		/* Enable the LPT interrupt */
+		LPTIM->CR |= LPTIM_CR_IE;
+	}
+	else
+	{
+		/* Disable the LPT interrupt */
+		LPTIM->CR &= ~LPTIM_CR_IE;
+	}
+}
+
+/**
+  * @brief  Checks whether the specified LPT flag is set or not.
+  * @param  None
+  * @retval The new state of LPTIMER flag (SET or RESET).
+  */
+FlagStatus LPT_GetFlagStatus(void)
+{
+	FlagStatus bitstatus = RESET;
+
+	/* Check the status of the LPT flag */
+	if (LPTIM->INTSTS & LPTIM_INTSTS_STS)
+	{
+		/* LPTIMER flag is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* LPTIMER flag is reset */
+		bitstatus = RESET;
+	}
+	/* Return the LPTIMER flag status */
+	return bitstatus;
+}
+
+/**
+  * @brief  Checks whether the specified LPT interrupt has occurred or not.
+  * @param  None
+  * @retval The new state of LPTIMER interrupt (SET or RESET).
+  */
+ITStatus LPT_GetITStatus(void)
+{
+	ITStatus bitstatus = RESET;
+
+	/* Check the status of the LPT interrupt */
+	if ((LPTIM->CR & LPTIM_CR_IE) && (LPTIM->INTSTS & LPTIM_INTSTS_STS))
+	{
+		/* LPTIMER interrupt is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* LPTIMER interrupt is reset */
+		bitstatus = RESET;
+	}
+	/* Return the LPTIMER interrupt status */
+	return bitstatus;
+}
+
+/**
+  * @brief  Clear the pending flag for LPT.
+  * @param  None
+  * @retval None
+  */
+void LPT_ClearFlag(void)
+{
+	/* Clear the LPTIMER flags */
+	LPTIM->INTSTS = LPTIM_INTSTS_STS;
+}
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/******************* (C) COPYRIGHT 2022 Fanhai Data Tech *****END OF FILE****/
+

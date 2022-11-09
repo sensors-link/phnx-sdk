@@ -1,18 +1,32 @@
 /**
- * @file   init.c
- * @author bifei.tang
- * @brief
- * @version 0.1
- * @date 2020-05-12
- *
- * @copyright Fanhai Data Tech. (c) 2020
- *
- */
-#include <stdint.h>
-#include <stdio.h>
+  ******************************************************************************
+  * @file    init.c
+  * @author  yongda.wang
+  * @version 0.2
+  * @date    2022-08-24
+  * @brief   This file provides the processing entry for all exception
+  *			 handling and peripheral interrupts.
+  ******************************************************************************
+  * @attention
+  *
+  * @copyright Fanhai Data Tech. (c) 2022
+  ******************************************************************************
+  */
+
+/* Includes ------------------------------------------------------------------*/
 #include "phnx04.h"
 
-extern unsigned int SystemCoreClock;
+/** @addtogroup FDV32S302_StdPeriph_Driver
+  * @{
+  */
+
+/** @defgroup FDV32S302_INIT
+  * @{
+  */
+
+/**
+  * @brief Weak declaration of exception and interrupt handlers
+  */
 
 __attribute__((weak)) void MSOFT_IntHandler(void){};
 __attribute__((weak)) void MTIM_IntHandler(void){};
@@ -35,10 +49,22 @@ __attribute__((weak)) void RTC_IrqHandler(void){};
 __attribute__((weak)) void TWC_IrqHandler(void){};
 __attribute__((weak)) void LPU_IrqHandler(void){};
 
+/** @defgroup FDV32S302_INIT_Private_Functions
+  * @{
+  */
+
+/**
+  * @brief  Handling machine external interrupts.
+  * @param  None
+  * @retval None
+  */
 static void MEXT_IntHandler(void)
 {
 	u32 src;
+	/* Get the interrupt source of the interrupt */
 	src = PLIC_GetCLAIM();
+
+	/* Handle the corresponding interrupt */
 	switch (src)
 	{
 	case (PMU_IRQn): {
@@ -88,34 +114,64 @@ static void MEXT_IntHandler(void)
 	default:
 		break;
 	}
+	/* Clear interrupt source */
 	PLIC_SetCLAIM(src);
-};
+}
 
+/**
+  * @brief  Handling Machine Exception Traps.
+  * @param  mcause: The cause of machine abnormality.
+  * @param  epc: The PC value of the instruction the processor was executing
+  *         before the exception was entered.
+  * @retval None
+  */
 unsigned int handle_trap(unsigned int mcause, unsigned int epc)
 {
-	// External Machine-Level interrupt from PLIC
+	/* External Machine-Level interrupt from PLIC */
 	if ((mcause & MCAUSE_INT) && ((mcause & MCAUSE_CAUSE) == EXP_M_EXT_INT))
 	{
+		/* Machine external interrupt */
 		MEXT_IntHandler();
 	}
 	else if ((mcause & MCAUSE_INT) && ((mcause & MCAUSE_CAUSE) == EXP_M_SOFT_INT))
 	{
+		/* Machine software interrupt */
 		MSOFT_IntHandler();
 	}
 	else if ((mcause & MCAUSE_INT) && ((mcause & MCAUSE_CAUSE) == EXP_M_TIM_INT))
 	{
+		/* Machine timer interrupt */
 		MTIM_IntHandler();
 	}
-	else if (mcause == 0x1e)
+	else if (mcause == EXP_NMI)
 	{
+		/* Nmi exception (WDT interrupt) */
 		NMI_Handler();
 	}
 	else
 	{
+		/* Unknown exception */
 		MEXP_Handler();
 		while (1)
 		{
 		};
 	}
+
+	/* Returns the return address of the exception */
 	return epc;
 }
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/******************* (C) COPYRIGHT 2022 Fanhai Data Tech *****END OF FILE****/
+

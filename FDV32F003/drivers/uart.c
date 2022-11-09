@@ -1,281 +1,369 @@
 /**
- * @file uart.c
- * @author David Lin
- * @brief
- * @version 0.1
- * @date 2021-05-17
- *
- * @copyright Fanhai Data Tech. (c) 2021
- *
- */
+  ******************************************************************************
+  * @file    uart.c
+  * @author  yongda.wang
+  * @version 0.2
+  * @date    2022-09-27
+  * @brief   This file provides all the UART firmware functions.
+  ******************************************************************************
+  * @attention
+  *
+  * @copyright Fanhai Data Tech. (c) 2022
+  ******************************************************************************
+  */
 
-#include "sysc.h"
+/* Includes ------------------------------------------------------------------*/
 #include "uart.h"
-#include "iom.h"
+#include "sysc.h"
+
+/** @addtogroup FDV32F003_StdPeriph_Driver
+  * @{
+  */
+
+/** @defgroup UART
+  * @brief UART driver modules
+  * @{
+  */
+
+/** @defgroup UART_Private_Defines
+  * @{
+  */
+
+/* UART_SCON register Mask */
+#define UART_SCON_CLEAR_Mask ((u32)0xFFFFF0BF)
 
 /**
- * @brief uart init
- *
- * @param
- * @param mode : UART_MODE_8B_SYNC , UART_MODE_10B_ASYNC , UART_MODE_11B_ASYNC
- * @param iBaud :baud:
- * @return: TURE , FALSE
- */
-void UART_Init(int mode, int iBaud)
-{
-	u32 pclk = 0;
-	PARAM_CHECK((mode != UART_MODE_10B_ASYNC) && (mode != UART_MODE_8B_SYNC) && (mode != UART_MODE_11B_ASYNC));
+  * @}
+  */
 
-	SystemCoreClockUpdate();
-
-	pclk = SYSC_GetAPBCLK();
-
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_UART_PCKEN;
-	UART1->SCON = 0;
-
-	if (mode == UART_MODE_8B_SYNC)
-	{
-		PARAM_CHECK(pclk / (2 * iBaud) < 1);
-		UART1->BDIV = (pclk + iBaud) / (2 * iBaud) - 1;
-		UART1->SCON = ((UART_MODE_8B_SYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
-	}
-	else if (mode == UART_MODE_10B_ASYNC)
-	{
-		UART1->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
-		// REG32(0xB700) = UART1->BDIV;
-		UART1->SCON = ((UART_MODE_10B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
-	}
-	else
-	{
-		PARAM_CHECK(pclk / (16 * iBaud) < 1);
-		UART1->BDIV = (pclk + 8 * iBaud) / (16 * iBaud) - 1;
-		UART1->SCON = ((UART_MODE_11B_ASYNC) << UART_SCON_SM01_pos) | UART_SCON_REN;
-	}
-}
+/** @defgroup UART_Private_Functions
+  * @{
+  */
 
 /**
- * @brief uart deinit
- *
- * @param void
- */
+  * @brief  Deinitialize the UART peripheral registers to their default reset values.
+  * @param  None
+  * @retval None
+  */
 void UART_DeInit(void)
 {
-	int i;
-
-	SYSC->WRPROCFG = SYSC_WRPROCFG_V0;
-	SYSC->WRPROCFG = SYSC_WRPROCFG_V1;
-	SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_UART_PSFT_RST;
-	for (i = 10; i > 0; --i)
-		;
-	SYSC->CLKENCFG &= ~SYSC_CLKENCFG_UART_PCKEN;
+	/* Reset the UART module settings */
+	SYSC_ResetPeripher(SYSC_RESET_MOUDLE_UART);
 }
 
 /**
- * @brief recieve date verify configure
- *
- * @param chk :UART_VERIFY_SEL_EVEN,UART_VERIFY_SEL_ODD
- */
-void UART_RcvVerifyCfg(int chk)
+  * @brief  Initializes the UART peripheral according to the specified parameters
+  *         in the UART_InitStruct.
+  * @param  UART_InitStruct: pointer to a UART_InitTypeDef structure that contains
+  *         the configuration information for the specified UART peripheral.
+  * @retval None
+  */
+void UART_Init(UART_InitTypeDef* UART_InitStruct)
 {
-	PARAM_CHECK((chk != UART_VERIFY_SEL_EVEN) && (chk != UART_VERIFY_SEL_ODD));
-	if (chk == UART_VERIFY_SEL_EVEN)
+	u32 tempreg = 0, bauddiv = 0;
+	SYSC_ClocksTypeDef SYSC_Clocks;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_UART_PARITY(UART_InitStruct->UART_Parity));
+	PARAM_CHECK(IS_UART_STOPBITS(UART_InitStruct->UART_StopBits));
+	PARAM_CHECK(IS_UART_BAUDRATE(UART_InitStruct->UART_BaudRate));
+
+	/*---------------------------- UART SCON Configuration -----------------------*/
+	tempreg = UART1->SCON;
+	/* Clear UART_SCON initialization configuration bit */
+	tempreg &= UART_SCON_CLEAR_Mask;
+
+	/* Configure UART Parity and Work Mode ---------------------------------------*/
+	/* Set the PACFG bits according to UART_Parity value */
+	/* Set the SM01 bits according to UART_Parity and UART_StopBits value */
+	tempreg |= UART_InitStruct->UART_Parity;
+	if (UART_InitStruct->UART_Parity == UART_PARITY_NO)
 	{
-		UART1->SCON |= (1 << 11);
+		tempreg |= UART_InitStruct->UART_StopBits;
+	}
+
+	/* Enable UART reception */
+	tempreg |= UART_SCON_REN;
+
+	/* Write to UART SCON */
+	UART1->SCON = tempreg;
+
+	/*---------------------------- UART BDIV Configuration -----------------------*/
+	/* Get system clock */
+	SYSC_GetClocksFreq(&SYSC_Clocks);
+
+	if (UART_InitStruct->UART_StopBits == UART_STOPBITS_0)
+	{
+		/* Baud rate calculation for UART mode 0 */
+		bauddiv =
+			(SYSC_Clocks.PCLK_Frequency + UART_InitStruct->UART_BaudRate) / (2 * UART_InitStruct->UART_BaudRate) - 1;
 	}
 	else
 	{
-		UART1->SCON &= ~(1 << 11);
+		/* Baud rate calculation for UART mode 1/2/3 */
+		bauddiv =
+			(SYSC_Clocks.PCLK_Frequency + 8 * UART_InitStruct->UART_BaudRate) / (16 * UART_InitStruct->UART_BaudRate) -
+			1;
 	}
-}
-/**
- * @brief enable control
- *
- * @param enType :UART_EN_TYPE_LPMODE | UART_EN_TYPE_SM2 | UART_EN_TYPE_REN |
- * UART_EN_TYPE_SFD
- */
-void UART_EnableControl(int enType)
-{
-	if (enType & UART_EN_TYPE_LPMODE)
-		UART1->SCON |= (1 << 10);
-	else
-		UART1->SCON &= ~(1 << 10);
 
-	if (enType & UART_EN_TYPE_SM2)
-		UART1->SCON |= (1 << 7);
-	else
-		UART1->SCON &= ~(1 << 7);
+	/* Check the value written to the baud rate register (BDIV) */
+	PARAM_CHECK(IS_UART_BAUDDIV(bauddiv));
 
-	if (enType & UART_EN_TYPE_REN)
-		UART1->SCON |= (1 << 6);
-	else
-		UART1->SCON &= ~(1 << 6);
-
-	if (enType & UART_EN_TYPE_SFD)
-		UART1->SCON |= (1 << 3);
-	else
-		UART1->SCON &= ~(1 << 3);
-}
-/**
- * @brief enable interrupt
- *
- * @param type: UART_IRQ_TYPE_RXST | UART_IRQ_TYPE_RX | UART_IRQ_TYPE_TX
- */
-void UART_EnableIRQ(int type)
-{
-	PARAM_CHECK(UART1 != UART1);
-	if (type & UART_IRQ_TYPE_RXST)
-		UART1->SCON |= (1 << 2);
-	if (type & UART_IRQ_TYPE_RX)
-		UART1->SCON |= (1 << 1);
-	if (type & UART_IRQ_TYPE_TX)
-		UART1->SCON |= (1 << 0);
-}
-/**
- * @brief disable interrupt
- *
- * @param type: UART_IRQ_TYPE_RXST | UART_IRQ_TYPE_RX | UART_IRQ_TYPE_TX
- */
-void UART_DisableIRQ(int type)
-{
-	if (type & UART_IRQ_TYPE_RXST)
-		UART1->SCON &= ~(1 << 2);
-	if (type & UART_IRQ_TYPE_RX)
-		UART1->SCON &= ~(1 << 1);
-	if (type & UART_IRQ_TYPE_TX)
-		UART1->SCON &= ~(1 << 0);
-}
-/**
- * @brief uart send one data
- *
- * @param u8Dat : send data
- */
-void UART_Send(u8 u8Dat)
-{
-	UART1->SBUF = u8Dat;
-	while ((UART1->ISR & UART_ISR_TI) != UART_ISR_TI)
-		;
-	UART1->ISR = UART_ISR_TI;
+	/* Write to UART BDIV */
+	UART1->BDIV = bauddiv;
 }
 
 /**
- * @brief uart recieve one data
- *
- * @return u8: rcv data
- */
-u8 UART_Receive(void)
+  * @brief  Sets the slave device address and mask for the selected UART peripheral.
+  * @param  Addr: Specifies the slave device address of the UART peripheral.
+  * @param  Mask: Specifies the slave device address mask for the UART peripheral.
+  * @retval None
+  */
+void UART_SetAddrAndMask(u8 Addr, u8 Mask)
 {
-	while ((UART1->ISR & UART_ISR_RI) != UART_ISR_RI)
-		;
-	UART1->ISR = UART_ISR_RI;
-	return UART1->SBUF;
+	/* Set UART slave device address */
+	UART1->SADDR = Addr;
+	/* Set UART slave device address mask */
+	UART1->SADEN = Mask;
 }
 
 /**
- * @brief uart send a 9bit data
- *
- * @param dat : send data
- */
-void UART_Send9BitData(u16 dat)
+  * @brief  Enables or disables multi-master communication for specified UART peripherals.
+  * @param  NewState: The new state of multi-master communication.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void UART_SM2Cmd(FunctionalState NewState)
 {
-	if (dat & (1 << 8))
+	/* Check the parameters */
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
 	{
-		UART1->SCON |= UART_SCON_TB8;
+		/* Enables multi-master communication for selected UART peripherals */
+		UART1->SCON |= UART_SCON_SM2;
 	}
 	else
 	{
-		UART1->SCON &= ~UART_SCON_TB8;
+		/* Disable multi-master communication for selected UART peripherals */
+		UART1->SCON &= ~UART_SCON_SM2;
 	}
-	UART1->SBUF = dat;
-	while ((UART1->ISR & UART_ISR_TI) != UART_ISR_TI)
-		;
-	UART1->ISR = UART_ISR_TI;
 }
 
 /**
- * @brief uart recieve a 9bit data
- * @return u16: rcv data
- */
-u16 UART_Receive9BitData(void)
+  * @brief  Enables or disables start bit detection for selected UART peripherals.
+  * @param  NewState: New state of start bit detection.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void UART_StartDetectCmd(FunctionalState NewState)
 {
-	while ((UART1->ISR & UART_ISR_RI) != UART_ISR_RI)
-		;
-	UART1->ISR = UART_ISR_RI;
+	/* Check the parameters */
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
+	{
+		/* Enable start bit detection for selected UART peripherals */
+		UART1->SCON |= UART_SCON_SFDEN;
+	}
+	else
+	{
+		/* Disable start bit detection for selected UART peripherals */
+		UART1->SCON &= ~UART_SCON_SFDEN;
+	}
+}
+
+/**
+  * @brief  Enables or disables the specified UART interrupts.
+  * @param  UART_IT: specifies the UART interrupt sources to be enabled or disabled.
+  *   This parameter can be any combination of the following values:
+  *     @arg UART_IT_RXSIEN: Receive START bit interrupt
+  *     @arg UART_IT_RIEN: receive interrupt
+  *     @arg UART_IT_TIEN: send interrupt
+  * @param  NewState: new state of the specified UART interrupts.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void UART_ITConfig(u8 UART_IT, FunctionalState NewState)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_UART_CONFIG_IT(UART_IT));
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
+	{
+		/* Enable the selected UART interrupts */
+		UART1->SCON |= UART_IT;
+	}
+	else
+	{
+		/* Disable the selected UART interrupts */
+		UART1->SCON &= ~UART_IT;
+	}
+}
+
+/**
+  * @brief  Checks whether the specified UART flag is set or not.
+  * @param  UART_FLAG: specifies the flag to check.
+  *   This parameter can be one of the following values:
+  *     @arg UART_FLAG_PE: Receive parity error flag
+  *     @arg UART_FLAG_FE: Receive frame error flag
+  *     @arg UART_FLAG_RXSF: Receive start bit flag
+  *     @arg UART_FLAG_RI: Receive complete interrupt flag
+  *     @arg UART_FLAG_TI: Transmit complete interrupt flag
+  * @retval The new state of UART_FLAG (SET or RESET).
+  */
+FlagStatus UART_GetFlagStatus(u8 UART_FLAG)
+{
+	FlagStatus bitstatus = RESET;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_UART_GET_FLAG(UART_FLAG));
+
+	/* Check the status of the UART flag */
+	if (UART1->ISR & UART_FLAG)
+	{
+		/* UART_FLAG is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* UART_FLAG is reset */
+		bitstatus = RESET;
+	}
+	/* Return the UART_FLAG status */
+	return bitstatus;
+}
+
+/**
+  * @brief  Checks whether the specified UART interrupt has occurred or not.
+  * @param  UART_IT: specifies the UART interrupt sources to be enabled or disabled.
+  *   This parameter can be any combination of the following values:
+  *     @arg UART_IT_RXSIEN: Receive START bit interrupt
+  *     @arg UART_IT_RIEN: receive interrupt
+  *     @arg UART_IT_TIEN: send interrupt
+  * @retval The new state of UART_IT (SET or RESET).
+  */
+ITStatus UART_GetITStatus(u8 UART_IT)
+{
+	ITStatus bitstatus = RESET;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_UART_GET_IT(UART_IT));
+
+	/* Check the status of the specified UART interrupt */
+	if ((UART1->SCON & UART_IT) && (UART1->ISR & UART_IT))
+	{
+		/* UART_IT is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* UART_IT is reset */
+		bitstatus = RESET;
+	}
+	/* Return the UART_IT status */
+	return bitstatus;
+}
+
+/**
+  * @brief  Clears the UART's pending flags.
+  * @param  UART_FLAG: specifies the flag to clear.
+  *   This parameter can be any combination of the following values:
+  *     @arg UART_FLAG_PE: Receive parity error flag
+  *     @arg UART_FLAG_FE: Receive frame error flag
+  *     @arg UART_FLAG_RXSF: Receive start bit flag
+  *     @arg UART_FLAG_RI: Receive complete interrupt flag
+  *     @arg UART_FLAG_TI: Transmit complete interrupt flag
+  * @retval None
+  */
+void UART_ClearFlag(u8 UART_FLAG)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_UART_CLEAR_FLAG(UART_FLAG));
+
+	/* Clear the selected UART flags */
+	UART1->ISR = UART_FLAG;
+}
+
+/**
+  * @brief  Check if bit 8 of UART's receive data is set.
+  * @param  None
+  * @retval The new state of UART_FLAG (SET or RESET).
+  */
+FlagStatus UART_GetRxBit8(void)
+{
+	FlagStatus bitstatus = RESET;
+
 	if (UART1->SCON & UART_SCON_RB8)
-		return UART1->SBUF | (1ul << 8);
-	else
-		return UART1->SBUF;
-}
-/**
- * @brief 写数据到发�?�寄存器包括bit8
- * @param dat send data
- * @note 不查询发送完成标�??? */
-void UART_WriteData(u16 dat)
-{
-	if (dat & (1 << 8))
 	{
-		UART1->SCON |= UART_SCON_TB8;
+		/* The 8th bit of the received data is set */
+		bitstatus = SET;
 	}
 	else
 	{
-		UART1->SCON &= ~UART_SCON_TB8;
+		/* The 8th bit of the received data is reset */
+		bitstatus = RESET;
 	}
-	UART1->SBUF = dat;
-
-	while (((UART1->ISR) & 0x00000001) != 0x00000001)
-	{
-		__asm("NOP");
-	}
-	UART1->ISR = (0xff << 0); // clear intf
-	if (dat == '\n')
-	{
-		UART1->SBUF = '\r';
-		while (((UART1->ISR) & 0x00000001) != 0x00000001)
-		{
-			__asm("NOP");
-		}
-		UART1->ISR = (0xff << 0); // clear intf
-	}
-}
-/**
- * @brief 读接收寄存器数据包括bit8
- *
- * @param void
- * @return u16 rcv data
- */
-u16 UART_ReadData(void)
-{
-	if (UART1->SCON & UART_SCON_RB8)
-		return UART1->SBUF | (1ul << 8);
-	else
-		return UART1->SBUF;
-}
-/* * @brief set address and address valid bits
- *
- * @param addr:val
- * @param addrCMPBits:val
- */
-void UART_SetAddrAndMask(u8 addr, u8 addrCMPBits)
-{
-	UART1->SADDR = addr;
-	UART1->SADEN = addrCMPBits;
+	/* Returns the status of the 8th bit of the received data */
+	return bitstatus;
 }
 
 /**
- * @brief read status regester value
- *
- * @return u32
- */
-u32 UART_GetIntFlag(void)
+  * @brief  Set the 8th bit of UART's transmit data.
+  * @param  None
+  * @retval None
+  */
+void UART_SetTxBit8(void)
 {
-	return UART1->ISR;
+	/* Set the 8th bit of UART's transmit data */
+	UART1->SCON |= UART_SCON_TB8;
 }
 
 /**
- * @brief write status regester value
- *
- * @param val
- */
-void UART_ClrIntFlag(u32 val)
+  * @brief  Clear the 8th bit of UART's transmit data.
+  * @param  None
+  * @retval None
+  */
+void UART_ClrTxBit8(void)
 {
-	UART1->ISR = val;
+	/* Clear the 8th bit of UART's transmit data */
+	UART1->SCON &= ~UART_SCON_TB8;
 }
+
+/**
+  * @brief  Send a data through the UART peripheral.
+  * @param  Data: Data to be transmitted.
+  * @retval None
+  */
+void UART_SendData(u8 Data)
+{
+	/* Write in the SBUF register the data to be sent */
+	UART1->SBUF = Data;
+}
+
+/**
+  * @brief  Returns the most recent received data by the UART peripheral.
+  * @param  None
+  * @retval The value of the received data.
+  */
+u8 UART_ReceiveData(void)
+{
+	/* Return the data in the SBUF register */
+	return (u8)(UART1->SBUF);
+}
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/******************* (C) COPYRIGHT 2022 Fanhai Data Tech *****END OF FILE****/
+

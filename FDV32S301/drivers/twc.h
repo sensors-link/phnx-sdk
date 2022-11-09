@@ -1,39 +1,68 @@
 /**
- * @file twc.h
- * @author bifei.tang
- * @brief
- * @version 0.1
- * @date 2020-05-12
- *
- * @copyright Fanhai Data Tech. (c) 2020
- *
- */
+  ******************************************************************************
+  * @file    twc.h
+  * @author  yongda.wang
+  * @version 0.2
+  * @date    2022-09-26
+  * @brief   This file contains all functional prototypes of the TWC firmware library.
+  ******************************************************************************
+  * @attention
+  *
+  * @copyright Fanhai Data Tech. (c) 2022
+  ******************************************************************************
+  */
 
+/* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __TWC_H__
 #define __TWC_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* Includes ------------------------------------------------------------------*/
 #include "phnx02.h"
-// twc_cr
+
+/** @addtogroup FDV32S301_StdPeriph_Driver
+  * @{
+  */
+
+/** @addtogroup TWC
+  * @{
+  */
+
+/** @defgroup TWC_module_register_bit_definition
+  * @{
+  */
+
+/* TWC_CR */
 #define TWC_CR_RXRECEN		   BIT(8)
 #define TWC_CR_SEBUSMODE	   BIT(7)
 #define TWC_CR_SEBUSEN		   BIT(6)
 #define TWC_CR_TXLELCFG		   BIT(5)
 #define TWC_CR_RXDECCFG		   BIT(4)
-#define TWC_CR_RXGLITCHFILTCFG BITS(0, 3) //[0-0x0f] = 0-30cycle
+#define TWC_CR_RXGLITCHFILTCFG BITS(0, 3) /* [0-0x0f] = 0-30cycle */
 
-// twc_swcr
+#define TWC_CR_RXGLITCHFILTCFG_pos (0)
+
+/* TWC_SWCR */
 #define TWC_SWCR_RXPARITYCFG BIT(4)
 #define TWC_SWCR_TXCODECFG	 BIT(3)
 #define TWC_SWCR_TXPARITYCFG BIT(2)
 #define TWC_SWCR_TXBITCFG	 BITS(0, 1)
 
-#define TWC_SWCR_TXBITCFG_8BIT	(0 << 0) // send from lsb to msb
+#define TWC_SWCR_TXBITCFG_8BIT	(0 << 0)
 #define TWC_SWCR_TXBITCFG_16BIT (1 << 0)
 #define TWC_SWCR_TXBITCFG_24BIT (2 << 0)
 #define TWC_SWCR_TXBITCFG_32BIT (3 << 0)
 
-// twc_swbr
-#define TWC_SWBR_TXBR	  BITS(4, 7)
+#define TWC_SWCR_TXBITCFG_pos (0)
+
+/* TWC_SWBR */
+#define TWC_SWBR_TXBR BITS(4, 7)
+#define TWC_SWBR_RXBR BITS(0, 3)
+
 #define TWC_SWBR_TXBR_1K  (0 << 4)
 #define TWC_SWBR_TXBR_2K  (1 << 4)
 #define TWC_SWBR_TXBR_3K  (2 << 4)
@@ -51,7 +80,6 @@
 #define TWC_SWBR_TXBR_50K (14 << 4)
 #define TWC_SWBR_TXBR_60K (15 << 4)
 
-#define TWC_SWBR_RXBR	  BITS(0, 3)
 #define TWC_SWBR_RXBR_1K  (0 << 0)
 #define TWC_SWBR_RXBR_2K  (1 << 0)
 #define TWC_SWBR_RXBR_3K  (2 << 0)
@@ -69,26 +97,32 @@
 #define TWC_SWBR_RXBR_50K (14 << 0)
 #define TWC_SWBR_RXBR_60K (15 << 0)
 
-// twc_gapw
+#define TWC_SWBR_TXBR_pos (4)
+#define TWC_SWBR_RXBR_pos (0)
+
+/* TWC_GAPW */
 #define TWC_GAPW_GAPCOMP BITS(8, 14)
 #define TWC_GAPW_GAPCYC	 BITS(0, 7)
 
 #define TWC_GAPW_GAPCOMP_pos (8)
 #define TWC_GAPW_GAPCYC_pos	 (0)
 
-// twc_cmd
+/* TWC_CMD */
 #define TWC_CMD_CMD BITS(16, 31)
 #define TWC_CMD_MSK BITS(0, 15)
 
-// twc_txs
+#define TWC_CMD_CMD_pos (16)
+#define TWC_CMD_MSK_pos (0)
+
+/* TWC_TXS */
 #define TWC_TXS_TXSTART	 BIT(1)
 #define TWC_TXS_DATATXEN BIT(0)
 
-// twc_inten
+/* TWC_INTEN */
 #define TWC_INTEN_RXFRAMENDINTEN BIT(1)
 #define TWC_INTEN_TXDATAENDINTEN BIT(0)
 
-// twc_sts
+/* TWC_STS */
 #define TWC_STS_HANMCHKPAR BITS(14, 19)
 #define TWC_STS_RXPARITY   BITS(8, 13)
 #define TWC_STS_RXPARERR   BIT(7)
@@ -99,77 +133,357 @@
 #define TWC_STS_RXFRMEEND  BIT(1)
 #define TWC_STS_TXDATAEND  BIT(0)
 
-// extend define
-#define TWC_PIN_18_19 0
-#define TWC_PIN_10_11 1
+#define TWC_STS_HANMCHKPAR_pos (14)
+#define TWC_STS_RXPARITY_pos   (8)
 
-typedef enum _FARM_END
+/**
+  * @}
+  */
+
+/** @defgroup TWC_Exported_Types
+  * @{
+  */
+
+/**
+  * @brief TWC SE_BUS Init structure definition
+  */
+
+typedef struct
 {
-	TWC_RX_FRAME_END = (1 << 1),
-	TWC_TX_FRAME_END = (1 << 0),
-} eTansferEnd_Type;
+	u8 TWC_SEBUSMode; 						/*!< Specify SE_BUS mode.
+											 	 This parameter can be a value of @ref TWC_SEBUS_mode. */
 
-#define TWC_MODE_9000 (0)
-#define TWC_MODE_EPC  (1)
+	u8 TWC_TxLevel; 						/*!< Specify send data pull code level.
+											 	 This parameter can be a value of @ref TWC_TX_level. */
 
-#define TWC_TX_LEVEL_HIGH_EN (1)
-#define TWC_TX_LEVEL_LOW_EN	 (0)
+	u8 TWC_RXDecode; 						/*!< Specify the hardware decoding configuration of the received data.
+											 	 This parameter can be a value of @ref TWC_RX_decode_config. */
 
-#define TWC_RX_DEC_MATCH_CMD_INT (0)
-#define TWC_RX_DEC_NO_MT_CMD_INT (1)
+	u8 TWC_GlitchFilt; 						/*!< Specifies digital filtering of received data.
+                                  				 This parameter can be a number between 0x0 and 0xF. */
 
-#define TWC_RX_FILT_NO			(0)
-#define TWC_RX_FILT_2N_CYCLE(n) (n) // 1<x<15, 1-30cycle
+	u8 TWC_SEBUSLevelGap; 					/*!< Specifies the level width of SEBUS mode.
+                                  				 This parameter can be a number between 0x00 and 0xFF. */
+} TWC_SEBUSInitTypeDef;
 
-typedef struct _SWAN
+/**
+  * @brief TWC SWAN_BUS Init structure definition
+  */
+
+typedef struct
 {
-	int txLelCfg;		 // TWC_TX_LEVEL_HIGH_EN or TWC_TX_LEVEL_LOW_EN
-	int rxDecCfg;		 // TWC_RX_DEC_MATCH_CMD_INT or TWC_RX_DEC_NO_MT_CMD_INT
-	int rxGlitchFiltCfg; // TWC_RX_FILT_NO or TWC_RX_FILT_2N_CYCLE(n)
+	u8 TWC_TxLevel; 						/*!< Specify send data pull code level.
+											 	 This parameter can be a value of @ref TWC_TX_level. */
 
-	int rxParityCfg; // TWC_RX_PARITY_HMM or TWC_RX_PARITY_EVEN
-	int txCodeCfg;	 // TWC_TX_CODE_MCT or TWC_TX_CODE_NRZ
-	int txParityCfg; // TWC_TX_PARITY_ODD or TWC_TX_PARITY_EVEN
-	int txBitCfg;	 // TWC_TX_BIT_8BIT or TWC_TX_BIT_16BIT or TWC_TX_BIT_24BIT or
-					 // TWC_TX_BIT_32BIT
-} sSwanBusCfgParam;
+	u8 TWC_RXDecode; 						/*!< Specify the hardware decoding configuration of the received data.
+											 	 This parameter can be a value of @ref TWC_RX_decode_config. */
 
-#define TWC_RX_PARITY_HMM  (1)
-#define TWC_RX_PARITY_EVEN (0)
+	u8 TWC_GlitchFilt; 						/*!< Specifies digital filtering of received data.
+                                  				 This parameter can be a number between 0x0 and 0xF. */
 
-#define TWC_TX_CODE_MCT (1)
+	u8 TWC_RxCheck; 						/*!< Specify the verification method of the received data.
+											 	 This parameter can be a value of @ref TWC_RX_check. */
+
+	u8 TWC_TxCode; 							/*!< Specify the encoding method of sending data.
+											 	 This parameter can be a value of @ref TWC_TX_code. */
+
+	u8 TWC_TxParity; 						/*!< Specifies parity of sent data.
+											 	 This parameter can be a value of @ref TWC_TX_parity. */
+
+	u8 TWC_TxBit; 							/*!< Specifies the 32-bit data valid bit in the TWC_TXD register.
+											 	 This parameter can be a value of @ref TWC_TX_valid_bit. */
+
+	u8 TWC_TxBaudRate; 						/*!< Specify the baud rate for sending data.
+											 	 This parameter can be a value of @ref TWC_TX_baud_rate. */
+
+	u8 TWC_RxBaudRate; 						/*!< Specify the baud rate of the received data.
+											 	 This parameter can be a value of @ref TWC_RX_baud_rate. */
+
+	u8 TWC_GapCompensate; 					/*!< Specifies the width compensation value of the sending start bit in SWAN_BUS mode.
+                                  				 This parameter can be a number between 0x00 and 0x3F. */
+
+	u8 TWC_SWANBUSStartGap; 				/*!< Specifies the boundary between the RX and TX start bits in SWAN_BUS mode.
+												  - Gap <= TWC_SWANBUSStartGap, RX start bit
+												  - Gap > TWC_SWANBUSStartGap + TWC_GapCompensate, TX start bit
+                                  				 This parameter can be a number between 0x00 and 0xFF. */
+} TWC_SWANBUSInitTypeDef;
+
+/**
+  * @}
+  */
+
+/** @defgroup TWC_Exported_Constants
+  * @{
+  */
+
+/** @defgroup TWC_SEBUS_mode
+  * @{
+  */
+
+#define TWC_SEBUS_MODE_9000 (0)
+#define TWC_SEBUS_MODE_EPC	(1)
+
+#define IS_TWC_SEBUS_MODE(MODE) (((MODE) == TWC_SEBUS_MODE_9000) || ((MODE) == TWC_SEBUS_MODE_EPC))
+/**
+  * @}
+  */
+
+/** @defgroup TWC_TX_level
+  * @{
+  */
+
+#define TWC_TX_LEVEL_LOW  (0)
+#define TWC_TX_LEVEL_HIGH (1)
+
+#define IS_TWC_TX_LEVEL(LEVEL) (((LEVEL) == TWC_TX_LEVEL_LOW) || ((LEVEL) == TWC_TX_LEVEL_HIGH))
+/**
+  * @}
+  */
+
+/** @defgroup TWC_RX_decode_config
+  * @{
+  */
+
+#define TWC_RX_DEC_MATCH_CMD	(0)
+#define TWC_RX_DEC_NOTMATCH_CMD (1)
+
+#define IS_TWC_RX_DECODE(DECODE) (((DECODE) == TWC_RX_DEC_MATCH_CMD) || ((DECODE) == TWC_RX_DEC_NOTMATCH_CMD))
+/**
+  * @}
+  */
+
+/** @defgroup TWC_glitch_filter
+  * @{
+  */
+
+#define IS_TWC_GLITCH_FILT(FILT) ((FILT) <= 0xF)
+/**
+  * @}
+  */
+
+/** @defgroup TWC_RX_check
+  * @{
+  */
+
+#define TWC_RX_CHECK_PARITY	 (0)
+#define TWC_RX_CHECK_HAMMING (1)
+
+#define IS_TWC_RX_CHECK(CHECK) (((CHECK) == TWC_RX_CHECK_PARITY) || ((CHECK) == TWC_RX_CHECK_HAMMING))
+/**
+  * @}
+  */
+
+/** @defgroup TWC_TX_code
+  * @{
+  */
+
 #define TWC_TX_CODE_NRZ (0)
+#define TWC_TX_CODE_MCT (1)
 
-#define TWC_TX_PARITY_ODD  (1)
+#define IS_TWC_TX_CODE(CODE) (((CODE) == TWC_TX_CODE_NRZ) || ((CODE) == TWC_TX_CODE_MCT))
+/**
+  * @}
+  */
+
+/** @defgroup TWC_TX_parity
+  * @{
+  */
+
 #define TWC_TX_PARITY_EVEN (0)
+#define TWC_TX_PARITY_ODD  (1)
+
+#define IS_TWC_TX_PARITY(PARITY) (((PARITY) == TWC_TX_PARITY_EVEN) || ((PARITY) == TWC_TX_PARITY_ODD))
+/**
+  * @}
+  */
+
+/** @defgroup TWC_TX_valid_bit
+  * @{
+  */
 
 #define TWC_TX_BIT_8BIT	 (0)
 #define TWC_TX_BIT_16BIT (1)
 #define TWC_TX_BIT_24BIT (2)
 #define TWC_TX_BIT_32BIT (3)
 
+#define IS_TWC_TX_BIT(BIT)                                                                                             \
+	(((BIT) == TWC_TX_BIT_8BIT) || ((BIT) == TWC_TX_BIT_16BIT) || ((BIT) == TWC_TX_BIT_24BIT) ||                       \
+	 ((BIT) == TWC_TX_BIT_32BIT))
+/**
+  * @}
+  */
+
+/** @defgroup TWC_TX_baud_rate
+  * @{
+  */
+
+#define TWC_TX_BAUDRATE_1K	(0)
+#define TWC_TX_BAUDRATE_2K	(1)
+#define TWC_TX_BAUDRATE_3K	(2)
+#define TWC_TX_BAUDRATE_4K	(3)
+#define TWC_TX_BAUDRATE_5K	(4)
+#define TWC_TX_BAUDRATE_6K	(5)
+#define TWC_TX_BAUDRATE_8K	(6)
+#define TWC_TX_BAUDRATE_10K (7)
+#define TWC_TX_BAUDRATE_12K (8)
+#define TWC_TX_BAUDRATE_15K (9)
+#define TWC_TX_BAUDRATE_20K (10)
+#define TWC_TX_BAUDRATE_25K (11)
+#define TWC_TX_BAUDRATE_30K (12)
+#define TWC_TX_BAUDRATE_40K (13)
+#define TWC_TX_BAUDRATE_50K (14)
+#define TWC_TX_BAUDRATE_60K (15)
+
+#define IS_TWC_TX_BAUDRATE(BAUDRATE)                                                                                   \
+	(((BAUDRATE) == TWC_TX_BAUDRATE_1K) || ((BAUDRATE) == TWC_TX_BAUDRATE_2K) || ((BAUDRATE) == TWC_TX_BAUDRATE_3K) || \
+	 ((BAUDRATE) == TWC_TX_BAUDRATE_4K) || ((BAUDRATE) == TWC_TX_BAUDRATE_5K) || ((BAUDRATE) == TWC_TX_BAUDRATE_6K) || \
+	 ((BAUDRATE) == TWC_TX_BAUDRATE_8K) || ((BAUDRATE) == TWC_TX_BAUDRATE_10K) ||                                      \
+	 ((BAUDRATE) == TWC_TX_BAUDRATE_12K) || ((BAUDRATE) == TWC_TX_BAUDRATE_15K) ||                                     \
+	 ((BAUDRATE) == TWC_TX_BAUDRATE_20K) || ((BAUDRATE) == TWC_TX_BAUDRATE_25K) ||                                     \
+	 ((BAUDRATE) == TWC_TX_BAUDRATE_30K) || ((BAUDRATE) == TWC_TX_BAUDRATE_40K) ||                                     \
+	 ((BAUDRATE) == TWC_TX_BAUDRATE_50K) || ((BAUDRATE) == TWC_TX_BAUDRATE_60K))
+/**
+  * @}
+  */
+
+/** @defgroup TWC_RX_baud_rate
+  * @{
+  */
+
+#define TWC_RX_BAUDRATE_1K	(0)
+#define TWC_RX_BAUDRATE_2K	(1)
+#define TWC_RX_BAUDRATE_3K	(2)
+#define TWC_RX_BAUDRATE_4K	(3)
+#define TWC_RX_BAUDRATE_5K	(4)
+#define TWC_RX_BAUDRATE_6K	(5)
+#define TWC_RX_BAUDRATE_8K	(6)
+#define TWC_RX_BAUDRATE_10K (7)
+#define TWC_RX_BAUDRATE_12K (8)
+#define TWC_RX_BAUDRATE_15K (9)
+#define TWC_RX_BAUDRATE_20K (10)
+#define TWC_RX_BAUDRATE_25K (11)
+#define TWC_RX_BAUDRATE_30K (12)
+#define TWC_RX_BAUDRATE_40K (13)
+#define TWC_RX_BAUDRATE_50K (14)
+#define TWC_RX_BAUDRATE_60K (15)
+
+#define IS_TWC_RX_BAUDRATE(BAUDRATE)                                                                                   \
+	(((BAUDRATE) == TWC_RX_BAUDRATE_1K) || ((BAUDRATE) == TWC_RX_BAUDRATE_2K) || ((BAUDRATE) == TWC_RX_BAUDRATE_3K) || \
+	 ((BAUDRATE) == TWC_RX_BAUDRATE_4K) || ((BAUDRATE) == TWC_RX_BAUDRATE_5K) || ((BAUDRATE) == TWC_RX_BAUDRATE_6K) || \
+	 ((BAUDRATE) == TWC_RX_BAUDRATE_8K) || ((BAUDRATE) == TWC_RX_BAUDRATE_10K) ||                                      \
+	 ((BAUDRATE) == TWC_RX_BAUDRATE_12K) || ((BAUDRATE) == TWC_RX_BAUDRATE_15K) ||                                     \
+	 ((BAUDRATE) == TWC_RX_BAUDRATE_20K) || ((BAUDRATE) == TWC_RX_BAUDRATE_25K) ||                                     \
+	 ((BAUDRATE) == TWC_RX_BAUDRATE_30K) || ((BAUDRATE) == TWC_RX_BAUDRATE_40K) ||                                     \
+	 ((BAUDRATE) == TWC_RX_BAUDRATE_50K) || ((BAUDRATE) == TWC_RX_BAUDRATE_60K))
+/**
+  * @}
+  */
+
+/** @defgroup TWC_gap_compensate
+  * @{
+  */
+
+#define IS_TWC_GAP_COMP(COMP) ((COMP) <= 0x3F)
+/**
+  * @}
+  */
+
+/** @defgroup TWC_CMD_register
+  * @{
+  */
+
 #define TWC_CMD_1 (1)
 #define TWC_CMD_2 (2)
 #define TWC_CMD_3 (3)
 #define TWC_CMD_4 (4)
 
-// extern function declare
-void TWC_Init(int pin);
-void TWC_DeInit(void);
-void TWC_RecieveControl(ControlStatus clt);
-void TWC_RecieveEncodeControl(ControlStatus ctl);
-void TWC_SEBUSConfig(int mode, int txLelCfg, int rxDecCfg, int rxGlitchFiltCfg);
-void TWC_SetGapAndGapComp(int gap, int gapComp);
-void TWC_SWANBusConfig(int txBaud, int rxBaud, sSwanBusCfgParam *pParam);
-void TWC_SetCMDAndMask(int cmdRegNo, u16 cmd, u16 msk);
-u32	 TWC_ReadData(void);
-void TWC_WriteData(u32 dat);
+#define IS_TWC_CMD(CMD)                                                                                                \
+	(((CMD) == TWC_CMD_1) || ((CMD) == TWC_CMD_2) || ((CMD) == TWC_CMD_3) || ((CMD) == TWC_CMD_4))
+/**
+  * @}
+  */
 
-void TWC_SendEnable(void);
-void TWC_SendDisable(void);
-void TWC_SwanBusSendStartConfig(ControlStatus clt);
-void TWC_EnableIRQControl(eTansferEnd_Type val);
-void TWC_ClrIntFlag(eTansferEnd_Type val);
-u32	 TWC_GetStatusRegData(void);
+/** @defgroup TWC_interrupts_definition
+  * @{
+  */
 
-#endif /*__TWC_H__*/
+#define TWC_IT_RXFRMEEND BIT(1)
+#define TWC_IT_TXDATAEND BIT(0)
+
+#define TWC_IT_ALL (TWC_IT_RXFRMEEND | TWC_IT_TXDATAEND)
+
+#define IS_TWC_CONFIG_IT(IT) (((IT)&TWC_IT_ALL) && (!((IT) & (~(TWC_IT_ALL)))))
+
+#define IS_TWC_GET_IT(IT) (((IT) == TWC_IT_RXFRMEEND) || ((IT) == TWC_IT_TXDATAEND))
+/**
+  * @}
+  */
+
+/** @defgroup TWC_flags_definition
+  * @{
+  */
+
+#define TWC_FLAG_RXPARERR	BIT(7)
+#define TWC_FLAG_RXBITERR	BIT(6)
+#define TWC_FLAG_RXFRMEERR	BIT(5)
+#define TWC_FLAG_RXMUTEFRME BIT(4)
+#define TWC_FLAG_RXDATLEV	BIT(2)
+#define TWC_FLAG_RXFRMEEND	BIT(1)
+#define TWC_FLAG_TXDATAEND	BIT(0)
+
+#define TWC_FLAG_ALL (TWC_FLAG_RXFRMEEND | TWC_FLAG_TXDATAEND)
+
+#define IS_TWC_GET_FLAG(FLAG)                                                                                          \
+	(((FLAG) == TWC_FLAG_RXPARERR) || ((FLAG) == TWC_FLAG_RXBITERR) || ((FLAG) == TWC_FLAG_RXFRMEERR) ||               \
+	 ((FLAG) == TWC_FLAG_RXMUTEFRME) || ((FLAG) == TWC_FLAG_RXDATLEV) || ((FLAG) == TWC_FLAG_RXFRMEEND) ||             \
+	 ((FLAG) == TWC_FLAG_TXDATAEND))
+
+#define IS_TWC_CLEAR_FLAG(FLAG) (((FLAG) & TWC_FLAG_ALL) && (!((FLAG) & (~(TWC_FLAG_ALL)))))
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/** @defgroup TWC_Exported_Functions
+  * @{
+  */
+
+void	   TWC_DeInit(void);
+void	   TWC_SEBUSInit(TWC_SEBUSInitTypeDef *TWC_SEBUSInitStruct);
+void	   TWC_SWANBUSInit(TWC_SWANBUSInitTypeDef *TWC_SWANBUSInitStruct);
+void	   TWC_SetCMDAndMask(u8 CMDx, u16 Cmd, u16 Mask);
+u8		   TWC_GetHanmCheckValue(void);
+u8		   TWC_GetCheckValue(void);
+void	   TWC_RecieveCmd(FunctionalState NewState);
+void	   TWC_SoftTxStartCmd(FunctionalState NewState);
+void	   TWC_SendCmd(FunctionalState NewState);
+void	   TWC_ITConfig(u8 TWC_IT, FunctionalState NewState);
+FlagStatus TWC_GetFlagStatus(u8 TWC_FLAG);
+ITStatus   TWC_GetITStatus(u8 TWC_IT);
+void	   TWC_ClearFlag(u8 TWC_FLAG);
+void	   TWC_SendData(u32 Data);
+u32		   TWC_ReceiveData(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __TWC_H__ */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/******************* (C) COPYRIGHT 2022 Fanhai Data Tech *****END OF FILE****/
+

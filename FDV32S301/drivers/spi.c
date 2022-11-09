@@ -1,166 +1,282 @@
 /**
- * @file spi.c
- * @author bifei.tang
- * @brief
- * @version 0.1
- * @date 2020-05-12
- *
- * @copyright Fanhai Data Tech. (c) 2020
- *
- */
+  ******************************************************************************
+  * @file    spi.c
+  * @author  yongda.wang
+  * @version 0.2
+  * @date    2022-09-21
+  * @brief   This file provides all the SPI firmware functions.
+  ******************************************************************************
+  * @attention
+  *
+  * @copyright Fanhai Data Tech. (c) 2022
+  ******************************************************************************
+  */
 
+/* Includes ------------------------------------------------------------------*/
 #include "spi.h"
 #include "sysc.h"
-#include "iom.h"
+
+/** @addtogroup FDV32S301_StdPeriph_Driver
+  * @{
+  */
+
+/** @defgroup SPI
+  * @brief SPI driver modules
+  * @{
+  */
+
+/** @defgroup SPI_Private_Functions
+  * @{
+  */
 
 /**
- * @brief  SPI init
- * @param mode:SPI_MASTER , SPI_SLAVE
- * @param pol:SPI_CPOL_HIGH , SPI_CPOL_LOW
- * @param phase:SPI_CPHA_FIST , SPI_CPHA_MIDD
- * @param freq :set N (Hz)
- * @note 分频系数有限只能是最接近的频率设置
- */
-void SPI_Init(int mode, int pol, int phase, int freq)
-{
-	int div = 0;
-	int tmp = 0;
-
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_SPI;
-
-	PARAM_CHECK((pol != SPI_CPOL_HIGH) && (pol != SPI_CPOL_LOW));
-	PARAM_CHECK((phase != SPI_CPHA_FIST) && (phase != SPI_CPHA_MIDD));
-	PARAM_CHECK((mode != SPI_SR_MSTCFSR) && (mode != SPI_SLAVE));
-
-	if (pol == SPI_CPOL_HIGH)
-		SPI->CR0 |= SPI_CR0_CPOL;
-	else
-		SPI->CR0 &= ~SPI_CR0_CPOL;
-
-	if (phase == SPI_CPHA_MIDD)
-		SPI->CR0 |= SPI_CR0_CPHA;
-	else
-		SPI->CR0 &= ~SPI_CR0_CPHA;
-
-	if (mode == SPI_MASTER)
-	{
-		SPI->CR0 |= SPI_CR0_MSMODE;
-		SystemCoreClockUpdate();
-		PARAM_CHECK((SystemCoreClock / (freq) < 1) || (SystemCoreClock / (freq) > 256));
-		div = SystemCoreClock / (freq);
-
-		while (1)
-		{
-			if (div < 2)
-				break;
-
-			tmp += 1;
-			div >>= 1;
-		}
-		SPI->CR0 &= ~SPI_CR0_SCLKDIV;
-		SPI->CR0 |= ((tmp - 1) << SPI_CR0_SCLKDIV_pos);
-	}
-	else
-	{
-		SPI->CR0 &= ~SPI_CR0_MSMODE;
-	}
-}
-
-/**
- * @brief spi deinit
- *
- */
+  * @brief  Deinitialize the SPI peripheral registers to their default reset values.
+  * @param  None
+  * @retval None
+  */
 void SPI_DeInit(void)
 {
-	int i;
-	SYSC_WPT_UNLOCK();
-	SYSC->MSFTRSTCFG |= SYSC_MSFTRSTCFG_SPI;
-	for (i = 4; i > 0; --i)
-		;
-
-	SYSC->CLKENCFG &= ~SYSC_CLKENCFG_SPI;
+	/* Reset the SPI module settings */
+	SYSC_ResetPeripher(SYSC_RESET_MOUDLE_SPI);
 }
 
 /**
- * @brief :master Conflict interrupt Control
- *
- * @param ctl :ENABLE , DISABLE
- */
-void SPI_MasterConflictIRQControl(ControlStatus ctl)
+  * @brief  Initializes the SPI peripheral according to the specified parameters
+  *         in the SPI_InitStruct.
+  * @param  SPI_InitStruct: pointer to an SPI_InitTypeDef structure that contains
+  *         the configuration information for the SPI peripheral.
+  * @retval None
+  */
+void SPI_Init(SPI_InitTypeDef *SPI_InitStruct)
 {
-	if (ctl == ENABLE)
-		SPI->CR0 |= SPI_CR0_MSTCFIE;
+	u32 tempreg = 0;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_SPI_CPOL(SPI_InitStruct->SPI_ClockPolarity));
+	PARAM_CHECK(IS_SPI_CPHA(SPI_InitStruct->SPI_ClockPhase));
+	PARAM_CHECK(IS_SPI_MODE(SPI_InitStruct->SPI_Mode));
+	PARAM_CHECK(IS_SPI_SCLK_DIV(SPI_InitStruct->SPI_SclkDiv));
+
+	/* Get the SPI_CR0 value */
+	tempreg = SPI->CR0;
+
+	/* Set SPI Serial Clock Polarity */
+	if (SPI_InitStruct->SPI_ClockPolarity == SPI_CPOL_LOW)
+	{
+		/* SCLK is low when SPI is idle */
+		tempreg &= ~SPI_CR0_CPOL;
+	}
 	else
-		SPI->CR0 &= ~SPI_CR0_MSTCFIE;
+	{
+		/* SCLK is high when SPI is idle */
+		tempreg |= SPI_CR0_CPOL;
+	}
+
+	/* Set the SPI serial clock phase */
+	if (SPI_InitStruct->SPI_ClockPhase == SPI_CPHA_1EDGE)
+	{
+		/* The first clock transition edge counts */
+		tempreg &= ~SPI_CR0_CPHA;
+	}
+	else
+	{
+		/* The second clock transition edge counts */
+		tempreg |= SPI_CR0_CPHA;
+	}
+
+	/* Set SPI mode */
+	if (SPI_InitStruct->SPI_Mode == SPI_MODE_SLAVE)
+	{
+		/* SPI mode is configured as slave */
+		tempreg &= ~SPI_CR0_MSMODE;
+	}
+	else
+	{
+		/* SPI mode is configured as master */
+		tempreg |= SPI_CR0_MSMODE;
+	}
+
+	/* Set SCLK clock divider */
+	tempreg &= ~SPI_CR0_SCLKDIV;
+	tempreg |= SPI_InitStruct->SPI_SclkDiv << SPI_CR0_SCLKDIV_pos;
+
+	/* Write to SPI_CR0 */
+	SPI->CR0 = tempreg;
 }
 
 /**
- * @brief trasfer done interrupt enable
- *
- */
-void SPI_EnableIRQ(void)
+  * @brief  Enables or disables the specified SPI interrupts.
+  * @param  SPI_IT: specifies the SPI interrupt sources to be enabled or disabled.
+  *   This parameter can be any combination of the following values:
+  *     @arg SPI_IT_MSTCFIE: spi cs conflict error interrupt
+  *     @arg SPI_IT_DONEIE: Current byte send/receive complete interrupt
+  * @param  NewState: new state of the specified SPI interrupts.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void SPI_ITConfig(u8 SPI_IT, FunctionalState NewState)
 {
-	SPI->CR0 |= SPI_CR0_DONEIE;
+	/* Check the parameters */
+	PARAM_CHECK(IS_SPI_CONFIG_IT(SPI_IT));
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
+	{
+		/* Enable the selected SPI interrupts */
+		SPI->CR0 |= SPI_IT;
+	}
+	else
+	{
+		/* Disable the selected SPI interrupts */
+		SPI->CR0 &= ~SPI_IT;
+	}
 }
 
 /**
- * @brief trasfer done interrupt disable
- *
- */
-void SPI_DisableIRQ(void)
+  * @brief  Checks whether the specified SPI flag is set or not.
+  * @param  SPI_FLAG: specifies the flag to check.
+  *   This parameter can be one of the following values:
+  *     @arg SPI_FLAG_SPI_CS: Real-time status flag of current SPI_CSN
+  *     @arg SPI_FLAG_MSTCFSR: Generate spi cs conflict error flag
+  *     @arg SPI_FLAG_DONESR: Current byte send/receive complete interrupt flag
+  * @retval The new state of SPI_FLAG (SET or RESET).
+  */
+FlagStatus SPI_GetFlagStatus(u8 SPI_FLAG)
 {
-	SPI->CR0 &= ~SPI_CR0_DONEIE;
+	FlagStatus bitstatus = RESET;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_SPI_GET_FLAG(SPI_FLAG));
+
+	/* Check the status of the SPI flag */
+	if (SPI->SR & SPI_FLAG)
+	{
+		/* SPI_FLAG is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* SPI_FLAG is reset */
+		bitstatus = RESET;
+	}
+	/* Return the SPI_FLAG status */
+	return bitstatus;
 }
 
 /**
- * @brief set CS high
- *
- */
+  * @brief  Checks whether the specified SPI interrupt has occurred or not.
+  * @param  SPI_IT: specifies the SPI interrupt source to check.
+  *   This parameter can be one of the following values:
+  *     @arg SPI_IT_MSTCFIE: spi cs conflict error interrupt
+  *     @arg SPI_IT_DONEIE: Current byte send/receive complete interrupt
+  * @retval The new state of SPI_IT (SET or RESET).
+  */
+ITStatus SPI_GetITStatus(u8 SPI_IT)
+{
+	ITStatus bitstatus = RESET;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_SPI_GET_IT(SPI_IT));
+
+	/* Check the status of the specified SPI interrupt */
+	if ((SPI->CR0 & SPI_IT) && (SPI->SR & (SPI_IT >> 4)))
+	{
+		/* SPI_IT is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* SPI_IT is reset */
+		bitstatus = RESET;
+	}
+	/* Return the SPI_IT status */
+	return bitstatus;
+}
+
+/**
+  * @brief  Clear the pending flag for SPI.
+  * @param  SPI_FLAG: specifies the flag to clear.
+  *   This parameter can be any combination of the following values:
+  *     @arg SPI_FLAG_MSTCFSR: Generate spi cs conflict error flag
+  *     @arg SPI_FLAG_DONESR: Current byte send/receive complete interrupt flag
+  * @retval None
+  */
+void SPI_ClearFlag(u8 SPI_FLAG)
+{
+	u32 tempreg = 0;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_SPI_CLEAR_FLAG(SPI_FLAG));
+
+	/* Clear the selected SPI flags */
+	if (SPI_FLAG == SPI_FLAG_MSTCFSR)
+	{
+		/* Clear the spi cs conflict error flag */
+		tempreg = SPI->CR0;
+	}
+	else
+	{
+		/* Clear the current byte send/receive complete interrupt flag */
+		tempreg = SPI->SR;
+	}
+	(void)tempreg;
+}
+
+/**
+  * @brief  Set the level to control cs_n.
+  * @param  None
+  * @retval None
+  */
 void SPI_SetCSN(void)
 {
-	SPI->CSN = 0x01;
+	/* The level of cs_n is configured as high */
+	SPI->CSN |= SPI_CSN_CSN;
 }
 
 /**
- * @brief set cs low
- *
- */
+  * @brief  Reset the level to control cs_n.
+  * @param  None
+  * @retval None
+  */
 void SPI_ClrCSN(void)
 {
-	SPI->CSN = 0;
+	/* The level of cs_n is configured as low */
+	SPI->CSN &= ~SPI_CSN_CSN;
 }
 
 /**
- * @brief send data
- *
- * @param data :8bit data
- */
+  * @brief  Transmits a Data through the SPI peripheral.
+  * @param  Data : Data to be transmitted.
+  * @retval None
+  */
 void SPI_SendData(u8 data)
 {
+	/* Write in the DR register the data to be sent */
 	SPI->DR = data;
-	while (!(SPI->SR & SPI_SR_DONESR))
-		;
 }
 
 /**
- * @brief recieve data
- *
- * @return u8 :8bit data
- */
+  * @brief  Returns the most recent received data by the SPI peripheral. 
+  * @param  None
+  * @retval The value of the received data.
+  */
 u8 SPI_RecieveData(void)
 {
-	SPI->DR = 0;
-	while (!(SPI->SR & SPI_SR_DONESR))
-		;
-	return SPI->DR;
+	/* Return the data in the DR register */
+	return (u8)(SPI->DR);
 }
 
 /**
- * @brief get status register value
- *
- * @return u32: status reg val
- */
-u32 SPI_GetStatus(void)
-{
-	return SPI->SR;
-}
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/******************* (C) COPYRIGHT 2022 Fanhai Data Tech *****END OF FILE****/
+

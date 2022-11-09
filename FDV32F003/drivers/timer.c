@@ -1,504 +1,482 @@
 /**
- * @file timer.c
- * @author David Lin
- * @brief
- * @version 0.1
- * @date 2021-05-17
- *
- * @copyright Fanhai Data Tech. (c) 2021
- *
- */
+  ******************************************************************************
+  * @file    timer.c
+  * @author  yongda.wang
+  * @version 0.2
+  * @date    2022-09-23
+  * @brief   This file provides all the TIM firmware functions.
+  ******************************************************************************
+  * @attention
+  *
+  * @copyright Fanhai Data Tech. (c) 2022
+  ******************************************************************************
+  */
 
-#include "sysc.h"
+/* Includes ------------------------------------------------------------------*/
 #include "timer.h"
-#include "iom.h"
+#include "sysc.h"
+
+/** @addtogroup FDV32F003_StdPeriph_Driver
+  * @{
+  */
+
+/** @defgroup TIM
+  * @brief TIM driver modules
+  * @{
+  */
+
+/** @defgroup TIM_Private_Functions
+  * @{
+  */
 
 /**
- * @brief  timer timing init
- *
- * @param timer :timer 1-4
- * @param delay :us
- */
-void Timer_timing_Init(Timer_t timer, int delay)
+  * @brief  Deinitializes the TIMx peripheral registers to their default reset values.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @retval None
+  */
+void TIM_DeInit(TIM_TypeDef *TIMx)
 {
-	PARAM_CHECK((timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
 
-	int iDiv, iTcks;
-
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER_PCKEN;
-
-	switch (timer)
+	if (TIMx == TIM1)
 	{
-	case TIMER0:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER0_PCKEN;
-		TIMERS->T0CR &= ~TIMER0_T0CR_T0EN;
-
-		TIMERS->T0CR |= TIMER0_T0CR_T0RLDEN;
-
-		iDiv = 4;
-		if (!(TIMERS->T0CR & TIMER0_T0CR_PSA))
-		{
-			iTcks = (TIMERS->T0CR & TIMER0_T0CR_PS) >> TIMER0_T0CR_PS_pos;
-			iDiv  = 2;
-			for (int i = 0; i < iTcks; i++)
-				iDiv *= 2;
-		}
-		TIMERS->T0RLD = 0x100 - delay * SYSC_GetAPBCLK() / (iDiv * 1000000);
-
-		TIMERS->T0 = TIMERS->T0RLD;
-		TIMERS->T0CR |= TIMER0_T0CR_T0EN;
-		break;
-	case TIMER1:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER1_PCKEN;
-		TIM1->TCR &= ~TIMER_TCR_PWMON;
-		TIM1->TCR &= ~TIMER_TCR_TGC;
-		TIM1->TCR &= ~TIMER_TCR_TCS;
-
-		iTcks = (TIM1->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
-		iDiv  = 1;
-		for (int i = 0; i < iTcks; i++)
-			iDiv *= 2;
-		TIM1->PWMPD = delay * SYSC_GetAPBCLK() / (iDiv * 1000000);
-
-		TIM1->TN = 0;
-		TIM1->TCR |= TIMER_TCR_TON;
-		break;
-	case TIMER2:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER2_PCKEN;
-		TIM2->TCR &= ~TIMER_TCR_PWMON;
-		TIM2->TCR &= ~TIMER_TCR_TGC;
-		TIM2->TCR &= ~TIMER_TCR_TCS;
-
-		iTcks = (TIM2->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
-		iDiv  = 1;
-		for (int i = 0; i < iTcks; i++)
-			iDiv *= 2;
-		TIM2->PWMPD = delay * SYSC_GetAPBCLK() / (iDiv * 1000000);
-
-		TIM2->TN = 0;
-		TIM2->TCR |= TIMER_TCR_TON;
-		break;
-	case TIMER3:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER3_PCKEN;
-		TIM3->TCR &= ~TIMER_TCR_PWMON;
-		TIM3->TCR &= ~TIMER_TCR_TGC;
-		TIM3->TCR &= ~TIMER_TCR_TCS;
-
-		iTcks = (TIM3->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
-		iDiv  = 1;
-		for (int i = 0; i < iTcks; i++)
-			iDiv *= 2;
-		TIM3->PWMPD = delay * SYSC_GetAPBCLK() / (iDiv * 1000000);
-
-		TIM3->TN = 0;
-		TIM3->TCR |= TIMER_TCR_TON;
-		break;
-	case TIMER4:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER4_PCKEN;
-		TIM4->TCR &= ~TIMER_TCR_PWMON;
-		TIM4->TCR &= ~TIMER_TCR_TGC;
-		TIM4->TCR &= ~TIMER_TCR_TCS;
-
-		iTcks = (TIM4->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
-		iDiv  = 1;
-		for (int i = 0; i < iTcks; i++)
-			iDiv *= 2;
-		TIM4->PWMPD = delay * SYSC_GetAPBCLK() / (iDiv * 1000000);
-
-		TIM4->TN = 0;
-		TIM4->TCR |= TIMER_TCR_TON;
-		break;
-	default:
-		break;
+		/* Reset the TIM1 module settings */
+		SYSC_ResetPeripher(SYSC_RESET_MOUDLE_TIM1);
+	}
+	else if (TIMx == TIM2)
+	{
+		/* Reset the TIM2 module settings */
+		SYSC_ResetPeripher(SYSC_RESET_MOUDLE_TIM2);
+	}
+	else if (TIMx == TIM3)
+	{
+		/* Reset the TIM3 module settings */
+		SYSC_ResetPeripher(SYSC_RESET_MOUDLE_TIM3);
+	}
+	else if (TIMx == TIM4)
+	{
+		/* Reset the TIM6 module settings */
+		SYSC_ResetPeripher(SYSC_RESET_MOUDLE_TIM4);
 	}
 }
 
 /**
- * @brief  timer Count init
- *
- * @param timer :timer 0-4
- * @param count :count
- */
-void Timer_Count_Init(Timer_t timer, int count)
+  * @brief  Deinitializes the TIM0 peripheral registers to their default reset values.
+  * @param  None
+  * @retval None
+  */
+void TIM_T0DeInit(void)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
+	/* Reset the TIM0 module settings */
+	SYSC_ResetPeripher(SYSC_RESET_MOUDLE_TIM0);
+}
 
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER_PCKEN;
+/**
+  * @brief  Initializes the TIMx Time Base Unit peripheral according to 
+  *         the specified parameters in the TIM_BaseInitStruct.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @param  TIM_BaseInitStruct: pointer to a TIM_BaseInitTypeDef structure
+  *         that contains the configuration information for the specified TIM peripheral.
+  * @retval None
+  */
+void TIM_BaseInit(TIM_TypeDef *TIMx, TIM_BaseInitTypeDef *TIM_BaseInitStruct)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	PARAM_CHECK(IS_TIM_PRESCALER(TIM_BaseInitStruct->TIM_Prescaler));
 
-	switch (timer)
+	/* Set the TIMx input clock predivision value */
+	TIMx->TCR &= ~TIM_TCR_TCKS;
+	TIMx->TCR |= TIM_BaseInitStruct->TIM_Prescaler << TIM_TCR_TCKS_pos;
+
+	/* Set preset values for TIMx peripherals */
+	TIMx->PWMPD &= ~TIM_PWMPD_PWMPD;
+	TIMx->PWMPD |= TIM_BaseInitStruct->TIM_PresetValue << TIM_PWMPD_PWMPD_pos;
+
+	/* Set TIMx to timing mode */
+	TIMx->TCR &= ~TIM_TCR_TCS;
+
+	/* Set TIMx to disable PWM */
+	TIMx->TCR &= ~TIM_TCR_PWMON;
+}
+
+/**
+  * @brief  Initialize the TIMx PWM function according to the 
+  *	        parameters specified in TIM_PWMInitStruct.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @param  TIM_PWMInitStruct: Pointer to a TIM_PWMInitTypeDef structure 
+  *         containing configuration information for the specified TIM PWM.
+  * @retval None
+  */
+void TIM_PWMInit(TIM_TypeDef *TIMx, TIM_PWMInitTypeDef *TIM_PWMInitStruct)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	PARAM_CHECK(IS_TIM_PRESCALER(TIM_PWMInitStruct->TIM_Prescaler));
+
+	/* Set the TIMx input clock predivision value */
+	TIMx->TCR &= ~TIM_TCR_TCKS;
+	TIMx->TCR |= TIM_PWMInitStruct->TIM_Prescaler << TIM_TCR_TCKS_pos;
+
+	/* Set the PWM period for the TIMx peripheral */
+	TIMx->PWMPD &= ~TIM_PWMPD_PWMPD;
+	TIMx->PWMPD |= TIM_PWMInitStruct->TIM_PWMPeriod << TIM_PWMPD_PWMPD_pos;
+
+	/* Set the PWM duty cycle for the TIMx peripheral */
+	TIMx->PWMDC &= ~TIM_PWMDC_PWMDC;
+	TIMx->PWMDC |= TIM_PWMInitStruct->TIM_PWMDuty << TIM_PWMDC_PWMDC_pos;
+
+	/* Set TIMx to timing mode */
+	TIMx->TCR &= ~TIM_TCR_TCS;
+
+	/* Set TIMx to enable PWM */
+	TIMx->TCR |= TIM_TCR_PWMON;
+}
+
+/**
+  * @brief  Initialize the TIMx external pulse count according to the 
+  *         parameters specified in TIM_CountInitStruct.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @param  TIM_CountInitStruct: Pointer to a TIM_CountInitTypeDef structure containing 
+  *         external pulse count configuration information for the specified TIM peripheral.
+  * @retval None
+  */
+void TIM_CountInit(TIM_TypeDef *TIMx, TIM_CountInitTypeDef *TIM_CountInitStruct)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+
+	/* Set overflow values for TIMx peripherals */
+	TIMx->PWMPD &= ~TIM_PWMPD_PWMPD;
+	TIMx->PWMPD |= TIM_CountInitStruct->TIM_OverValue << TIM_PWMPD_PWMPD_pos;
+
+	/* Set TIMx to count mode */
+	TIMx->TCR |= TIM_TCR_TCS;
+
+	/* Set TIMx to disable PWM */
+	TIMx->TCR &= ~TIM_TCR_PWMON;
+}
+
+/**
+  * @brief  Initializes the TIM0 Time Base Unit peripheral according to 
+  *         the specified parameters in the TIM_T0InitStruct.
+  * @param  TIM_T0InitStruct: pointer to a TIM_T0InitTypeDef structure
+  *         that contains the configuration information for the TIM0 peripheral.
+  * @retval None
+  */
+void TIM_T0Init(TIM_T0InitTypeDef *TIM_T0InitStruct)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_T0_PRESCALER(TIM_T0InitStruct->TIM_T0Prescaler));
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(TIM_T0InitStruct->TIM_ReloadCmd));
+
+	/* Set the TIM0 input clock predivision value */
+	if(TIM_T0InitStruct->TIM_T0Prescaler > 0)
 	{
-	case TIMER0:
-		break;
-	case TIMER1:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER1_PCKEN;
-		TIM1->TCR &= ~TIMER_TCR_PWMON;
-		TIM1->TCR &= ~TIMER_TCR_TGC;
+		TIMERS->T0CR &= ~TIM_T0CR_PSA;
+		TIMERS->T0CR &= ~TIM_T0CR_PS;
+		TIMERS->T0CR |= (TIM_T0InitStruct->TIM_T0Prescaler - 1) << TIM_T0CR_PS_pos;
+	}
+	else
+	{
+		TIMERS->T0CR |= TIM_T0CR_PSA;
+	}
 
-		TIM1->TCR |= TIMER_TCR_TCS;
+	if(TIM_T0InitStruct->TIM_ReloadCmd == ENABLE)
+	{
+		/* Enable TIM0 overload */
+		TIMERS->T0CR |= TIM_T0CR_T0RLDEN;
+	}
+	else
+	{
+		/* Disnable TIM0 overload */
+		TIMERS->T0CR &= ~TIM_T0CR_T0RLDEN;
+	}
 
-		TIM1->PWMPD = count;
+	/* Set reload values for TIM0 peripherals */
+	TIMERS->T0RLD &= ~TIM_T0RLD_T0RLD;
+	TIMERS->T0RLD |= TIM_T0InitStruct->TIM_ReloadValue << TIM_T0RLD_T0RLD_pos;
+}
 
-		TIM1->TN = 0;
-		TIM1->TCR |= TIMER_TCR_TON;
-		break;
-	case TIMER2:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER2_PCKEN;
-		TIM2->TCR &= ~TIMER_TCR_PWMON;
-		TIM2->TCR &= ~TIMER_TCR_TGC;
+/**
+  * @brief  Set the edge trigger type of TIMx interrupt pulse.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @param  IntTriggerType: Specifies the type of interrupt edge trigger.
+  *   This parameter can be one of the following values:
+  *     @arg TIM_INT_TRIGGER_FALL: Falling edge trigger
+  *     @arg TIM_INT_TRIGGER_RISE: Rising edge trigger
+  * @retval None
+  */
+void TIM_SetIntTriggerType(TIM_TypeDef *TIMx, u8 IntTriggerType)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_INTTRIGGER_TYPE(IntTriggerType));
 
-		TIM2->TCR |= TIMER_TCR_TCS;
-
-		TIM2->PWMPD = count;
-
-		TIM2->TN = 0;
-		TIM2->TCR |= TIMER_TCR_TON;
-		break;
-	case TIMER3:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER3_PCKEN;
-		TIM3->TCR &= ~TIMER_TCR_PWMON;
-		TIM3->TCR &= ~TIMER_TCR_TGC;
-
-		TIM3->TCR |= TIMER_TCR_TCS;
-
-		TIM3->PWMPD = count;
-
-		TIM3->TN = 0;
-		TIM3->TCR |= TIMER_TCR_TON;
-		break;
-	case TIMER4:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER4_PCKEN;
-		TIM4->TCR &= ~TIMER_TCR_PWMON;
-		TIM4->TCR &= ~TIMER_TCR_TGC;
-
-		TIM4->TCR |= TIMER_TCR_TCS;
-
-		TIM4->PWMPD = count;
-
-		TIM4->TN = 0;
-		TIM4->TCR |= TIMER_TCR_TON;
-		break;
-	default:
-		break;
+	if (IntTriggerType == TIM_INT_TRIGGER_FALL)
+	{
+		/* Set falling edge trigger interrupt */
+		TIMx->TCR &= ~TIM_TCR_INTSE;	
+	}
+	else
+	{
+		/* Set rising edge trigger interrupt */
+		TIMx->TCR |= TIM_TCR_INTSE;
 	}
 }
 
 /**
- * @brief pwm init
- *
- * @param timer :timer 0-4
- * @param pwmPolarity :TIM_PMW_POL_xxxx;
- * @param freq : kHz
- * @param duty :exp:duty=50 (50%)
- * @param portSel :TIMN_PWM_PORT_xxxx;
- * @param dtGap :us
- */
-void Timer_PWMInit(Timer_t timer, int freq, int duty)
+  * @brief  Enable or disable the gating of selected TIM peripherals.
+  * @param  TIMx: where x can be 1 to 4 to select the TIMx peripheral.
+  * @param  NewState: The new state of the selected TIM peripheral gating.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void TIM_GatingCmd(TIM_TypeDef *TIMx, FunctionalState NewState)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
 
-	int iDiv, iTcks;
-
-	SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER_PCKEN;
-
-	switch (timer)
+	if (NewState == ENABLE)
 	{
-	case TIMER0:
-		break;
-	case TIMER1:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER1_PCKEN;
-		TIM1->TCR &= ~TIMER_TCR_TGC;
-		TIM1->TCR &= ~TIMER_TCR_TCS;
-
-		TIM1->TCR |= TIMER_TCR_PWMON;
-
-		iTcks = (TIM1->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
-		iDiv  = 1;
-		for (int i = 0; i < iTcks; i++)
-			iDiv *= 2;
-		TIM1->PWMPD = SYSC_GetAPBCLK() / (iDiv * freq * 1000);
-		TIM1->PWMDC = SYSC_GetAPBCLK() * duty / (iDiv * freq * 1000 * 100);
-
-		TIM1->TN = 0;
-		TIM1->TCR |= TIMER_TCR_TON;
-		break;
-	case TIMER2:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER2_PCKEN;
-		TIM2->TCR &= ~TIMER_TCR_TGC;
-		TIM2->TCR &= ~TIMER_TCR_TCS;
-
-		TIM2->TCR |= TIMER_TCR_PWMON;
-
-		iTcks = (TIM2->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
-		iDiv  = 1;
-		for (int i = 0; i < iTcks; i++)
-			iDiv *= 2;
-		TIM2->PWMPD = SYSC_GetAPBCLK() / (iDiv * freq * 1000);
-		TIM2->PWMDC = SYSC_GetAPBCLK() * duty / (iDiv * freq * 1000 * 100);
-
-		TIM2->TN = 0;
-		TIM2->TCR |= TIMER_TCR_TON;
-		break;
-	case TIMER3:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER3_PCKEN;
-		TIM3->TCR &= ~TIMER_TCR_TGC;
-		TIM3->TCR &= ~TIMER_TCR_TCS;
-
-		TIM3->TCR |= TIMER_TCR_PWMON;
-
-		iTcks = (TIM3->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
-		iDiv  = 1;
-		for (int i = 0; i < iTcks; i++)
-			iDiv *= 2;
-		TIM3->PWMPD = SYSC_GetAPBCLK() / (iDiv * freq * 1000);
-		TIM3->PWMDC = SYSC_GetAPBCLK() * duty / (iDiv * freq * 1000 * 100);
-
-		TIM3->TN = 0;
-		TIM3->TCR |= TIMER_TCR_TON;
-		break;
-	case TIMER4:
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER4_PCKEN;
-		TIM4->TCR &= ~TIMER_TCR_TGC;
-		TIM4->TCR &= ~TIMER_TCR_TCS;
-
-		TIM4->TCR |= TIMER_TCR_PWMON;
-
-		iTcks = (TIM4->TCR & TIMER_TCR_TCKS) >> TIMER_TCR_TCKS_pos;
-		iDiv  = 1;
-		for (int i = 0; i < iTcks; i++)
-			iDiv *= 2;
-		TIM4->PWMPD = SYSC_GetAPBCLK() / (iDiv * freq * 1000);
-		TIM4->PWMDC = SYSC_GetAPBCLK() * duty / (iDiv * freq * 1000 * 100);
-
-		TIM4->TN = 0;
-		TIM4->TCR |= TIMER_TCR_TON;
-		break;
-	default:
-		break;
+		/* Enable the gating of selected TIM peripherals */
+		TIMx->TCR |= TIM_TCR_TGC;
 	}
-}
-/**
- * @brief Timer deinit
- *
- * @param timer:timer 0-4
- */
-void Timer_DeInit(Timer_t timer)
-{
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
-
-	switch (timer)
+	else
 	{
-	case TIMER0:
-		TIMERS->T0CR &= ~TIMER0_T0CR_T0EN;
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER0_PCKEN;
-		break;
-	case TIMER1:
-		TIM1->TCR &= ~TIMER_TCR_TON;
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER1_PCKEN;
-		break;
-	case TIMER2:
-		TIM2->TCR &= ~TIMER_TCR_TON;
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER2_PCKEN;
-		break;
-	case TIMER3:
-		TIM3->TCR &= ~TIMER_TCR_TON;
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER3_PCKEN;
-		break;
-	case TIMER4:
-		TIM4->TCR &= ~TIMER_TCR_TON;
-		SYSC->CLKENCFG |= SYSC_CLKENCFG_TIMER4_PCKEN;
-		break;
-	default:
-		break;
-	}
-}
-/**
- * @brief timer enable control
- *
- * @param timer : timer 0-4
- * @param iCtrl ENABLE or DISABLE
- */
-void Timer_EnableControl(Timer_t timer, int iCtrl)
-{
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
-	switch (timer)
-	{
-	case TIMER0:
-		TIMERS->TIF = (1 << 0);
-		if (iCtrl == ENABLE)
-		{
-			TIMERS->T0CR |= TIMER0_CTRL_EN;
-		}
-		else
-		{
-			TIMERS->T0CR &= ~TIMER0_CTRL_EN;
-		}
-		break;
-	case TIMER1:
-		if (iCtrl == ENABLE)
-		{
-			TIMERS->TCR1 |= TIMER1_CTRL_EN;
-		}
-		else
-		{
-			TIMERS->TCR1 &= ~TIMER1_CTRL_EN;
-		}
-		break;
-	case TIMER2:
-		if (iCtrl == ENABLE)
-		{
-			TIMERS->TCR2 |= TIMER2_CTRL_EN;
-		}
-		else
-		{
-			TIMERS->TCR2 &= ~TIMER2_CTRL_EN;
-		}
-		break;
-	case TIMER3:
-		if (iCtrl == ENABLE)
-		{
-			TIMERS->TCR3 |= TIMER3_CTRL_EN;
-		}
-		else
-		{
-			TIMERS->TCR3 &= ~TIMER3_CTRL_EN;
-		}
-		break;
-	case TIMER4:
-		if (iCtrl == ENABLE)
-		{
-			TIMERS->TCR4 |= TIMER4_CTRL_EN;
-		}
-		else
-		{
-			TIMERS->TCR4 &= ~TIMER4_CTRL_EN;
-		}
-		break;
-	default:
-		break;
-	}
-}
-/**
- * @brief Timer interrupt enable
- *
- * @param timer:timer 0-4
- */
-void Timer_EnableIRQ(Timer_t timer)
-{
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
-	switch (timer)
-	{
-	case TIMER0:
-		TIMERS->TIE |= (1 << 0);
-		break;
-	case TIMER1:
-		TIMERS->TIE |= (1 << 1);
-		break;
-	case TIMER2:
-		TIMERS->TIE |= (1 << 2);
-		break;
-	case TIMER3:
-		TIMERS->TIE |= (1 << 3);
-		break;
-	case TIMER4:
-		TIMERS->TIE |= (1 << 4);
-		break;
-	default:
-		break;
+		/* Disable the gating of selected TIM peripherals */
+		TIMx->TCR &= ~TIM_TCR_TGC;
 	}
 }
 
 /**
- * @brief Timer interrupt disable
- *
- * @param timer:timer 0-4
- */
-void Timer_DisableIRQ(Timer_t timer)
+  * @brief  Enables or disables the specified TIM peripheral.
+  * @param  TIMx: where x can be 1 to 4 to select the TIMx peripheral.
+  * @param  NewState: new state of the TIMx peripheral.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void TIM_Cmd(TIM_TypeDef *TIMx, FunctionalState NewState)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
-	switch (timer)
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	if (NewState == ENABLE)
 	{
-	case TIMER0:
-		TIMERS->TIE &= ~(1 << 0);
-		break;
-	case TIMER1:
-		TIMERS->TIE &= ~(1 << 1);
-		break;
-	case TIMER2:
-		TIMERS->TIE &= ~(1 << 2);
-		break;
-	case TIMER3:
-		TIMERS->TIE &= ~(1 << 3);
-		break;
-	case TIMER4:
-		TIMERS->TIE &= ~(1 << 4);
-		break;
-	default:
-		break;
+		/* Enable the specified TIM peripheral */
+		TIMx->TCR |= TIM_TCR_TON;
+	}
+	else
+	{
+		/* Disable the specified TIM peripheral */
+		TIMx->TCR &= ~TIM_TCR_TON;
 	}
 }
 
 /**
- * @brief get timer interrupt flag
- *
- * @param timer :timer 0-4
- * @return FlagStatus : SET , RESET
- */
-FlagStatus Timer_GetIntFlag(Timer_t timer)
+  * @brief  Enables or disables the TIM0 peripheral.
+  * @param  NewState: new state of the TIM0 peripheral.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void TIM_T0Cmd(FunctionalState NewState)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
+	/* Check the parameters */
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
 
-	int ret = RESET;
-
-	if (TIMER0 == timer)
+	if (NewState == ENABLE)
 	{
-		ret = (TIMERS->TIF & (1 << 0) ? SET : RESET);
+		/* Enable the specified TIM0 peripheral */
+		TIMERS->T0CR |= TIM_T0CR_T0EN;
 	}
-	else if (TIMER1 == timer)
+	else
 	{
-		ret = (TIMERS->TIF & (1 << 1) ? SET : RESET);
+		/* Disable the specified TIM0 peripheral */
+		TIMERS->T0CR &= ~TIM_T0CR_T0EN;
 	}
-	else if (TIMER2 == timer)
-	{
-		ret = (TIMERS->TIF & (1 << 2) ? SET : RESET);
-	}
-	else if (TIMER3 == timer)
-	{
-		ret = (TIMERS->TIF & (1 << 3) ? SET : RESET);
-	}
-	else if (TIMER4 == timer)
-	{
-		ret = (TIMERS->TIF & (1 << 4) ? SET : RESET);
-	}
-
-	return (FlagStatus)ret;
 }
+
 /**
- * @brief clear timer interrupt flag
- *
- * @param timer :timer 0-4
- */
-void Timer_ClrIntFlag(Timer_t timer)
+  * @brief  Enables or disables the specified TIM interrupts.
+  * @param  TIM_IT: specifies the TIM interrupt sources to be enabled or disabled.
+  *   This parameter can be any combination of the following values:
+  *     @arg TIM_IT_T4IE: TIM4 interrupt or PWM4 interrupt
+  *     @arg TIM_IT_T3IE: TIM3 interrupt or PWM3 interrupt
+  *     @arg TIM_IT_T2IE: TIM2 interrupt or PWM2 interrupt
+  *     @arg TIM_IT_T1IE: TIM1 interrupt or PWM1 interrupt
+  *     @arg TIM_IT_T0IE: TIM0 interrupt
+  * @param  NewState: new state of the specified TIM interrupts.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void TIM_ITConfig(u32 TIM_IT, FunctionalState NewState)
 {
-	PARAM_CHECK((timer != TIMER0) && (timer != TIMER1) && (timer != TIMER2) && (timer != TIMER3) && (timer != TIMER4));
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_CONFIG_IT(TIM_IT));
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
 
-	switch (timer)
+	if (NewState == ENABLE)
 	{
-	case TIMER0:
-		TIMERS->TIF = (1 << 0);
-		break;
-	case TIMER1:
-		TIMERS->TIF = (1 << 1);
-		break;
-	case TIMER2:
-		TIMERS->TIF = (1 << 2);
-		break;
-	case TIMER3:
-		TIMERS->TIF = (1 << 3);
-		break;
-	case TIMER4:
-		TIMERS->TIF = (1 << 4);
-		break;
-	default:
-		break;
+		/* Enable the selected TIM interrupts */
+		TIMERS->TIE |= TIM_IT;
+	}
+	else
+	{
+		/* Disable the selected TIM interrupts */
+		TIMERS->TIE &= ~TIM_IT;
 	}
 }
+
+/**
+  * @brief  Checks whether the specified TIM flag is set or not.
+  * @param  TIM_FLAG: specifies the flag to check.
+  *   This parameter can be one of the following values:
+  *     @arg TIM_FLAG_T4IF: TIM4 overflow interrupt flag
+  *     @arg TIM_FLAG_T3IF: TIM3 overflow interrupt flag
+  *     @arg TIM_FLAG_T2IF: TIM2 overflow interrupt flag
+  *     @arg TIM_FLAG_T1IF: TIM1 overflow interrupt flag
+  *     @arg TIM_FLAG_T0IF: TIM0 overflow interrupt flag
+  * @retval The new state of TIM_FLAG (SET or RESET).
+  */
+FlagStatus TIM_GetFlagStatus(u16 TIM_FLAG)
+{
+	FlagStatus bitstatus = RESET;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_GET_FLAG(TIM_FLAG));
+
+	/* Check the status of the TIM flag */
+	if (TIMERS->TIF & TIM_FLAG)
+	{
+		/* TIM_FLAG is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* TIM_FLAG is reset */
+		bitstatus = RESET;
+	}
+	/* Return the TIM_FLAG status */
+	return bitstatus;
+}
+
+/**
+  * @brief  Checks whether the specified TIM interrupt has occurred or not.
+  * @param  TIM_IT: specifies the TIM interrupt source to check.
+  *   This parameter can be one of the following values:
+  *     @arg TIM_IT_T4IE: TIM4 interrupt or PWM4 interrupt
+  *     @arg TIM_IT_T3IE: TIM3 interrupt or PWM3 interrupt
+  *     @arg TIM_IT_T2IE: TIM2 interrupt or PWM2 interrupt
+  *     @arg TIM_IT_T1IE: TIM1 interrupt or PWM1 interrupt
+  *     @arg TIM_IT_T0IE: TIM0 interrupt
+  * @retval The new state of TIM_IT (SET or RESET).
+  */
+ITStatus TIM_GetITStatus(u32 TIM_IT)
+{
+	ITStatus bitstatus = RESET;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_GET_IT(TIM_IT));
+
+	/* Check the status of the specified TIM interrupt */
+	if ((TIMERS->TIE & TIM_IT) && (TIMERS->TIF & TIM_IT))
+	{
+		/* TIM_IT is set */
+		bitstatus = SET;
+	}
+	else
+	{
+		/* TIM_IT is reset */
+		bitstatus = RESET;
+	}
+	/* Return the TIM_IT status */
+	return bitstatus;
+}
+
+/**
+  * @brief  Clear the pending flag for TIM.
+  * @param  TIM_FLAG: specifies the flag to clear.
+  *   This parameter can be any combination of the following values:
+  *     @arg TIM_FLAG_T4IF: TIM4 overflow interrupt flag
+  *     @arg TIM_FLAG_T3IF: TIM3 overflow interrupt flag
+  *     @arg TIM_FLAG_T2IF: TIM2 overflow interrupt flag
+  *     @arg TIM_FLAG_T1IF: TIM1 overflow interrupt flag
+  *     @arg TIM_FLAG_T0IF: TIM0 overflow interrupt flag
+  * @retval None
+  */
+void TIM_ClearFlag(u16 TIM_FLAG)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_CLEAR_FLAG(TIM_FLAG));
+
+	/* Clear the selected TIM flags */
+	TIMERS->TIF = TIM_FLAG;
+}
+
+/**
+  * @brief  Sets the TIMx Counter Register value
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @param  Counter: specifies the Counter register new value.
+  * @retval None
+  */
+void TIM_SetCounter(TIM_TypeDef *TIMx, u16 Counter)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+
+	/* Set the Counter Register value */
+	TIMx->TN = Counter;
+}
+
+/**
+  * @brief  Gets the TIMx Counter value.
+  * @param  TIMx: where x can be 1 to 4 to select the TIM peripheral.
+  * @retval Counter Register value.
+  */
+u16 TIM_GetCounter(TIM_TypeDef *TIMx)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_TIM_ALL_PERIPH(TIMx));
+	
+	/* Get the Counter Register value */
+	return (u16)TIMx->TN;
+}
+
+/**
+  * @brief  Sets the TIM0 Counter Register value
+  * @param  Counter: specifies the Counter register new value.
+  * @retval None
+  */
+void TIM_SetT0Counter(u8 Counter)
+{
+	/* Set the Counter Register value */
+	TIMERS->T0 = Counter;
+}
+
+/**
+  * @brief  Gets the TIM0 Counter value.
+  * @param  None
+  * @retval Counter Register value.
+  */
+u8 TIM_GetT0Counter(void)
+{
+	/* Get the Counter Register value */
+	return (u8)TIMERS->T0;
+}
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/******************* (C) COPYRIGHT 2022 Fanhai Data Tech *****END OF FILE****/
+
