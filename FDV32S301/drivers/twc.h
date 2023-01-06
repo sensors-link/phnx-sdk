@@ -159,7 +159,7 @@ typedef struct
 	u8 TWC_RXDecode; 						/*!< Specify the hardware decoding configuration of the received data.
 											 	 This parameter can be a value of @ref TWC_RX_decode_config. */
 
-	u8 TWC_GlitchFilt; 						/*!< Specifies digital filtering of received data.
+	u8 TWC_GlitchFilt; 						/*!< Specifies the number of digital filtering cycles for received data.
                                   				 This parameter can be a number between 0x0 and 0xF. */
 
 	u8 TWC_SEBUSLevelGap; 					/*!< Specifies the level width of SEBUS mode.
@@ -200,7 +200,7 @@ typedef struct
 											 	 This parameter can be a value of @ref TWC_RX_baud_rate. */
 
 	u8 TWC_GapCompensate; 					/*!< Specifies the width compensation value of the sending start bit in SWAN_BUS mode.
-                                  				 This parameter can be a number between 0x00 and 0x3F. */
+                                  				 This parameter can be a number between 0x00 and 0x7F. */
 
 	u8 TWC_SWANBUSStartGap; 				/*!< Specifies the boundary between the RX and TX start bits in SWAN_BUS mode.
 												  - Gap <= TWC_SWANBUSStartGap, RX start bit
@@ -383,7 +383,7 @@ typedef struct
   * @{
   */
 
-#define IS_TWC_GAP_COMP(COMP) ((COMP) <= 0x3F)
+#define IS_TWC_GAP_COMP(COMP) ((COMP) <= 0x7F)
 /**
   * @}
   */
@@ -458,8 +458,8 @@ void	   TWC_SetCMDAndMask(u8 CMDx, u16 Cmd, u16 Mask);
 u8		   TWC_GetHanmCheckValue(void);
 u8		   TWC_GetCheckValue(void);
 void	   TWC_RecieveCmd(FunctionalState NewState);
-void	   TWC_SoftTxStartCmd(FunctionalState NewState);
 void	   TWC_SendCmd(FunctionalState NewState);
+void	   TWC_SoftTxStartEnable(void);
 void	   TWC_ITConfig(u8 TWC_IT, FunctionalState NewState);
 FlagStatus TWC_GetFlagStatus(u8 TWC_FLAG);
 ITStatus   TWC_GetITStatus(u8 TWC_IT);

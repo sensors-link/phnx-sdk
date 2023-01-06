@@ -103,6 +103,7 @@ void RTC_LongPeriodConfig(u8 Period)
 /**
   * @brief  Configure the interval at which short-period interrupts are generated.
   * @param  Period: Specifies the time interval at which short-period interrupts are generated.
+  *    - time interval: interval = Period*0.5s.
   *   This parameter value must be lower than 0x40.
   * @retval None
   */

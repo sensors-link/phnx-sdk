@@ -128,7 +128,7 @@ typedef struct
   * @{
   */
 
-#define IS_UART_BAUDDIV(BAUDDIV) (((BAUDDIV) > 1) && ((BAUDDIV) <= 0xFFFF))
+#define IS_UART_BAUDDIV(BAUDDIV) (((BAUDDIV) > 0) && ((BAUDDIV) <= 0xFFFF))
 /**
   * @}
   */
@@ -190,6 +190,7 @@ FlagStatus UART_GetFlagStatus(u8 UART_FLAG);
 ITStatus   UART_GetITStatus(u8 UART_IT);
 void	   UART_ClearFlag(u8 UART_FLAG);
 FlagStatus UART_GetRxBit8(void);
+void	   UART_ClrRxBit8(void);
 void	   UART_SetTxBit8(void);
 void	   UART_ClrTxBit8(void);
 void	   UART_SendData(u8 Data);

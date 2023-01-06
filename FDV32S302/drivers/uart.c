@@ -47,7 +47,7 @@
   *     UART1, UART2.
   * @retval None
   */
-void UART_DeInit(UART_TypeDef* UARTx)
+void UART_DeInit(UART_TypeDef *UARTx)
 {
 	/* Check the parameters */
 	PARAM_CHECK(IS_UART_ALL_PERIPH(UARTx));
@@ -74,7 +74,7 @@ void UART_DeInit(UART_TypeDef* UARTx)
   *         the configuration information for the specified UART peripheral.
   * @retval None
   */
-void UART_Init(UART_TypeDef* UARTx, UART_InitTypeDef* UART_InitStruct)
+void UART_Init(UART_TypeDef *UARTx, UART_InitTypeDef *UART_InitStruct)
 {
 	u32 tempreg = 0, bauddiv = 0;
 	SYSC_ClocksTypeDef SYSC_Clocks;
@@ -109,7 +109,7 @@ void UART_Init(UART_TypeDef* UARTx, UART_InitTypeDef* UART_InitStruct)
 	/* Get system clock */
 	SYSC_GetClocksFreq(&SYSC_Clocks);
 
-	if (UART_InitStruct->UART_StopBits == UART_STOPBITS_0)
+	if (UART_InitStruct->UART_StopBits == UART_STOPBITS_0 && UART_InitStruct->UART_Parity == UART_PARITY_NO)
 	{
 		/* Baud rate calculation for UART mode 0 */
 		bauddiv =
@@ -359,6 +359,22 @@ FlagStatus UART_GetRxBit8(UART_TypeDef *UARTx)
 	}
 	/* Returns the status of the 8th bit of the received data */
 	return bitstatus;
+}
+
+/**
+  * @brief  Clear the 8th bit of UARTx's receive data.
+  * @param  UARTx: Select the UART peripheral. 
+  *   This parameter can be one of the following values:
+  *     UART1, UART2.
+  * @retval None
+  */
+void UART_ClrRxBit8(UART_TypeDef *UARTx)
+{
+	/* Check the parameters */
+	PARAM_CHECK(IS_UART_ALL_PERIPH(UARTx));
+
+	/* Clear the 8th bit of UARTx's receive data */
+	UARTx->SCON &= ~UART_SCON_RB8;
 }
 
 /**

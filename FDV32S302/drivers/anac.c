@@ -1092,10 +1092,10 @@ void DLY_ALDO4ADelayConfig(u8 ALDO4ADelayTime)
   * @brief  Configure the stabilization time required for the BRG to be turned on and stabilized.
   * @param  ALDO4ADelayTime: Specifies the stabilization time required for the BRG enable to stabilize.
   *   This parameter can be one of the following values:
-  *     @arg DLY_ALDO4A_DLY_12: Settling time required is 12 anac_500k_clk clock cycles
-  *     @arg DLY_ALDO4A_DLY_24: Settling time required is 24 anac_500k_clk clock cycles
-  *     @arg DLY_ALDO4A_DLY_48: Settling time required is 48 anac_500k_clk clock cycles
-  *     @arg DLY_ALDO4A_DLY_96: Settling time required is 96 anac_500k_clk clock cycles
+  *     @arg DLY_BGR_DLY_12: Settling time required is 12 anac_500k_clk clock cycles
+  *     @arg DLY_BGR_DLY_24: Settling time required is 24 anac_500k_clk clock cycles
+  *     @arg DLY_BGR_DLY_48: Settling time required is 48 anac_500k_clk clock cycles
+  *     @arg DLY_BGR_DLY_96: Settling time required is 96 anac_500k_clk clock cycles
   * @retval None
   */
 void DLY_BGRDelayConfig(u8 BGRDelayTime)
@@ -1112,9 +1112,9 @@ void DLY_BGRDelayConfig(u8 BGRDelayTime)
   * @brief  Configure trigger ADC conversion peripheral interrupt source selection.
   * @param  ADCIntSource: Specify trigger ADC conversion peripheral interrupt source selection.
   *   This parameter can be one of the following values:
-  *     @arg ME_INTSRC_LPT: Trigger interrupt source selection LPT
-  *     @arg ME_INTSRC_TIM1: Trigger interrupt source selection TIM1
-  *     @arg ME_INTSRC_TIM2: Trigger interrupt source selection TIM2
+  *     @arg ME_INT_SRC_LPT: Trigger interrupt source selection LPT
+  *     @arg ME_INT_SRC_TIM1: Trigger interrupt source selection TIM1
+  *     @arg ME_INT_SRC_TIM2: Trigger interrupt source selection TIM2
   * @retval None
   */
 void ME_ADCIntSourceConfig(u8 ADCIntSource)

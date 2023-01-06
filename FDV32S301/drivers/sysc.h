@@ -157,7 +157,7 @@ typedef struct
   * @{
   */
 
-#define IS_SYSC_APB_DIV(DIV) (((DIV) >= 0x001) && ((DIV) <= 0x200))
+#define IS_SYSC_APB_DIV(DIV) (((DIV) >= 0x01) && ((DIV) <= 0x80))
 /**
   * @}
   */
@@ -166,7 +166,7 @@ typedef struct
   * @{
   */
 
-#define IS_SYSC_AHB_DIV(DIV) (((DIV) >= 0x001) && ((DIV) <= 0x200))
+#define IS_SYSC_AHB_DIV(DIV) (((DIV) >= 0x01) && ((DIV) <= 0x80))
 /**
   * @}
   */
@@ -175,7 +175,7 @@ typedef struct
   * @{
   */
 
-#define IS_SYSC_TIM_DIV(DIV) (((DIV) >= 0x001) && ((DIV) <= 0x200))
+#define IS_SYSC_TIM_DIV(DIV) (((DIV) >= 0x01) && ((DIV) <= 0x100))
 /**
   * @}
   */
@@ -219,7 +219,7 @@ typedef struct
 
 #define IS_SYSC_ADCCLK_DIV(DIV) (((DIV) <= 0xF))
 
-#define IS_SYSC_ADC500KCLK_DIV(DIV) (((DIV) > 0) && ((DIV) <= 0x1F))
+#define IS_SYSC_ADC500KCLK_DIV(DIV) (((DIV) >= 1) && ((DIV) <= 0x1F))
 /**
   * @}
   */
@@ -298,8 +298,8 @@ typedef struct
   */
 
 void SYSC_WakeDelayConfig(u16 Delay);
-void SYSC_PCLKConfig(u16 Div);
-void SYSC_HCLKConfig(u16 Div);
+void SYSC_PCLKConfig(u8 Div);
+void SYSC_HCLKConfig(u8 Div);
 void SYSC_SYSCLKConfig(u8 ClockSrc);
 void SYSC_ADCCLKConfig(u8 Div);
 void SYSC_TIMCLKConfig(u16 Div);

@@ -309,29 +309,6 @@ void TWC_RecieveCmd(FunctionalState NewState)
 }
 
 /**
-  * @brief  Enable or disable TWC peripheral software TX start.
-  * @param  NewState: The new state of software TX start.
-  *   This parameter can be: ENABLE or DISABLE.
-  * @retval None
-  */
-void TWC_SoftTxStartCmd(FunctionalState NewState)
-{
-	/* Check the parameters */
-	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
-
-	if (NewState == ENABLE)
-	{
-		/* Enable TWC peripheral software TX start */
-		TWC->TXS |= TWC_TXS_TXSTART;
-	}
-	else
-	{
-		/* Disable TWC peripheral software TX start */
-		TWC->TXS &= ~TWC_TXS_TXSTART;
-	}
-}
-
-/**
   * @brief  Enable or disable the TWC peripheral to send data.
   * @param  NewState: The new state of the sent data.
   *   This parameter can be: ENABLE or DISABLE.
@@ -352,6 +329,17 @@ void TWC_SendCmd(FunctionalState NewState)
 		/* Disable TWC peripheral to send data */
 		TWC->TXS &= ~TWC_TXS_DATATXEN;
 	}
+}
+
+/**
+  * @brief  Enable TWC peripheral software TX start.
+  * @param  None
+  * @retval None
+  */
+void TWC_SoftTxStartEnable(void)
+{
+	/* Enable TWC peripheral software TX start */
+	TWC->TXS |= TWC_TXS_TXSTART;
 }
 
 /**

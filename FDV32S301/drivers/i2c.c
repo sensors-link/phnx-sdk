@@ -49,7 +49,7 @@ void I2C_DeInit(void)
   */
 void I2C_Init(I2C_InitTypeDef *I2C_InitStruct)
 {
-	u32 tempreg = 0;
+	u32 tempreg1 = 0, tempreg2 = 0;
 
 	/* Check the parameters */
 	PARAM_CHECK(IS_I2C_OWN_ADDR(I2C_InitStruct->I2C_OwnAddr));
@@ -58,7 +58,7 @@ void I2C_Init(I2C_InitTypeDef *I2C_InitStruct)
 	PARAM_CHECK(IS_I2C_WORK_MODE(I2C_InitStruct->I2C_WorkMode));
 
 	/* Get the I2C_CON value */
-	tempreg = I2C->CON;
+	tempreg1 = I2C->CON;
 
 	/* Turn off the I2C module enable */
 	I2C->CON &= ~I2C_CON_ENABLE;
@@ -67,28 +67,34 @@ void I2C_Init(I2C_InitTypeDef *I2C_InitStruct)
 	I2C->ADDR &= ~I2C_ADDR_SAR;
 	I2C->ADDR |= I2C_InitStruct->I2C_OwnAddr << I2C_ADDR_SAR_pos;
 
+	/* Get the I2C_SCLCR value */
+	tempreg2 = I2C->SCLCR;
+
 	/* Set clock high count value */
-	I2C->SCLCR &= ~I2C_SCLCR_HCNT;
-	I2C->SCLCR |= I2C_InitStruct->I2C_HighCnt << I2C_SCLCR_HCNT_pos;
+	tempreg2 &= ~I2C_SCLCR_HCNT;
+	tempreg2 |= I2C_InitStruct->I2C_HighCnt << I2C_SCLCR_HCNT_pos;
 
 	/* Set clock low count value */
-	I2C->SCLCR &= ~I2C_SCLCR_LCNT;
-	I2C->SCLCR |= I2C_InitStruct->I2C_LowCnt << I2C_SCLCR_LCNT_pos;
+	tempreg2 &= ~I2C_SCLCR_LCNT;
+	tempreg2 |= I2C_InitStruct->I2C_LowCnt << I2C_SCLCR_LCNT_pos;
+
+	/* Write to I2C_SCLCR */
+	I2C->SCLCR = tempreg2;
 
 	/* Set I2C work mode */
 	if (I2C_InitStruct->I2C_WorkMode == I2C_WORK_MODE_MASTER)
 	{
 		/* The working mode of the I2C peripheral is the master mode */
-		tempreg |= I2C_CON_SLAVE_DIS | I2C_CON_MASTER;
+		tempreg1 |= I2C_CON_SLAVE_DIS | I2C_CON_MASTER;
 	}
 	else
 	{
 		/* The working mode of the I2C peripheral is the slave mode */
-		tempreg &= ~(I2C_CON_SLAVE_DIS | I2C_CON_MASTER);
+		tempreg1 &= ~(I2C_CON_SLAVE_DIS | I2C_CON_MASTER);
 	}
 
 	/* Write to I2C_CON */
-	I2C->CON = tempreg;
+	I2C->CON = tempreg1;
 }
 
 /**

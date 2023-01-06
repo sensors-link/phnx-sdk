@@ -229,6 +229,7 @@ void EFC_LVDTerminateCmd(FunctionalState NewState)
 	else
 	{
 		/* Disable terminate EFC erase and write when LVD alarms */
+		EFC_WPT_UNLOCK();
 		EFC->CR &= ~EFC_CR_LVDWARNEN;
 	}
 }

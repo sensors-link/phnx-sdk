@@ -303,6 +303,7 @@ void EFC_EraseMarginReadCmd(FunctionalState NewState)
 	else
 	{
 		/* Disable erase margin read */
+		EFC_WPT_UNLOCK();
 		EFC->CR &= ~EFC_CR_EMRDEN;
 	}
 }
@@ -327,6 +328,7 @@ void EFC_ProgramMarginReadCmd(FunctionalState NewState)
 	else
 	{
 		/* Disable program margin read */
+		EFC_WPT_UNLOCK();
 		EFC->CR &= ~EFC_CR_PMRDEN;
 	}
 }
@@ -351,6 +353,7 @@ void EFC_LVDTerminateCmd(FunctionalState NewState)
 	else
 	{
 		/* Disable terminate EFC erase and write when LVD alarms */
+		EFC_WPT_UNLOCK();
 		EFC->CR &= ~EFC_CR_LVDWARNEN;
 	}
 }
@@ -691,6 +694,7 @@ EFC_Status EFC_PageLoad(u32 Addr)
 
 	/* Check the parameters */
 	PARAM_CHECK(IS_PAGE_ADDR(Addr));
+	PARAM_CHECK(IS_PAGE_PRG_ADDR(Addr));
 
 	/* Clear EFC Status Register */
 	tempreg	 = EFC->STS;
@@ -721,6 +725,7 @@ EFC_Status EFC_PageEraseVerify(u32 Addr)
 
 	/* Check the parameters */
 	PARAM_CHECK(IS_PAGE_ADDR(Addr));
+	PARAM_CHECK(IS_PAGE_PRG_ADDR(Addr));
 
 	/* Clear EFC Status Register */
 	tempreg	 = EFC->STS;
@@ -751,6 +756,7 @@ EFC_Status EFC_PageProgramVerify(u32 Addr)
 
 	/* Check the parameters */
 	PARAM_CHECK(IS_PAGE_ADDR(Addr));
+	PARAM_CHECK(IS_PAGE_PRG_ADDR(Addr));
 
 	/* Clear EFC Status Register */
 	tempreg	 = EFC->STS;

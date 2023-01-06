@@ -80,7 +80,7 @@ void ADC_Init(ADC_InitTypeDef *ADC_InitStruct)
 	/* ADC reference voltage input source input selection */
 	if(ADC_InitStruct->ADC_VrefSel == ADC_VREF_SEL_VCC)
 	{
-		ADC->CFG |= ADC_CFG_VRSEL;
+		tempreg |= ADC_CFG_VRSEL;
 	}
 
 	/* Write to ADC_CFG */
@@ -177,7 +177,7 @@ FlagStatus ADC_GetFlagStatus(void)
 	FlagStatus bitstatus = RESET;
 
 	/* Check the status of the ADC flag */
-	if (ADC->CFG & ADC_INTF_INTF)
+	if (ADC->INTF & ADC_INTF_INTF)
 	{
 		/* ADC flag is set */
 		bitstatus = SET;

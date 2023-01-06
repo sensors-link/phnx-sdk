@@ -96,7 +96,7 @@ extern "C"
 #define I2C_TIMING_SDA_SETUP   BITS(0, 3)
 
 #define I2C_TIMING_SDA_RX_HOLD_pos (8)
-#define I2C_TIMING_SDA_TX_HOLD_pos (7)
+#define I2C_TIMING_SDA_TX_HOLD_pos (4)
 #define I2C_TIMING_SDA_SETUP_pos   (0)
 
 /**
@@ -116,10 +116,10 @@ typedef struct
 	u8 I2C_OwnAddr; 						/*!< Specify own device address.
 											 	 This parameter is a 7-bit address. */
 
-	u16 I2C_HighCnt; 						/*!< Specifies the clock high count value, The source clock is pclk.
+	u16 I2C_HighCnt; 						/*!< Specifies the I2C clock high count value, The source clock is pclk.
 												 This parameter is a 9-bit value and must be greater than or equal to 0x01. */
 
-	u16 I2C_LowCnt; 						/*!< Specifies the clock low count value, The source clock is pclk.
+	u16 I2C_LowCnt; 						/*!< Specifies the I2C clock low count value, The source clock is pclk.
 												 This parameter is a 9-bit value and must be greater than or equal to 0x07. */
 
 	u8 I2C_WorkMode; 						/*!< Specifies the work mode of the I2C peripheral.

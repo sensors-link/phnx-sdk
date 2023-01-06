@@ -419,7 +419,7 @@ typedef struct
 
 void	   RTC_Init(RTC_InitTypeDef *RTC_InitStruct);
 void	   RTC_LongPeriodConfig(u8 Period);
-void	   RTC_LongPeriodConfig(u8 Period);
+void	   RTC_ShortPeriodConfig(u8 Period);
 void	   RTC_CalibrationConfig(u16 CalibrationVal);
 void	   RTC_CalibrationConfig(u16 CalibrationVal);
 void	   RTC_SetPeriodType(u8 PeriodType);

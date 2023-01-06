@@ -454,6 +454,7 @@ typedef struct
   */
 
 void	   IOM_Init(IOM_InitTypeDef *IOM_InitStruct);
+void	   IOM_SetJtagUse(u8 JtagUse);
 void	   IOM_SetPinIntProperty(u32 IOM_Pin, u8 IntType, u8 IntPolarity);
 void	   IOM_SyncAPBCmd(FunctionalState NewState);
 void	   IOM_DebounceCmd(FunctionalState NewState);

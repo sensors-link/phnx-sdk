@@ -58,7 +58,7 @@ void SYSC_WakeDelayConfig(u8 Delay)
   *   This number must be between 1 and 128.
   * @retval None
   */
-void SYSC_PCLKConfig(u16 Div)
+void SYSC_PCLKConfig(u8 Div)
 {
 	u32 tempreg = 0;
 
@@ -84,7 +84,7 @@ void SYSC_PCLKConfig(u16 Div)
   *   This number must be between 1 and 128.
   * @retval None
   */
-void SYSC_HCLKConfig(u16 Div)
+void SYSC_HCLKConfig(u8 Div)
 {
 	u32 tempreg = 0;
 
@@ -135,6 +135,8 @@ void SYSC_SYSCLKConfig(u8 ClockSrc)
   * @param  Div: Specifies the ADC clock divider. 
   *         This clock is derived from the system clock (SYSCLK).
   *   This parameter can be SYSC_ADCCLK_DIVx, where x can be an even number between (2..32).
+  * @note   The ADCCLK should be a multiple of and greater than 500KHz due to the need to 
+  *         provide a 500KHz clock for the ANAC module.
   * @retval None
   */
 void SYSC_ADCCLKConfig(u8 Div)
@@ -156,7 +158,7 @@ void SYSC_ADCCLKConfig(u8 Div)
 	SYSC_GetClocksFreq(&SYSC_Clocks);
 
 	/* Calculate the 500KHz clock frequency division of the ANAC module */
-	tempdiv = SYSC_Clocks.SYSCLK_Frequency / 1000 / ((Div + 1) * 2) / 500;
+	tempdiv = SYSC_Clocks.SYSCLK_Frequency / 1000 / ((Div + 1) * 2) / 500-1;
 
 	/* Check the 500KHz clock frequency division */
 	PARAM_CHECK(IS_SYSC_ADC500KCLK_DIV(tempdiv));
@@ -289,6 +291,37 @@ void SYSC_GetClocksFreq(SYSC_ClocksTypeDef *SYSC_Clocks)
 	pclkdiv = ((SYSC->CLKCTRCFG & SYSC_CLKCTRCFG_APB_CLK_DIV) >> SYSC_CLKCTRCFG_APB_CLK_DIV_pos) + 1;
 	/* Calculate the APB bus clock */
 	SYSC_Clocks->PCLK_Frequency = SYSC_Clocks->HCLK_Frequency / pclkdiv;
+}
+
+/**
+  * @brief  Enable or disable a delay in entering deep sleep.
+  * @param  NewState: New state of delay in entering deep sleep.
+  *   This parameter can be: ENABLE or DISABLE.
+  * @retval None
+  */
+void SYSC_DelayEnterDSPCmd(FunctionalState NewState)
+{
+	u32 tempreg = 0;
+
+	/* Check the parameters */
+	PARAM_CHECK(IS_FUNCTIONAL_STATE(NewState));
+
+	/* Get the SYSC_CLKCTRCFG value */
+	tempreg = SYSC->CLKCTRCFG;
+
+	if (NewState == ENABLE)
+	{
+		/* Enable a delay in entering deep sleep */
+		tempreg |= SYSC_CLKCTRCFG_DPS_ENT_DLY_EN;
+	}
+	else
+	{
+		/* Disable  a delay in entering deep sleep */
+		tempreg &= ~SYSC_CLKCTRCFG_DPS_ENT_DLY_EN;
+	}
+	/* Write to SYSC_CLKCTRCFG */
+	SYSC_WPT_UNLOCK();
+	SYSC->CLKCTRCFG = tempreg;
 }
 
 /**

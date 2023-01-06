@@ -40,7 +40,7 @@ extern "C"
 /* ANAC_CFG */
 #define ANAC_ANAC_CFG_SLDO_VRSEL   BIT(3)
 #define ANAC_ANAC_CFG_HRC_EN	   BIT(2)
-#define ANAC_ANAC_CFG_LRC_EN	   BIT(2)
+#define ANAC_ANAC_CFG_LRC_EN	   BIT(1)
 #define ANAC_ANAC_CFG_ALDO4D_EN    BIT(0)
 
 /* CMP_CFG */

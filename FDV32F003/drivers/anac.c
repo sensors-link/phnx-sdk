@@ -382,7 +382,7 @@ ITStatus LVD_GetITStatus(void)
 void LVD_ClearFlag(void)
 {
 	/* Clear the LVD flags */
-	ANAC->ANAC_FLAG  = ANAC_ANAC_FLAG_LVD_INTF;
+	ANAC->ANAC_FLAG = ANAC_ANAC_FLAG_LVD_INTF;
 }
 
 /**

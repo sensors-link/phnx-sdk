@@ -62,7 +62,7 @@ void SYSC_WakeDelayConfig(u16 Delay)
   *   This number must be between 1 and 128.
   * @retval None
   */
-void SYSC_PCLKConfig(u16 Div)
+void SYSC_PCLKConfig(u8 Div)
 {
 	u32 tempreg = 0;
 
@@ -88,7 +88,7 @@ void SYSC_PCLKConfig(u16 Div)
   *   This number must be between 1 and 128.
   * @retval None
   */
-void SYSC_HCLKConfig(u16 Div)
+void SYSC_HCLKConfig(u8 Div)
 {
 	u32 tempreg = 0;
 
@@ -242,16 +242,16 @@ void SYSC_WDTCmd(FunctionalState NewState)
   *     @arg SYSC_MOUDLE_CLOCK_LPTIM_CK: Control LPTIMER count clock
   *     @arg SYSC_MOUDLE_CLOCK_LPTIM: Control LPTIMER APB clock
   *     @arg SYSC_MOUDLE_CLOCK_WDT: Control WDT APB clock
-  *     @arg SYSC_MOUDLE_CLOCK_SYSC: Control SYSC APB clock
+  *     @arg SYSC_MOUDLE_CLOCK_PMU: Control SYSC APB clock
   *     @arg SYSC_MOUDLE_CLOCK_ANAC: Control ANAC APB clock
-  *     @arg SYSC_MOUDLE_CLOCK_DCLK_HCK: Control DCLK clock
+  *     @arg SYSC_MOUDLE_CLOCK_DCLK: Control DCLK clock
   *     @arg SYSC_MOUDLE_CLOCK_IOM: Control IOM APB clock
-  *     @arg SYSC_MOUDLE_CLOCK_TIM4_CNT: Control TIMER4 count clock
-  *     @arg SYSC_MOUDLE_CLOCK_TIM3_CNT: Control TIMER3 count clock
-  *     @arg SYSC_MOUDLE_CLOCK_TIM2_CNT: Control TIMER2 count clock
-  *     @arg SYSC_MOUDLE_CLOCK_TIM1_CNT: Control TIMER1 count clock
-  *     @arg SYSC_MOUDLE_CLOCK_TIM0_CNT: Control TIMER0 count clock
-  *     @arg SYSC_MOUDLE_CLOCK_TIM_PCK: Control TIMER count clock
+  *     @arg SYSC_MOUDLE_CLOCK_TIM4: Control TIMER4 count clock
+  *     @arg SYSC_MOUDLE_CLOCK_TIM3: Control TIMER3 count clock
+  *     @arg SYSC_MOUDLE_CLOCK_TIM2: Control TIMER2 count clock
+  *     @arg SYSC_MOUDLE_CLOCK_TIM1: Control TIMER1 count clock
+  *     @arg SYSC_MOUDLE_CLOCK_TIM0: Control TIMER0 count clock
+  *     @arg SYSC_MOUDLE_CLOCK_TIMER: Control TIMER count clock
   *     @arg SYSC_MOUDLE_CLOCK_UART: Control UART APB clock
   *     @arg SYSC_MOUDLE_CLOCK_APB: Control APB clock tree
   * @param  NewState: The new state of the selected module clock.

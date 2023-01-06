@@ -58,7 +58,7 @@ void UART_DeInit(void)
   *         the configuration information for the specified UART peripheral.
   * @retval None
   */
-void UART_Init(UART_InitTypeDef* UART_InitStruct)
+void UART_Init(UART_InitTypeDef *UART_InitStruct)
 {
 	u32 tempreg = 0, bauddiv = 0;
 	SYSC_ClocksTypeDef SYSC_Clocks;
@@ -92,7 +92,7 @@ void UART_Init(UART_InitTypeDef* UART_InitStruct)
 	/* Get system clock */
 	SYSC_GetClocksFreq(&SYSC_Clocks);
 
-	if (UART_InitStruct->UART_StopBits == UART_STOPBITS_0)
+	if (UART_InitStruct->UART_StopBits == UART_STOPBITS_0 && UART_InitStruct->UART_Parity == UART_PARITY_NO)
 	{
 		/* Baud rate calculation for UART mode 0 */
 		bauddiv =
@@ -307,6 +307,17 @@ FlagStatus UART_GetRxBit8(void)
 	}
 	/* Returns the status of the 8th bit of the received data */
 	return bitstatus;
+}
+
+/**
+  * @brief  Clear the 8th bit of UART's receive data.
+  * @param  None
+  * @retval None
+  */
+void UART_ClrRxBit8(void)
+{
+	/* Clear the 8th bit of UART's receive data */
+	UART1->SCON &= ~UART_SCON_RB8;
 }
 
 /**

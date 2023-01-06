@@ -79,10 +79,10 @@ void PMU_VDDLowPowerConfig(u8 Voltage)
   * @brief  Configure the level of GPIO wake-up.
   * @param  WKPin: Specify the pin that needs to be configured.
   *   This parameter can be any combination of the following values:
-  *     @arg PMU_IOWAK_PIN16: Wake up pin is GP16
-  *     @arg PMU_IOWAK_PIN17: Wake up pin is GP17
-  *     @arg PMU_IOWAK_PIN18: Wake up pin is GP18
-  *     @arg PMU_IOWAK_PIN19: Wake up pin is GP19
+  *     @arg PMU_IOWAKE_PIN16: Wake up pin is GP16
+  *     @arg PMU_IOWAKE_PIN17: Wake up pin is GP17
+  *     @arg PMU_IOWAKE_PIN18: Wake up pin is GP18
+  *     @arg PMU_IOWAKE_PIN19: Wake up pin is GP19
   * @param  WKLevel: Specify the GPIO wake-up level.
   *   This parameter can be one of the following values:
   *     @arg PMU_IOWAKE_LEVEL_LOW: Low level wake-up configuration
@@ -295,10 +295,10 @@ void PMU_PowerDownCmd(FunctionalState NewState)
   * @brief  Enable or disable selected GPIO wake-up function.
   * @param  WKPin: Specifies the GPIO pin used for wakeup.
   *   This parameter can be any combination of the following values:
-  *     @arg PMU_IOWAK_PIN16: Wake up pin is GP16
-  *     @arg PMU_IOWAK_PIN17: Wake up pin is GP17
-  *     @arg PMU_IOWAK_PIN18: Wake up pin is GP18
-  *     @arg PMU_IOWAK_PIN19: Wake up pin is GP19
+  *     @arg PMU_IOWAKE_PIN16: Wake up pin is GP16
+  *     @arg PMU_IOWAKE_PIN17: Wake up pin is GP17
+  *     @arg PMU_IOWAKE_PIN18: Wake up pin is GP18
+  *     @arg PMU_IOWAKE_PIN19: Wake up pin is GP19
   * @param  NewState: New state for GPIO wakeup.
   *   This parameter can be: ENABLE or DISABLE.
   * @retval None

@@ -247,6 +247,7 @@ void EFC_LVDTerminateCmd(FunctionalState NewState)
 	else
 	{
 		/* Disable terminate EFC erase and write when LVD alarms */
+		EFC_WPT_UNLOCK();
 		EFC->CR &= ~EFC_CR_LVDWARNEN;
 	}
 }
@@ -361,8 +362,6 @@ ITStatus EFC_GetITStatus(u8 EFC_IT)
   *     @arg EFC_FLAG_ATTE: Analog Trim Tag Error flag
   *     @arg EFC_FLAG_FTTE: Flash Trim Tag Error flag
   *     @arg EFC_FLAG_ADDRE: Address Error flag
-  *     @arg EFC_FLAG_EVE: Page Erase Verify flag
-  *     @arg EFC_FLAG_PVE: Page Program Verify flag
   *     @arg EFC_FLAG_FCE: Fault Command flag
   *     @arg EFC_FLAG_CD: Command Done flag
   * @retval None

@@ -62,7 +62,7 @@ void SYSC_WakeDelayConfig(u16 Delay)
   *   This number must be between 1 and 128.
   * @retval None
   */
-void SYSC_PCLKConfig(u16 Div)
+void SYSC_PCLKConfig(u8 Div)
 {
 	u32 tempreg = 0;
 
@@ -88,7 +88,7 @@ void SYSC_PCLKConfig(u16 Div)
   *   This number must be between 1 and 128.
   * @retval None
   */
-void SYSC_HCLKConfig(u16 Div)
+void SYSC_HCLKConfig(u8 Div)
 {
 	u32 tempreg = 0;
 
@@ -141,6 +141,8 @@ void SYSC_SYSCLKConfig(u8 ClockSrc)
   * @param  Div: Specifies the ADC clock divider. 
   *         This clock is derived from the system clock (SYSCLK).
   *   This parameter can be SYSC_ADCCLK_DIVx, where x can be an even number between (2..32).
+  * @note   The ADCCLK should be a multiple of and greater than 500KHz due to the need to 
+  *         provide a 500KHz clock for the ANAC module.
   * @retval None
   */
 void SYSC_ADCCLKConfig(u8 Div)
@@ -162,7 +164,7 @@ void SYSC_ADCCLKConfig(u8 Div)
 	SYSC_GetClocksFreq(&SYSC_Clocks);
 
 	/* Calculate the 500KHz clock frequency division of the ANAC module */
-	tempdiv = SYSC_Clocks.SYSCLK_Frequency / 1000 / ((Div + 1) * 2) / 500;
+	tempdiv = SYSC_Clocks.SYSCLK_Frequency / 1000 / ((Div + 1) * 2) / 500-1;
 
 	/* Check the 500KHz clock frequency division */
 	PARAM_CHECK(IS_SYSC_ADC500KCLK_DIV(tempdiv));

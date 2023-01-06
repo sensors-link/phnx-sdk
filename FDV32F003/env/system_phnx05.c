@@ -75,7 +75,7 @@ void SystemInit(void)
 	/* Calculate and configure the system clock source and bus divider value */
 	tmpreg = SYSC->CLKCTRCFG;
 	tmpreg &= ~(SYSC_CLKCTRCFG_APB_CLK_DIV | SYSC_CLKCTRCFG_AHB_CLK_DIV | SYSC_CLKCTRCFG_SYS_CLK_SEL);
-	tmpreg |= ((SYSC_APB_DIV << SYSC_CLKCTRCFG_AHB_CLK_DIV_pos) | (SYSC_AHB_DIV << SYSC_CLKCTRCFG_AHB_CLK_DIV_pos) |
+	tmpreg |= ((SYSC_AHB_DIV << SYSC_CLKCTRCFG_AHB_CLK_DIV_pos) | (SYSC_APB_DIV << SYSC_CLKCTRCFG_APB_CLK_DIV_pos) |
 			   SYSC_CLKCTRCFG_SYS_CLK_SEL_LRC);
 
 	/* The system clock source and bus divider value are written to the register */
@@ -94,7 +94,7 @@ void SystemInit(void)
 	/* Calculate and configure the system clock source and bus divider value */
 	tmpreg = SYSC->CLKCTRCFG;
 	tmpreg &= ~(SYSC_CLKCTRCFG_APB_CLK_DIV | SYSC_CLKCTRCFG_AHB_CLK_DIV | SYSC_CLKCTRCFG_SYS_CLK_SEL);
-	tmpreg |= ((SYSC_APB_DIV << SYSC_CLKCTRCFG_AHB_CLK_DIV_pos) | (SYSC_AHB_DIV << SYSC_CLKCTRCFG_AHB_CLK_DIV_pos) |
+	tmpreg |= ((SYSC_AHB_DIV << SYSC_CLKCTRCFG_AHB_CLK_DIV_pos) | (SYSC_APB_DIV << SYSC_CLKCTRCFG_APB_CLK_DIV_pos) |
 			   SYSC_CLKCTRCFG_SYS_CLK_SEL_HRC);
 
 	/* The system clock source and bus divider value are written to the register */

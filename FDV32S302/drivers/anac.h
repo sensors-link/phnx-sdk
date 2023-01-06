@@ -766,7 +766,7 @@ typedef enum
 
 #define IS_CLK_HRC_FREQSEL(FREQSEL)                                                                                    \
 	(((FREQSEL) == CLK_HRC_FREQ_SEL_1M) || ((FREQSEL) == CLK_HRC_FREQ_SEL_2M) || ((FREQSEL) == CLK_HRC_FREQ_SEL_4M) || \
-	 ((FREQSEL) == CLK_HRC_FREQ_SEL_16M))
+	 ((FREQSEL) == CLK_HRC_FREQ_SEL_8M) || ((FREQSEL) == CLK_HRC_FREQ_SEL_16M))
 /**
   * @}
   */

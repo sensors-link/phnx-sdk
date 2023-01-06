@@ -187,7 +187,7 @@ void TIM_PWMInit(TIM_TypeDef *TIMx, TIM_PWMInitTypeDef *TIM_PWMInitStruct)
 		/* Set TIM1 to User Defined Mode */
 		TIMERS->CON |= TIM_CON_TM_TIM1;
 
-		/* Enable PWM pulse width modulation */
+		/* Enable TIM1 PWM pulse width modulation */
 		TIMERS->CON |= TIM_CON_PWM_TIM1;
 	}
 	else if (TIMx == TIM2)
@@ -195,7 +195,7 @@ void TIM_PWMInit(TIM_TypeDef *TIMx, TIM_PWMInitTypeDef *TIM_PWMInitStruct)
 		/* Set TIM2 to User Defined Mode */
 		TIMERS->CON |= TIM_CON_TM_TIM2;
 
-		/* Enable PWM pulse width modulation */
+		/* Enable TIM2 PWM pulse width modulation */
 		TIMERS->CON |= TIM_CON_PWM_TIM2;
 	}
 	else if (TIMx == TIM3)
@@ -203,7 +203,7 @@ void TIM_PWMInit(TIM_TypeDef *TIMx, TIM_PWMInitTypeDef *TIM_PWMInitStruct)
 		/* Set TIM3 to User Defined Mode */
 		TIMERS->CON |= TIM_CON_TM_TIM3;
 
-		/* Enable PWM pulse width modulation */
+		/* Enable TIM3 PWM pulse width modulation */
 		TIMERS->CON |= TIM_CON_PWM_TIM3;
 	}
 	else if (TIMx == TIM4)
@@ -211,7 +211,7 @@ void TIM_PWMInit(TIM_TypeDef *TIMx, TIM_PWMInitTypeDef *TIM_PWMInitStruct)
 		/* Set TIM4 to User Defined Mode */
 		TIMERS->CON |= TIM_CON_TM_TIM4;
 
-		/* Enable PWM pulse width modulation */
+		/* Enable TIM4 PWM pulse width modulation */
 		TIMERS->CON |= TIM_CON_PWM_TIM4;
 	}
 
@@ -258,18 +258,18 @@ void TIM_CountInit(TIM_TypeDef *TIMx, TIM_CountInitTypeDef *TIM_CountInitStruct)
 		/* Set TIM1 to free-running mode */
 		TIMERS->CON &= ~TIM_CON_TM_TIM1;
 
-		/* Enable external pulse counting */
+		/* Enable TIM1 external pulse counting */
 		TIMERS->CON |= TIM_CON_EXTEN_TIM1;
 
 		if (TIM_CountInitStruct->TIM_ExternPolarity == TIM_EXTERN_POL_HIGH)
 		{
-			/* Set the external pulse enable port to count when high */
-			TIMERS->CON &= ~TIM_CON_EXTPOL;
+			/* Set TIM1 the external pulse enable port to count when high */
+			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM1;
 		}
 		else
 		{
-			/* Set the external pulse enable port to count when low */
-			TIMERS->CON |= TIM_CON_EXTPOL;
+			/* Set TIM1 the external pulse enable port to count when low */
+			TIMERS->CON |= TIM_CON_EXTPOL_TIM1;
 		}
 	}
 	else if (TIMx == TIM2)
@@ -277,18 +277,18 @@ void TIM_CountInit(TIM_TypeDef *TIMx, TIM_CountInitTypeDef *TIM_CountInitStruct)
 		/* Set TIM2 to free-running mode */
 		TIMERS->CON &= ~TIM_CON_TM_TIM2;
 
-		/* Enable external pulse counting */
+		/* Enable TIM2 external pulse counting */
 		TIMERS->CON |= TIM_CON_EXTEN_TIM2;
 
 		if (TIM_CountInitStruct->TIM_ExternPolarity == TIM_EXTERN_POL_HIGH)
 		{
-			/* Set the external pulse enable port to count when high */
-			TIMERS->CON &= ~TIM_CON_EXTPOL;
+			/* Set TIM2 the external pulse enable port to count when high */
+			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM2;
 		}
 		else
 		{
-			/* Set the external pulse enable port to count when low */
-			TIMERS->CON |= TIM_CON_EXTPOL;
+			/* Set TIM2 the external pulse enable port to count when low */
+			TIMERS->CON |= TIM_CON_EXTPOL_TIM2;
 		}
 	}
 	else if (TIMx == TIM3)
@@ -296,18 +296,18 @@ void TIM_CountInit(TIM_TypeDef *TIMx, TIM_CountInitTypeDef *TIM_CountInitStruct)
 		/* Set TIM3 to free-running mode */
 		TIMERS->CON &= ~TIM_CON_TM_TIM3;
 
-		/* Enable external pulse counting */
+		/* Enable TIM3 external pulse counting */
 		TIMERS->CON |= TIM_CON_EXTEN_TIM3;
 
 		if (TIM_CountInitStruct->TIM_ExternPolarity == TIM_EXTERN_POL_HIGH)
 		{
-			/* Set the external pulse enable port to count when high */
-			TIMERS->CON &= ~TIM_CON_EXTPOL;
+			/* Set TIM3 the external pulse enable port to count when high */
+			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM3;
 		}
 		else
 		{
-			/* Set the external pulse enable port to count when low */
-			TIMERS->CON |= TIM_CON_EXTPOL;
+			/* Set TIM3 the external pulse enable port to count when low */
+			TIMERS->CON |= TIM_CON_EXTPOL_TIM3;
 		}
 	}
 	else if (TIMx == TIM4)
@@ -315,18 +315,18 @@ void TIM_CountInit(TIM_TypeDef *TIMx, TIM_CountInitTypeDef *TIM_CountInitStruct)
 		/* Set TIM4 to free-running mode */
 		TIMERS->CON &= ~TIM_CON_TM_TIM4;
 
-		/* Enable external pulse counting */
+		/* Enable TIM4 external pulse counting */
 		TIMERS->CON |= TIM_CON_EXTEN_TIM4;
 
 		if (TIM_CountInitStruct->TIM_ExternPolarity == TIM_EXTERN_POL_HIGH)
 		{
-			/* Set the external pulse enable port to count when high */
-			TIMERS->CON &= ~TIM_CON_EXTPOL;
+			/* Set TIM4 the external pulse enable port to count when high */
+			TIMERS->CON &= ~TIM_CON_EXTPOL_TIM4;
 		}
 		else
 		{
-			/* Set the external pulse enable port to count when low */
-			TIMERS->CON |= TIM_CON_EXTPOL;
+			/* Set TIM4 the external pulse enable port to count when low */
+			TIMERS->CON |= TIM_CON_EXTPOL_TIM4;
 		}
 	}
 
