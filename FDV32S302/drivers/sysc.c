@@ -55,7 +55,7 @@ void SYSC_WakeDelayConfig(u8 Delay)
   * @brief  Configures the APB clock (PCLK).
   * @param  Div: Specifies the APB clock divider. 
   *         This clock is derived from the AHB clock (HCLK).
-  *   This number must be between 1 and 128.
+  *   This parameter must be between 1 and 128.
   * @retval None
   */
 void SYSC_PCLKConfig(u8 Div)
@@ -81,7 +81,7 @@ void SYSC_PCLKConfig(u8 Div)
   * @brief  Configures the AHB clock (HCLK).
   * @param  Div: Specifies the AHB clock divider. 
   *	  		This clock is derived from the system clock (SYSCLK).
-  *   This number must be between 1 and 128.
+  *   This parameter must be between 1 and 128.
   * @retval None
   */
 void SYSC_HCLKConfig(u8 Div)
@@ -179,7 +179,7 @@ void SYSC_ADCCLKConfig(u8 Div)
   *     @arg SYSC_TIMSEL_TIM2: Select TIM2 for the timer to be configured
   * @param  Div: Specifies the TIMER clock divider. 
   *         This clock is derived from the system clock (PCLK).
-  *   This number must be between 1 and 256.
+  *   This parameter must be between 1 and 256.
   * @retval None
   */
 void SYSC_TIMCLKConfig(u8 TimerSel, u16 Div)

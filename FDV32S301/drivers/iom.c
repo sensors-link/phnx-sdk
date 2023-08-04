@@ -137,7 +137,7 @@ void IOM_Init(IOM_InitTypeDef *IOM_InitStruct)
 		}
 
 		/* Set IO drive capability register DRS */
-		if (IOM_InitStruct->IOM_DRState == IOM_DRS_HIGH)
+		if (IOM_InitStruct->IOM_DRState == IOM_DRS_LOW)
 		{
 			IOM->DRS |= IOM_InitStruct->IOM_Pin;
 		}

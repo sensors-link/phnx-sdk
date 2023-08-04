@@ -478,7 +478,7 @@ EFC_Status EFC_BlockErase(u32 Addr)
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_BLOCK_ERASE);
 
 	/* Write any value to the corresponding address */
-	REG32(Addr) = 0xFFFFFFFF;
+	REG8(Addr) = 0xFF;
 
 	/* Check for the EFC Status */
 	status = EFC_GetEFCStatus();
@@ -508,7 +508,7 @@ EFC_Status EFC_PageErase(u32 Addr)
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_PAGE_ERASE);
 
 	/* Write any value to the corresponding address */
-	REG32(Addr) = 0xFFFFFFFF;
+	REG8(Addr) = 0xFF;
 
 	/* Check for the EFC Status */
 	status = EFC_GetEFCStatus();
@@ -538,7 +538,7 @@ EFC_Status EFC_ChipErase(u32 Addr)
 	EFC_OPR_OPEN(EFC_OPR_OPRMODE_CHIP_ERASE);
 
 	/* Write any value to the corresponding address */
-	REG32(Addr) = 0xFFFFFFFF;
+	REG8(Addr) = 0xFF;
 
 	/* Check for the EFC Status */
 	status = EFC_GetEFCStatus();

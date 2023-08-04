@@ -178,7 +178,7 @@ void SystemInit(void)
 	IOM_InitStructure.IOM_PdCmd	  = DISABLE;
 	IOM_InitStructure.IOM_OutType = IOM_OTYPE_COMS;
 	IOM_InitStructure.IOM_ADState = IOM_ADS_DIGITAL;
-	IOM_InitStructure.IOM_DRState = IOM_DRS_LOW;
+	IOM_InitStructure.IOM_DRState = IOM_DRS_HIGH;
 	IOM_InitStructure.IOM_AltFunc = IOM_ALT_FUNC_P02_SEL_UART2_RX;
 	IOM_Init(&IOM_InitStructure);
 
@@ -189,7 +189,7 @@ void SystemInit(void)
 	IOM_InitStructure.IOM_PdCmd	  = DISABLE;
 	IOM_InitStructure.IOM_OutType = IOM_OTYPE_COMS;
 	IOM_InitStructure.IOM_ADState = IOM_ADS_DIGITAL;
-	IOM_InitStructure.IOM_DRState = IOM_DRS_LOW;
+	IOM_InitStructure.IOM_DRState = IOM_DRS_HIGH;
 	IOM_InitStructure.IOM_AltFunc = IOM_ALT_FUNC_P03_SEL_UART2_TX;
 	IOM_Init(&IOM_InitStructure);
 
@@ -213,7 +213,7 @@ void SystemInit(void)
 	IOM_InitStructure.IOM_PdCmd	  = DISABLE;
 	IOM_InitStructure.IOM_OutType = IOM_OTYPE_COMS;
 	IOM_InitStructure.IOM_ADState = IOM_ADS_DIGITAL;
-	IOM_InitStructure.IOM_DRState = IOM_DRS_LOW;
+	IOM_InitStructure.IOM_DRState = IOM_DRS_HIGH;
 	IOM_InitStructure.IOM_AltFunc = IOM_ALT_FUNC_P00_SEL_UART1_RX;
 	IOM_Init(&IOM_InitStructure);
 
@@ -224,7 +224,7 @@ void SystemInit(void)
 	IOM_InitStructure.IOM_PdCmd	  = DISABLE;
 	IOM_InitStructure.IOM_OutType = IOM_OTYPE_COMS;
 	IOM_InitStructure.IOM_ADState = IOM_ADS_DIGITAL;
-	IOM_InitStructure.IOM_DRState = IOM_DRS_LOW;
+	IOM_InitStructure.IOM_DRState = IOM_DRS_HIGH;
 	IOM_InitStructure.IOM_AltFunc = IOM_ALT_FUNC_P01_SEL_UART1_TX;
 	IOM_Init(&IOM_InitStructure);
 
